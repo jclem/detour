@@ -12,6 +12,8 @@ class ActiveRecord::Rollout < ActiveRecord::Base
   def self.method_missing(method, *args, &block)
     if method =~ /^add_.*/
       create_flag_from_instance(args[0], args[1])
+    elsif method =~ /^remove_.*/
+      remove_flag_from_instance(args[0], args[1])
     else
       super
     end
@@ -20,5 +22,10 @@ class ActiveRecord::Rollout < ActiveRecord::Base
   def self.create_flag_from_instance(instance, flag_name)
     rollout = ActiveRecord::Rollout.find_by!(name: flag_name)
     rollout.flags.create!(flag_subject: instance)
+  end
+
+  def self.remove_flag_from_instance(instance, flag_name)
+    rollout = ActiveRecord::Rollout.find_by!(name: flag_name)
+    rollout.flags.where(flag_subject: instance).destroy_all
   end
 end
