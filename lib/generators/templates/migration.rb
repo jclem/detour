@@ -9,6 +9,8 @@ class ActiveRecordRolloutMigration < ActiveRecord::Migration
 
     create_table :active_record_rollout_flags do |t|
       t.integer :rollout_id
+      t.string  :group_type
+      t.string  :group_name
       t.integer :percentage
       t.string  :percentage_type
       t.integer :flag_subject_id
@@ -17,6 +19,7 @@ class ActiveRecordRolloutMigration < ActiveRecord::Migration
     end
 
     add_index :active_record_rollout_flags, :rollout_id
+    add_index :active_record_rollout_flags, :group_type
     add_index :active_record_rollout_flags, :percentage
     add_index :active_record_rollout_flags, :flag_subject_id
     add_index :active_record_rollout_flags, :flag_subject_type

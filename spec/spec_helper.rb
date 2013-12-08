@@ -8,6 +8,10 @@ class User < ActiveRecord::Base
   include ActiveRecord::Rollout::Flaggable
 end
 
+class Organization < ActiveRecord::Base
+  include ActiveRecord::Rollout::Flaggable
+end
+
 RSpec.configure do |config|
   config.before :suite do
     ActiveRecord::Base.establish_connection \
@@ -25,5 +29,9 @@ RSpec.configure do |config|
   config.after :each do
     ActiveRecordRolloutMigration.migrate :down
     ActiveRecord::Schema.migrate :down
+  end
+
+  config.after :each do
+    ActiveRecord::Rollout.class_variable_set "@@defined_groups", {}
   end
 end

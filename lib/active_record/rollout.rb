@@ -4,6 +4,8 @@ require "active_record/rollout/flag"
 require "active_record/rollout/flaggable"
 
 class ActiveRecord::Rollout < ActiveRecord::Base
+  @@defined_groups = {}
+
   self.table_name = :active_record_rollouts
 
   has_many :flags, dependent: :destroy
@@ -19,6 +21,20 @@ class ActiveRecord::Rollout < ActiveRecord::Base
     instance.id % 10 < (percentage || 0) / 10
   end
 
+  def match_groups?(instance)
+    klass = instance.class.to_s
+
+    return unless self.class.defined_groups[klass]
+
+    group_names = flags.where("group_type = ? AND group_name IS NOT NULL", klass).collect(&:group_name)
+
+    self.class.defined_groups[klass].select { |key, value|
+      group_names.include? key
+    }.collect { |key, value|
+      value.call(instance)
+    }.any?
+  end
+
   def method_missing(method, *args, &block)
     if method =~ /^match_.*\?/
       match_instance?(args[0])
@@ -27,14 +43,8 @@ class ActiveRecord::Rollout < ActiveRecord::Base
     end
   end
 
-  def self.method_missing(method, *args, &block)
-    if method =~ /^add_.*/
-      create_flag_from_instance(args[0], args[1])
-    elsif method =~ /^remove_.*/
-      remove_flag_from_instance(args[0], args[1])
-    else
-      super
-    end
+  def self.defined_groups
+    @@defined_groups
   end
 
   def self.create_flag_from_instance(instance, flag_name)
@@ -45,5 +55,22 @@ class ActiveRecord::Rollout < ActiveRecord::Base
   def self.remove_flag_from_instance(instance, flag_name)
     rollout = ActiveRecord::Rollout.find_by!(name: flag_name)
     rollout.flags.where(flag_subject: instance).destroy_all
+  end
+
+  def self.define_group_for_class(klass, group_name, &block)
+    @@defined_groups[klass] ||= {}
+    @@defined_groups[klass][group_name] = block
+  end
+
+  def self.method_missing(method, *args, &block)
+    if method =~ /^add_.*/
+      create_flag_from_instance(args[0], args[1])
+    elsif method =~ /^remove_.*/
+      remove_flag_from_instance(args[0], args[1])
+    elsif /^define_(?<klass>[a-z]+)_group/ =~ method
+      define_group_for_class(klass.classify, args[0], &block)
+    else
+      super
+    end
   end
 end
