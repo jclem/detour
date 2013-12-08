@@ -1,6 +1,8 @@
 require "active_record"
 require "active_record/rollout"
 require "shoulda-matchers"
+require "generators/templates/migration"
+
 
 RSpec.configure do |config|
   config.before :suite do
@@ -8,10 +10,16 @@ RSpec.configure do |config|
       adapter: "sqlite3",
       database: File.dirname(__FILE__) + "/spec.sqlite3"
 
-    load File.dirname(__FILE__) + "/support/schema.rb"
+    require File.dirname(__FILE__) + "/support/schema.rb"
   end
 
-  config.after :suite do
-    ActiveRecordRolloutMigration.migrate(:down)
+  config.before :each do
+    ActiveRecordRolloutMigration.migrate :up
+    ActiveRecord::Schema.migrate :up
+  end
+
+  config.after :each do
+    ActiveRecordRolloutMigration.migrate :down
+    ActiveRecord::Schema.migrate :down
   end
 end
