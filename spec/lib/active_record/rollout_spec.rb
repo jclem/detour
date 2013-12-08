@@ -70,6 +70,26 @@ describe ActiveRecord::Rollout do
     end
   end
 
+  describe "#match?" do
+    let(:user) { User.create }
+    let(:rollout) { ActiveRecord::Rollout.create(name: "foo") }
+
+    it "checks if the user is flagged individually" do
+      rollout.should_receive(:match_instance?).with(user)
+      rollout.match?(user)
+    end
+
+    it "checks if the user is flagged as part of a percentage" do
+      rollout.should_receive(:match_percentage?).with(user)
+      rollout.match?(user)
+    end
+
+    it "checks if the user is flagged as part of a group" do
+      rollout.should_receive(:match_groups?).with(user)
+      rollout.match?(user)
+    end
+  end
+
   describe "#match_{klass}?" do
     let(:rollout) { ActiveRecord::Rollout.create(name: "foo") }
     let(:user) { User.create }

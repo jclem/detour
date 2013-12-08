@@ -12,6 +12,10 @@ class ActiveRecord::Rollout < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
 
+  def match?(instance)
+    match_instance?(instance) || match_percentage?(instance) || match_groups?(instance)
+  end
+
   def match_instance?(instance)
     flags.where(flag_subject: instance).any?
   end
