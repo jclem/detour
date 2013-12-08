@@ -1,3 +1,4 @@
+require "spec_helper"
 require "active_record/rollout/version"
 require "active_record/rollout/flag"
 require "active_record/rollout/flaggable"
@@ -8,6 +9,22 @@ class ActiveRecord::Rollout < ActiveRecord::Base
   has_many :flags, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
+
+  def match_instance?(instance)
+    flags.where(flag_subject: instance).any?
+  end
+
+  def match_percentage?(instance)
+    instance.id % 10 < (percentage || 0) / 10
+  end
+
+  def method_missing(method, *args, &block)
+    if method =~ /^match_.*\?/
+      match_instance?(args[0])
+    else
+      super
+    end
+  end
 
   def self.method_missing(method, *args, &block)
     if method =~ /^add_.*/

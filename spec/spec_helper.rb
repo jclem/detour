@@ -3,6 +3,9 @@ require "active_record/rollout"
 require "shoulda-matchers"
 require "generators/templates/migration"
 
+class User < ActiveRecord::Base
+  include ActiveRecord::Rollout::Flaggable
+end
 
 RSpec.configure do |config|
   config.before :suite do
