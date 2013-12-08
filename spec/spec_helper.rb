@@ -2,6 +2,7 @@ require "active_record"
 require "active_record/rollout"
 require "shoulda-matchers"
 require "generators/templates/migration"
+require "pry"
 
 class User < ActiveRecord::Base
   include ActiveRecord::Rollout::Flaggable

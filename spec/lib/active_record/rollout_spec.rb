@@ -85,7 +85,8 @@ describe ActiveRecord::Rollout do
 
   describe "#match_percentage?" do
     let(:user) { User.create }
-    let(:rollout) { ActiveRecord::Rollout.create!(name: "foo", percentage: 50) }
+    let(:rollout) { ActiveRecord::Rollout.create!(name: "foo") }
+    let!(:flag) { rollout.flags.create(percentage_type: "User", percentage: 50) }
 
     context "when the user's ID matches `id % 10 < percentage / 10" do
       it "returns true" do
