@@ -1,4 +1,4 @@
-class ActiveRecordRolloutMigration < ActiveRecord::Migration
+class SetupActiveRecordRollout < ActiveRecord::Migration
   def change
     create_table :active_record_rollout_features do |t|
       t.string :name
