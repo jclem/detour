@@ -16,7 +16,7 @@ class ActiveRecord::Rollout < ActiveRecord::Base
 
   def match_percentage?(instance)
     percentage = flags.find_by("percentage_type = ? AND percentage IS NOT NULL", instance.class).try(:percentage)
-    instance.id % 10 < (percentage || 0) / 10
+    instance.id % 100 < (percentage || 0)
   end
 
   def method_missing(method, *args, &block)
