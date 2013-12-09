@@ -1,10 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require "active_record/rollout/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "active_record_rollout"
-  spec.version       = "0.0.1"
+  spec.version       = ActiveRecord::Rollout::VERSION
   spec.authors       = ["Jonathan Clem"]
   spec.email         = ["jonathan@heroku.com"]
   spec.summary       = %q{Rollouts (feature flags) for ActiveRecord models.}

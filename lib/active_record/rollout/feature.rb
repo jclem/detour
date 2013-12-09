@@ -1,8 +1,6 @@
 class ActiveRecord::Rollout::Feature < ActiveRecord::Base
   @@defined_groups = {}
 
-  VERSION = "0.0.1"
-
   self.table_name = :active_record_rollout_features
 
   has_many :flags, dependent: :destroy

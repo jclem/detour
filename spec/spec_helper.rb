@@ -22,12 +22,12 @@ RSpec.configure do |config|
   end
 
   config.before :each do
-    ActiveRecordRolloutMigration.migrate :up
+    SetupActiveRecordRollout.migrate :up
     ActiveRecord::Schema.migrate :up
   end
 
   config.after :each do
-    ActiveRecordRolloutMigration.migrate :down
+    SetupActiveRecordRollout.migrate :down
     ActiveRecord::Schema.migrate :down
   end
 
