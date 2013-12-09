@@ -35,14 +35,6 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     }.any?
   end
 
-  def method_missing(method, *args, &block)
-    if method =~ /^match_.*\?/
-      match_instance?(args[0])
-    else
-      super
-    end
-  end
-
   def self.configure(&block)
     yield self
   end

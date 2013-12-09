@@ -10,7 +10,7 @@ describe "flag rollouts" do
     end
 
     it "sets the feature on the user" do
-      feature.match_user?(user).should be_true
+      feature.match_instance?(user).should be_true
     end
   end
 
@@ -21,7 +21,7 @@ describe "flag rollouts" do
     end
 
     it "removes the feature from the user" do
-      feature.match_user?(user).should be_false
+      feature.match_instance?(user).should be_false
     end
   end
 end

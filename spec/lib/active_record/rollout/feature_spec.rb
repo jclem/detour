@@ -90,16 +90,6 @@ describe ActiveRecord::Rollout::Feature do
     end
   end
 
-  describe "#match_{klass}?" do
-    let(:feature) { ActiveRecord::Rollout::Feature.create(name: "foo") }
-    let(:user) { User.create }
-
-    it "matches a flag forfrom the given instance" do
-      feature.should_receive(:match_instance?).with user
-      feature.match_user? user
-    end
-  end
-
   describe "#match_instance?" do
     let(:user) { User.create }
     let(:user2) { User.create }
