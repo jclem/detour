@@ -6,24 +6,6 @@ describe ActiveRecord::Rollout::Feature do
   it { should validate_presence_of :name }
   it { should validate_uniqueness_of :name }
 
-  describe ".add_{klass}" do
-    let(:user) { User.create }
-
-    it "creates a flag from the given instance" do
-      ActiveRecord::Rollout::Feature.should_receive(:create_flag_from_instance).with user, :foo
-      ActiveRecord::Rollout::Feature.add_user user, :foo
-    end
-  end
-
-  describe ".remove_{klass}" do
-    let(:user) { User.create }
-
-    it "removes a flag from the given instance" do
-      ActiveRecord::Rollout::Feature.should_receive(:remove_flag_from_instance).with user, :foo
-      ActiveRecord::Rollout::Feature.remove_user user, :foo
-    end
-  end
-
   describe ".define_{klass}_group" do
     let(:block) { Proc.new {} }
     it "defines a group for the given class" do
@@ -32,12 +14,12 @@ describe ActiveRecord::Rollout::Feature do
     end
   end
 
-  describe ".create_flag_from_instance" do
+  describe ".add_record_to_feature" do
     let(:user) { User.create }
     let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.create_flag_from_instance user, :foo
+      ActiveRecord::Rollout::Feature.add_record_to_feature user, :foo
     end
 
     it "creats a flag for the given instance and feature" do
@@ -45,13 +27,13 @@ describe ActiveRecord::Rollout::Feature do
     end
   end
 
-  describe ".remove_flag_from_instance" do
+  describe ".remove_record_from_feature" do
     let(:user) { User.create }
     let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.add_user(user, :foo)
-      ActiveRecord::Rollout::Feature.remove_flag_from_instance(user, :foo)
+      ActiveRecord::Rollout::Feature.add_record_to_feature user, :foo
+      ActiveRecord::Rollout::Feature.remove_record_from_feature user, :foo
     end
 
     it "creats a flag for the given instance and feature" do
@@ -96,7 +78,7 @@ describe ActiveRecord::Rollout::Feature do
     let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.add_user(user, :foo)
+      ActiveRecord::Rollout::Feature.add_record_to_feature user, :foo
     end
 
     context "when the feature exists for the instance" do

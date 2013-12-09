@@ -35,38 +35,36 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     }.any?
   end
 
-  def self.configure(&block)
-    yield self
-  end
+  class << self
+    def configure(&block)
+      yield self
+    end
 
-  def self.defined_groups
-    @@defined_groups
-  end
+    def defined_groups
+      @@defined_groups
+    end
 
-  def self.create_flag_from_instance(instance, flag_name)
-    feature = find_by_name!(flag_name)
-    feature.flags.create!(flag_subject: instance)
-  end
+    def add_record_to_feature(record, feature_name)
+      feature = find_by_name!(feature_name)
+      feature.flags.create!(flag_subject: record)
+    end
 
-  def self.remove_flag_from_instance(instance, flag_name)
-    feature = find_by_name!(flag_name)
-    feature.flags.where(flag_subject_type: instance.class, flag_subject_id: instance.id).destroy_all
-  end
+    def remove_record_from_feature(record, feature_name)
+      feature = find_by_name!(feature_name)
+      feature.flags.where(flag_subject_type: record.class, flag_subject_id: record.id).destroy_all
+    end
 
-  def self.define_group_for_class(klass, group_name, &block)
-    @@defined_groups[klass] ||= {}
-    @@defined_groups[klass][group_name] = block
-  end
+    def define_group_for_class(klass, group_name, &block)
+      @@defined_groups[klass] ||= {}
+      @@defined_groups[klass][group_name] = block
+    end
 
-  def self.method_missing(method, *args, &block)
-    if method =~ /^add_.*/
-      create_flag_from_instance(args[0], args[1])
-    elsif method =~ /^remove_.*/
-      remove_flag_from_instance(args[0], args[1])
-    elsif /^define_(?<klass>[a-z0-9_]+)_group/ =~ method
-      define_group_for_class(klass.classify, args[0], &block)
-    else
-      super
+    def method_missing(method, *args, &block)
+      if /^define_(?<klass>[a-z0-9_]+)_group/ =~ method
+        define_group_for_class(klass.classify, args[0], &block)
+      else
+        super
+      end
     end
   end
 end
