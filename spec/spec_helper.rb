@@ -32,6 +32,6 @@ RSpec.configure do |config|
   end
 
   config.after :each do
-    ActiveRecord::Rollout.class_variable_set "@@defined_groups", {}
+    ActiveRecord::Rollout::Feature.class_variable_set "@@defined_groups", {}
   end
 end

@@ -8,25 +8,25 @@ module ActiveRecord::Rollout::Flaggable
       as: :opt_out_subject,
       class_name: "ActiveRecord::Rollout::OptOut"
 
-    klass.has_many :rollouts,
+    klass.has_many :features,
       through: :flags,
-      class_name: "ActiveRecord::Rollout"
+      class_name: "ActiveRecord::Rollout::Feature"
   end
 
-  def rollout?(rollout_name, &block)
-    rollout = ActiveRecord::Rollout.find_by_name(rollout_name)
-    return false unless rollout
+  def feature?(feature_name, &block)
+    feature = ActiveRecord::Rollout::Feature.find_by_name(feature_name)
+    return false unless feature
 
-    opt_out = opt_outs.find_by_rollout_id(rollout.id)
+    opt_out = opt_outs.find_by_feature_id(feature.id)
     return false if opt_out
 
-    match = rollout.match? self
+    match = feature.match? self
 
     if match && block_given?
       begin
         block.call
       rescue => e
-        rollout.increment! :failure_count
+        feature.increment! :failure_count
         raise e
       end
     else
