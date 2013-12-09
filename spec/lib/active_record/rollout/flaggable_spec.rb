@@ -18,23 +18,35 @@ describe ActiveRecord::Rollout::Flaggable do
 
         it "calls the block" do
           foo = "foo"
+          user.rollout?(:bar) { foo = "bar" }
+          foo.should eq "bar"
+        end
 
-          user.rollout? :bar do
-            foo = "bar"
+        context "when the block raises an exception" do
+          it "increments the failure_count of the rollout" do
+            begin
+              user.rollout? :bar do
+                raise "This is an exception"
+              end
+            rescue
+              rollout.reload.failure_count.should eq 1
+            end
           end
 
-          foo.should eq "bar"
+          it "raises the exception" do
+            expect do
+              user.rollout? :bar do
+                raise "This is an exception"
+              end
+            end.to raise_error "This is an exception"
+          end
         end
       end
 
       context "and the user is not flagged in" do
         it "does not call the block" do
           foo = "foo"
-
-          user.rollout? :bar do
-            foo = "bar"
-          end
-
+          user.rollout?(:bar) { foo = "bar" }
           foo.should eq "foo"
         end
       end

@@ -2,6 +2,7 @@ class ActiveRecordRolloutMigration < ActiveRecord::Migration
   def change
     create_table :active_record_rollouts do |t|
       t.string :name
+      t.integer :failure_count, default: 0
       t.timestamps
     end
 

@@ -23,7 +23,12 @@ module ActiveRecord::Rollout::Flaggable
     match = rollout.match? self
 
     if match && block_given?
-      block.call
+      begin
+        block.call
+      rescue => e
+        rollout.increment! :failure_count
+        raise e
+      end
     else
       match
     end
