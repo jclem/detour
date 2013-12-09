@@ -1,10 +1,9 @@
-require "active_record/rollout/version"
-require "active_record/rollout/flag"
-require "active_record/rollout/flaggable"
-require "active_record/rollout/opt_out"
+require "active_record"
 
 class ActiveRecord::Rollout < ActiveRecord::Base
   @@defined_groups = {}
+
+  VERSION = "0.0.1"
 
   self.table_name = :active_record_rollouts
 
@@ -83,3 +82,7 @@ class ActiveRecord::Rollout < ActiveRecord::Base
     end
   end
 end
+
+require "active_record/rollout/flag"
+require "active_record/rollout/flaggable"
+require "active_record/rollout/opt_out"
