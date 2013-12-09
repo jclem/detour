@@ -20,6 +20,7 @@ class ActiveRecordRolloutMigration < ActiveRecord::Migration
 
     add_index :active_record_rollout_flags, :rollout_id
     add_index :active_record_rollout_flags, :group_type
+    add_index :active_record_rollout_flags, :percentage_type
     add_index :active_record_rollout_flags, :percentage
     add_index :active_record_rollout_flags, :flag_subject_id
     add_index :active_record_rollout_flags, :flag_subject_type
