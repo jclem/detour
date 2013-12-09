@@ -54,6 +54,36 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
       feature.flags.where(flag_subject_type: record.class, flag_subject_id: record.id).destroy_all
     end
 
+    def opt_record_out_of_feature(record, feature_name)
+      feature = find_by_name!(feature_name)
+      feature.opt_outs.create!(opt_out_subject_type: record.class.to_s, opt_out_subject_id: record.id)
+    end
+
+    def un_opt_record_out_of_feature(record, feature_name)
+      feature = find_by_name!(feature_name)
+      feature.opt_outs.where(opt_out_subject_type: record.class.to_s, opt_out_subject_id: record.id).destroy_all
+    end
+
+    def add_group_to_feature(group_type, group_name, feature_name)
+      feature = find_by_name!(feature_name)
+      feature.flags.create!(group_type: group_type, group_name: group_name)
+    end
+
+    def remove_group_from_feature(group_type, group_name, feature_name)
+      feature = find_by_name!(feature_name)
+      feature.flags.where(group_type: group_type, group_name: group_name).destroy_all
+    end
+
+    def add_percentage_to_feature(percentage_type, percentage, feature_name)
+      feature = find_by_name!(feature_name)
+      feature.flags.create!(percentage_type: percentage_type, percentage: percentage)
+    end
+
+    def remove_percentage_from_feature(percentage_type, feature_name)
+      feature = find_by_name!(feature_name)
+      feature.flags.where(percentage_type: percentage_type).destroy_all
+    end
+
     def define_group_for_class(klass, group_name, &block)
       @@defined_groups[klass] ||= {}
       @@defined_groups[klass][group_name] = block

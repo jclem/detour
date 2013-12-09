@@ -41,6 +41,89 @@ describe ActiveRecord::Rollout::Feature do
     end
   end
 
+  describe ".opt_record_out_of_feature" do
+    let(:user) { User.create }
+    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+
+    before do
+      ActiveRecord::Rollout::Feature.add_percentage_to_feature "User", 100, "foo"
+      ActiveRecord::Rollout::Feature.opt_record_out_of_feature user, "foo"
+    end
+
+    it "opts the record out of the feature" do
+      user.feature?("foo").should be_false
+    end
+  end
+
+  describe ".un_opt_record_out_of_feature" do
+    let(:user) { User.create }
+    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+
+    before do
+      ActiveRecord::Rollout::Feature.add_percentage_to_feature "User", 100, "foo"
+      ActiveRecord::Rollout::Feature.opt_record_out_of_feature user, "foo"
+      ActiveRecord::Rollout::Feature.un_opt_record_out_of_feature user, "foo"
+    end
+
+    it "opts the record out of the feature" do
+      user.feature?("foo").should be_true
+    end
+  end
+
+  describe ".add_group_to_feature" do
+    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+
+    before do
+      ActiveRecord::Rollout::Feature.define_user_group :bar do
+      end
+      ActiveRecord::Rollout::Feature.add_group_to_feature "User", :bar, "foo"
+    end
+
+    it "creates a flag for the given group and feature" do
+      feature.flags.where(group_type: "User", group_name: "bar").first.should_not be_nil
+    end
+  end
+
+  describe ".remove_group_from_feature" do
+    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+
+    before do
+      ActiveRecord::Rollout::Feature.define_user_group :bar do
+      end
+      ActiveRecord::Rollout::Feature.add_group_to_feature "User", :bar, "foo"
+      ActiveRecord::Rollout::Feature.remove_group_from_feature "User", :bar, "foo"
+    end
+
+    it "destroys flags for the given group and feature" do
+      feature.flags.where(group_type: "User", group_name: "bar").first.should be_nil
+    end
+  end
+
+  describe ".add_percentage_to_feature" do
+    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+
+    before do
+      ActiveRecord::Rollout::Feature.add_percentage_to_feature "User", 50, "foo"
+    end
+
+    it "creates a flag for the given percentage and feature" do
+      feature.flags.where(percentage_type: "User", percentage: 50).first.should_not be_nil
+    end
+  end
+
+  describe ".remove_percentage_from_feature" do
+    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+
+    before do
+      ActiveRecord::Rollout::Feature.add_percentage_to_feature "User", 50, "foo"
+      ActiveRecord::Rollout::Feature.remove_percentage_from_feature "User", "foo"
+    end
+
+    it "creates a flag for the given percentage and feature" do
+      feature.flags.where(percentage_type: "User").first.should be_nil
+    end
+  end
+
   describe ".define_group_for_class" do
     let(:block) { Proc.new {} }
     before do
