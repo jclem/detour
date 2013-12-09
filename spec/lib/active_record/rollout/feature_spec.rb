@@ -127,7 +127,7 @@ describe ActiveRecord::Rollout::Feature do
   describe ".define_group_for_class" do
     let(:block) { Proc.new {} }
     before do
-      ActiveRecord::Rollout::Feature.define_group_for_class "User", "user_id_1", &block
+      ActiveRecord::Rollout::Feature.send :define_group_for_class, "User", "user_id_1", &block
     end
 
     it "defines a group for the given class" do

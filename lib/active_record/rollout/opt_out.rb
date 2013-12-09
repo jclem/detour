@@ -1,3 +1,5 @@
+# Ensures that a feature will never be available to the associated record,
+# even in the case of, for example, a 100% flag.
 class ActiveRecord::Rollout::OptOut < ActiveRecord::Base
   self.table_name = :active_record_rollout_opt_outs
 
