@@ -73,7 +73,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
       create_flag_from_instance(args[0], args[1])
     elsif method =~ /^remove_.*/
       remove_flag_from_instance(args[0], args[1])
-    elsif /^define_(?<klass>[a-z]+)_group/ =~ method
+    elsif /^define_(?<klass>[a-z0-9_]+)_group/ =~ method
       define_group_for_class(klass.classify, args[0], &block)
     else
       super
