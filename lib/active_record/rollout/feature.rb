@@ -29,7 +29,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     group_names = flags.where("group_type = ? AND group_name IS NOT NULL", klass).collect(&:group_name)
 
     self.class.defined_groups[klass].select { |key, value|
-      group_names.include? key
+      group_names.map.include? key.to_s
     }.collect { |key, value|
       value.call(instance)
     }.any?
