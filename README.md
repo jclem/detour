@@ -1,12 +1,12 @@
 # ActiveRecord::Rollout
 
-Rollouts for `ActiveRecord` models.
+Rollouts for `ActiveRecord` models. It is a spiritual fork of [ArRollout](https://github.com/markpundsack/ar_rollout).
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'active_record_rollout'
+    gem 'active_record_rollout', require: 'active_record/rollout'
 
 And then execute:
 

@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Jonathan Clem"]
   spec.email         = ["jonathan@heroku.com"]
   spec.summary       = %q{Rollouts (feature flags) for ActiveRecord models.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.description   = %q{Rollouts (feature flags) for ActiveRecord models.}
+  spec.homepage      = "https://github.com/jclem/active_record_rollout"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
