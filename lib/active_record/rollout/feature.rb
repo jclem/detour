@@ -9,10 +9,10 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
 
   def match?(instance)
-    match_instance?(instance) || match_percentage?(instance) || match_groups?(instance)
+    match_id?(instance) || match_percentage?(instance) || match_groups?(instance)
   end
 
-  def match_instance?(instance)
+  def match_id?(instance)
     flags.where(flag_subject_type: instance.class, flag_subject_id: instance.id).any?
   end
 

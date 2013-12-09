@@ -75,7 +75,7 @@ describe ActiveRecord::Rollout::Feature do
     let(:feature) { ActiveRecord::Rollout::Feature.create(name: "foo") }
 
     it "checks if the user is flagged individually" do
-      feature.should_receive(:match_instance?).with(user)
+      feature.should_receive(:match_id?).with(user)
       feature.match?(user)
     end
 
@@ -90,7 +90,7 @@ describe ActiveRecord::Rollout::Feature do
     end
   end
 
-  describe "#match_instance?" do
+  describe "#match_id?" do
     let(:user) { User.create }
     let(:user2) { User.create }
     let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
@@ -101,13 +101,13 @@ describe ActiveRecord::Rollout::Feature do
 
     context "when the feature exists for the instance" do
       it "returns true" do
-        feature.match_instance?(user).should be_true
+        feature.match_id?(user).should be_true
       end
     end
 
     context "when the feature does not exist for the instance" do
       it "returns false" do
-        feature.match_instance?(user2).should be_false
+        feature.match_id?(user2).should be_false
       end
     end
   end
