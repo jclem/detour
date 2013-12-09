@@ -14,10 +14,10 @@ module ActiveRecord::Rollout::Flaggable
   end
 
   def rollout?(rollout_name, &block)
-    rollout = ActiveRecord::Rollout.find_by(name: rollout_name)
+    rollout = ActiveRecord::Rollout.find_by_name(rollout_name)
     return false unless rollout
 
-    opt_out = opt_outs.find_by(rollout: rollout)
+    opt_out = opt_outs.find_by_rollout_id(rollout.id)
     return false if opt_out
 
     match = rollout.match? self

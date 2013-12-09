@@ -1,4 +1,3 @@
-require "spec_helper"
 require "active_record/rollout/version"
 require "active_record/rollout/flag"
 require "active_record/rollout/flaggable"
@@ -19,11 +18,11 @@ class ActiveRecord::Rollout < ActiveRecord::Base
   end
 
   def match_instance?(instance)
-    flags.where(flag_subject: instance).any?
+    flags.where(flag_subject_type: instance.class, flag_subject_id: instance.id).any?
   end
 
   def match_percentage?(instance)
-    percentage = flags.find_by("percentage_type = ? AND percentage IS NOT NULL", instance.class).try(:percentage)
+    percentage = flags.where("percentage_type = ? AND percentage IS NOT NULL", instance.class.to_s).first.try(:percentage)
     instance.id % 10 < (percentage || 0) / 10
   end
 
@@ -49,18 +48,22 @@ class ActiveRecord::Rollout < ActiveRecord::Base
     end
   end
 
+  def self.configure(&block)
+    yield self
+  end
+
   def self.defined_groups
     @@defined_groups
   end
 
   def self.create_flag_from_instance(instance, flag_name)
-    rollout = ActiveRecord::Rollout.find_by!(name: flag_name)
+    rollout = ActiveRecord::Rollout.find_by_name!(flag_name)
     rollout.flags.create!(flag_subject: instance)
   end
 
   def self.remove_flag_from_instance(instance, flag_name)
-    rollout = ActiveRecord::Rollout.find_by!(name: flag_name)
-    rollout.flags.where(flag_subject: instance).destroy_all
+    rollout = ActiveRecord::Rollout.find_by_name!(flag_name)
+    rollout.flags.where(flag_subject_type: instance.class, flag_subject_id: instance.id).destroy_all
   end
 
   def self.define_group_for_class(klass, group_name, &block)
