@@ -2,6 +2,7 @@ require "spec_helper"
 require "active_record/rollout/version"
 require "active_record/rollout/flag"
 require "active_record/rollout/flaggable"
+require "active_record/rollout/opt_out"
 
 class ActiveRecord::Rollout < ActiveRecord::Base
   @@defined_groups = {}
@@ -9,6 +10,7 @@ class ActiveRecord::Rollout < ActiveRecord::Base
   self.table_name = :active_record_rollouts
 
   has_many :flags, dependent: :destroy
+  has_many :opt_outs, dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
 

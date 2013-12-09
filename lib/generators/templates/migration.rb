@@ -22,7 +22,15 @@ class ActiveRecordRolloutMigration < ActiveRecord::Migration
     add_index :active_record_rollout_flags, :group_type
     add_index :active_record_rollout_flags, :percentage_type
     add_index :active_record_rollout_flags, :percentage
-    add_index :active_record_rollout_flags, :flag_subject_id
-    add_index :active_record_rollout_flags, :flag_subject_type
+    add_index :active_record_rollout_flags, [:flag_subject_id, :flag_subject_type], name: :flag_subject_index
+
+    create_table :active_record_rollout_opt_outs do |t|
+      t.integer :rollout_id
+      t.integer :opt_out_subject_id
+      t.string  :opt_out_subject_type
+      t.timestamps
+    end
+
+    add_index :active_record_rollout_opt_outs, [:opt_out_subject_id, :opt_out_subject_type], name: :opt_out_subject_index
   end
 end
