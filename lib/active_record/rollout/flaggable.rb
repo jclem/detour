@@ -13,13 +13,19 @@ module ActiveRecord::Rollout::Flaggable
       class_name: "ActiveRecord::Rollout"
   end
 
-  def rollout?(rollout_name)
+  def rollout?(rollout_name, &block)
     rollout = ActiveRecord::Rollout.find_by(name: rollout_name)
     return false unless rollout
 
     opt_out = opt_outs.find_by(rollout: rollout)
     return false if opt_out
 
-    rollout.match? self
+    match = rollout.match? self
+
+    if match && block_given?
+      block.call
+    else
+      match
+    end
   end
 end

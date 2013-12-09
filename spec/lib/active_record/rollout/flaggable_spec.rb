@@ -10,6 +10,36 @@ describe ActiveRecord::Rollout::Flaggable do
     let(:user) { User.create(name: "foo") }
     let(:rollout) { ActiveRecord::Rollout.create(name: "bar") }
 
+    context "when given a block" do
+      context "and the user is flagged in" do
+        before do
+          rollout.flags.create(flag_subject: user)
+        end
+
+        it "calls the block" do
+          foo = "foo"
+
+          user.rollout? :bar do
+            foo = "bar"
+          end
+
+          foo.should eq "bar"
+        end
+      end
+
+      context "and the user is not flagged in" do
+        it "does not call the block" do
+          foo = "foo"
+
+          user.rollout? :bar do
+            foo = "bar"
+          end
+
+          foo.should eq "foo"
+        end
+      end
+    end
+
     context "when the user is not flagged in" do
       it "returns false" do
         user.rollout?(:bar).should be_false
