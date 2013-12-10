@@ -54,13 +54,13 @@ module ActiveRecord::Rollout::Flaggable
 
     if match && block_given?
       begin
-        block.call
+        yield
       rescue => e
         feature.increment! :failure_count
         raise e
       end
-    else
-      match
     end
+
+    match
   end
 end

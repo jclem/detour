@@ -23,6 +23,17 @@ describe ActiveRecord::Rollout::Flaggable do
           foo.should eq "bar"
         end
 
+        it "returns the match" do
+          foo = "foo"
+
+          if user.has_feature? :not_feature do
+          end; else
+            foo = "bar"
+          end
+
+          foo.should eq "bar"
+        end
+
         context "when the block raises an exception" do
           it "increments the failure_count of the feature" do
             begin

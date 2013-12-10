@@ -66,6 +66,17 @@ if current_user.has_feature? :new_user_interface
 end
 ```
 
+Want to make use of both? `#has_feature?` returns a boolean even when passed
+a block:
+
+```ruby
+if current_user.has_feature? :new_user_interface do
+  render_new_user_interface
+end; else
+  render_old_user_interface
+end
+```
+
 ### Feature operations
 
 Features and flags are intended to be controlled by a rake tasks. To create
