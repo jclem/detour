@@ -2,8 +2,11 @@ require "active_record"
 require "active_record/rollout/version"
 require "active_record/rollout/feature"
 require "active_record/rollout/flag"
+require "active_record/rollout/flaggable_flag"
+require "active_record/rollout/group_flag"
+require "active_record/rollout/percentage_flag"
+require "active_record/rollout/opt_out_flag"
 require "active_record/rollout/flaggable"
-require "active_record/rollout/opt_out"
 
 class ActiveRecord::Rollout
   # Allows for configuration of ActiveRecord::Rollout::Feature, mostly intended
