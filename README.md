@@ -2,10 +2,6 @@
 
 Rollouts for `ActiveRecord` models. It is a spiritual fork of [ArRollout](https://github.com/markpundsack/ar_rollout).
 
-| Development | Master |
-| ----------- | ------ |
-| [![development status][dev_build_status_image]][dev_build_status] | [![master_status][master_build_status_image]][master_build_status] |
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -205,8 +201,3 @@ end
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
-
-[dev_build_status_image]: https://circleci.com/gh/jclem/active_record_rollout/tree/development.png?circle-token=3f20863058c16d2159b8ab2ee1b0c7ac1af5b3e9
-[dev_build_status]: https://circleci.com/gh/jclem/active_record_rollout/tree/development
-[master_build_status_image]: https://circleci.com/gh/jclem/active_record_rollout/tree/master.png?circle-token=3f20863058c16d2159b8ab2ee1b0c7ac1af5b3e9
-[master_build_status]: https://circleci.com/gh/jclem/active_record_rollout/tree/master
