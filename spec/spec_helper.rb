@@ -7,11 +7,11 @@ require "support/shared_contexts/rake"
 require "pry"
 
 class User < ActiveRecord::Base
-  include ActiveRecord::Rollout::Flaggable
+  acts_as_flaggable
 end
 
 class Organization < ActiveRecord::Base
-  include ActiveRecord::Rollout::Flaggable
+  acts_as_flaggable
 end
 
 RSpec.configure do |config|

@@ -3,10 +3,6 @@ require "spec_helper"
 describe ActiveRecord::Rollout::Flaggable do
   subject { User.new }
 
-  it { should have_many :flaggable_flags }
-  it { should have_many :opt_out_flags }
-  it { should have_many(:features).through(:flaggable_flags) }
-
   describe "#has_feature?" do
     let(:user) { User.create(name: "foo") }
     let(:feature) { ActiveRecord::Rollout::Feature.create(name: "bar") }

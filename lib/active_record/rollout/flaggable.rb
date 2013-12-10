@@ -1,26 +1,4 @@
-# Can be included in an `ActiveRecord::Base` so that features can be rolled out
-# to records of the class.
-#
-# @example
-#   class User < ActiveRecord::Base
-#     include ActiveRecord::Rollout::Flaggable
-#   end
 module ActiveRecord::Rollout::Flaggable
-  # Sets up ActiveRecord associations for the including class.
-  def self.included(klass)
-    klass.has_many :flaggable_flags,
-      as: :flaggable,
-      class_name: "ActiveRecord::Rollout::FlaggableFlag"
-
-    klass.has_many :opt_out_flags,
-      as: :flaggable,
-      class_name: "ActiveRecord::Rollout::OptOutFlag"
-
-    klass.has_many :features,
-      through: :flaggable_flags,
-      class_name: "ActiveRecord::Rollout::Feature"
-  end
-
   # Returns whether or not the object has access to the given feature. If given
   # a block, it will call the block if the user has access to the feature.
   #

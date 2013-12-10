@@ -34,7 +34,7 @@ percentage of records, or flags for a programmable group of records.
 
 ```ruby
 class User < ActiveRecord::Base
-  include ActiveRecord::Rollout::Flaggable
+  acts_as_flaggable
 end
 ```
 
