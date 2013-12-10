@@ -2,6 +2,10 @@
 
 Rollouts for `ActiveRecord` models. It is a spiritual fork of [ArRollout](https://github.com/markpundsack/ar_rollout).
 
+| Development | Master |
+| ----------- | ------ |
+| ![CircleCI development status](https://circleci.com/gh/jclem/active_record_rollout/tree/development.png?circle-token=3f20863058c16d2159b8ab2ee1b0c7ac1af5b3e9) | ![CircleCI master status](https://circleci.com/gh/jclem/active_record_rollout/tree/master.png?circle-token=3f20863058c16d2159b8ab2ee1b0c7ac1af5b3e9) |
+
 ## Installation
 
 Add this line to your application's Gemfile:
