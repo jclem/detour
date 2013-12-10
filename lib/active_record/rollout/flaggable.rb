@@ -32,13 +32,21 @@ module ActiveRecord::Rollout::Flaggable
   # @param [Proc] &block A block to be called if the user is flagged in to the
   #   feature.
   def has_feature?(feature_name, &block)
-    feature = ActiveRecord::Rollout::Feature.find_by_name(feature_name)
-    return false unless feature
+    if active_record_rollout_features.include? feature_name.to_s
+      match = true
+    else
+      feature = ActiveRecord::Rollout::Feature.find_by_name(feature_name)
+      return false unless feature
 
-    opt_out = opt_out_flags.find_by_feature_id(feature.id)
-    return false if opt_out
+      opt_out = opt_out_flags.find_by_feature_id(feature.id)
+      return false if opt_out
 
-    match = feature.match? self
+      match = feature.match? self
+
+      if match
+        active_record_rollout_features << feature.name.to_s
+      end
+    end
 
     if match && block_given?
       begin
@@ -50,5 +58,9 @@ module ActiveRecord::Rollout::Flaggable
     end
 
     match
+  end
+
+  def active_record_rollout_features
+    @active_record_rollout_features ||= []
   end
 end

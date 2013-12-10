@@ -27,6 +27,17 @@ describe ActiveRecord::Rollout::Flaggable do
     let(:user) { User.create(name: "foo") }
     let(:feature) { ActiveRecord::Rollout::Feature.create(name: "bar") }
 
+    it "memoizes found features" do
+      ActiveRecord::Rollout::Feature.stub(:find_by_name) { feature }
+      feature.flaggable_flags.create(flaggable: user)
+
+      feature.should_receive(:match?).with(user).and_return(true)
+      user.has_feature?(:bar)
+
+      feature.should_not_receive(:match?).with(user)
+      user.has_feature?(:bar)
+    end
+
     context "when given a block" do
       context "and the user is flagged in" do
         before do
