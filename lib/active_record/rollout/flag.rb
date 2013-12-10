@@ -5,6 +5,9 @@ class ActiveRecord::Rollout::Flag < ActiveRecord::Base
   self.table_name = :active_record_rollout_flags
 
   belongs_to :feature
+
   validates :feature_id, presence: true
   validates :flaggable_type, presence: true
+
+  attr_accessible :flaggable_type
 end

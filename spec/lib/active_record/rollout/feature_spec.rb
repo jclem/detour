@@ -8,6 +8,7 @@ describe ActiveRecord::Rollout::Feature do
   it { should have_many(:flags).dependent(:destroy) }
   it { should validate_presence_of :name }
   it { should validate_uniqueness_of :name }
+  it { should allow_mass_assignment_of :name }
 
   describe ".define_{klass}_group" do
     let(:block) { Proc.new {} }

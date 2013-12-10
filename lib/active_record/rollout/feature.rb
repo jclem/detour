@@ -14,6 +14,8 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
 
+  attr_accessible :name
+
   # Determines whether or not the given instance has had the feature rolled out
   # to it either via direct flagging-in, percentage, or by group membership.
   #
@@ -135,7 +137,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     #   {ActiveRecord::Rollout::OptOut OptOut} created.
     def opt_record_out_of_feature(record, feature_name)
       feature = find_by_name!(feature_name)
-      feature.opt_out_flags.create!(flaggable_type: record.class.to_s, flaggable_id: record.id)
+      feature.opt_out_flags.create!(flaggable: record)
     end
 
     # Remove any opt out for the given record out of a feature. If the feature

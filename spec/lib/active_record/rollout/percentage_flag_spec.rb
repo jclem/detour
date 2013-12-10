@@ -5,4 +5,5 @@ describe ActiveRecord::Rollout::PercentageFlag do
 
   it { should be_a ActiveRecord::Rollout::Flag }
   it { should validate_numericality_of(:percentage).is_greater_than(0).is_less_than_or_equal_to(100) }
+  it { should allow_mass_assignment_of :percentage }
 end

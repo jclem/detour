@@ -63,7 +63,7 @@ describe ActiveRecord::Rollout::Flaggable do
       context "and the user is opted out" do
         before do
           feature.flaggable_flags.create(flaggable: user)
-          user.opt_out_flags.create(feature: feature)
+          feature.opt_out_flags.create(flaggable: user)
         end
 
         it "returns false" do
