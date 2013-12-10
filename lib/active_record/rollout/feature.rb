@@ -85,11 +85,6 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
   end
 
   class << self
-    # TODO: Remove me.
-    def configure(&block)
-      yield self
-    end
-
     # Returns the defined groups.
     def defined_groups
       @@defined_groups
