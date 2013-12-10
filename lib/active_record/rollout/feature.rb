@@ -77,12 +77,10 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
 
     return unless self.class.defined_groups[klass]
 
-    group_names = group_flags.where("flaggable_type = ?", klass).collect(&:group_name)
+    group_names = group_flags.find_all_by_flaggable_type(klass).collect(&:group_name)
 
-    self.class.defined_groups[klass].select { |key, value|
-      group_names.map.include? key.to_s
-    }.collect { |key, value|
-      value.call(instance)
+    self.class.defined_groups[klass].collect { |group_name, block|
+      block.call(instance) if group_names.include? group_name
     }.any?
   end
 
