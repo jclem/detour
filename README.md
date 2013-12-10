@@ -2,6 +2,14 @@
 
 Rollouts for `ActiveRecord` models. It is a spiritual fork of [ArRollout](https://github.com/markpundsack/ar_rollout).
 
+| development status | master status |
+| ------------------ | ------------- |
+| [![development status][dev_image]][branch_status] | [![master status][master_image]][branch_status] |
+
+[dev_image]: https://api.travis-ci.org/jclem/active_record_rollout.png?branch=development
+[master_image]: https://api.travis-ci.org/jclem/active_record_rollout.png?branch=master
+[branch_status]: https://travis-ci.org/jclem/active_record_rollout/branches
+
 ## Installation
 
 Add this line to your application's Gemfile:
