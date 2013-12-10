@@ -1,7 +1,9 @@
+require "rails"
 require "active_record"
 require "active_record/rollout"
 require "shoulda-matchers"
 require "generators/templates/migration"
+require "support/shared_contexts/rake"
 require "pry"
 
 class User < ActiveRecord::Base
