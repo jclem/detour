@@ -2,7 +2,7 @@
 # via individual flags, percentages, or defined groups.
 class ActiveRecord::Rollout::Feature < ActiveRecord::Base
   # A hash representing the groups that have been defined.
-  @@defined_groups = {}
+  @defined_groups = {}
 
   self.table_name = :active_record_rollout_features
 
@@ -89,7 +89,17 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
   class << self
     # Returns the defined groups.
     def defined_groups
-      @@defined_groups
+      @defined_groups
+    end
+
+    # Returns the default flaggable class.
+    def default_flaggable_class_name
+      @default_flaggable_class_name
+    end
+
+    # Sets the default flaggable class.
+    def default_flaggable_class_name=(klass)
+      @default_flaggable_class_name = klass
     end
 
     # Add a record to the given feature. If the feature is not found, an
@@ -243,8 +253,8 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     private
 
     def define_group_for_class(klass, group_name, &block)
-      @@defined_groups[klass] ||= {}
-      @@defined_groups[klass][group_name] = block
+      @defined_groups[klass] ||= {}
+      @defined_groups[klass][group_name] = block
     end
   end
 end

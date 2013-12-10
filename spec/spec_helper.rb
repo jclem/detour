@@ -34,6 +34,7 @@ RSpec.configure do |config|
   end
 
   config.after :each do
-    ActiveRecord::Rollout::Feature.class_variable_set "@@defined_groups", {}
+    ActiveRecord::Rollout::Feature.instance_variable_set "@defined_groups", {}
+    ActiveRecord::Rollout::Feature.instance_variable_set "@default_flaggable_class_name", nil
   end
 end

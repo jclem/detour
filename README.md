@@ -188,6 +188,24 @@ This task requires passing the feature name, and the record class for the group.
 $ bundle exec rake rollout:deactivate_percentage[new_ui,User]
 ```
 
+### Defining a default class
+
+In order to provide passing a class name into rake tasks, a default class can
+be set:
+
+```ruby
+ActiveRecord::Rollout.configure do |config|
+  config.default_flaggable_class_name = "User"
+end
+```
+
+Then, in your rake tasks:
+
+```sh
+# Will activate feature "foo" for all instances of User that match the admins group.
+$ bundle exec rake rollout:activate_group[foo,admins]
+```
+
 ### Defining programmatic groups
 
 A specific group of records matching a given block can be flagged into a
