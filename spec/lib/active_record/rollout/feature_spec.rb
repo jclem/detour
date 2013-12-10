@@ -1,8 +1,11 @@
 require "spec_helper"
 
 describe ActiveRecord::Rollout::Feature do
+  it { should have_many(:flaggable_flags) }
+  it { should have_many(:group_flags) }
+  it { should have_many(:percentage_flags) }
+  it { should have_many(:opt_out_flags) }
   it { should have_many(:flags).dependent(:destroy) }
-  it { should have_many(:opt_outs).dependent(:destroy) }
   it { should validate_presence_of :name }
   it { should validate_uniqueness_of :name }
 
@@ -80,7 +83,7 @@ describe ActiveRecord::Rollout::Feature do
     end
 
     it "creates a flag for the given group and feature" do
-      feature.flags.where(group_type: "User", group_name: "bar").first.should_not be_nil
+      feature.group_flags.where(flaggable_type: "User", group_name: "bar").first.should_not be_nil
     end
   end
 
@@ -95,7 +98,7 @@ describe ActiveRecord::Rollout::Feature do
     end
 
     it "destroys flags for the given group and feature" do
-      feature.flags.where(group_type: "User", group_name: "bar").first.should be_nil
+      feature.group_flags.where(flaggable_type: "User", group_name: "bar").first.should be_nil
     end
   end
 
@@ -107,7 +110,7 @@ describe ActiveRecord::Rollout::Feature do
     end
 
     it "creates a flag for the given percentage and feature" do
-      feature.flags.where(percentage_type: "User", percentage: 50).first.should_not be_nil
+      feature.percentage_flags.where(flaggable_type: "User", percentage: 50).first.should_not be_nil
     end
   end
 
@@ -120,7 +123,7 @@ describe ActiveRecord::Rollout::Feature do
     end
 
     it "creates a flag for the given percentage and feature" do
-      feature.flags.where(percentage_type: "User").first.should be_nil
+      feature.percentage_flags.where(flaggable_type: "User").first.should be_nil
     end
   end
 
@@ -180,7 +183,7 @@ describe ActiveRecord::Rollout::Feature do
   describe "#match_percentage?" do
     let(:user) { User.create }
     let(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
-    let!(:flag) { feature.flags.create(percentage_type: "User", percentage: 50) }
+    let!(:flag) { feature.percentage_flags.create(flaggable_type: "User", percentage: 50) }
 
     context "when the user's ID matches `id % 10 < percentage / 10" do
       it "returns true" do
@@ -202,7 +205,7 @@ describe ActiveRecord::Rollout::Feature do
     let!(:user2) { User.create(name: "bar") }
     let!(:organization) { Organization.create(name: "foo") }
     let(:feature) { ActiveRecord::Rollout::Feature.create!(name: "baz") }
-    let!(:flag) { feature.flags.create(group_type: "User", group_name: "foo_users") }
+    let!(:flag) { feature.group_flags.create(flaggable_type: "User", group_name: "foo_users") }
 
     before do
       ActiveRecord::Rollout::Feature.define_user_group "foo_users" do |user|

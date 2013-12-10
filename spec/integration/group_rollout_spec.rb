@@ -3,7 +3,7 @@ require "spec_helper"
 describe "group rollouts" do
   let(:user) { User.create(name: "foo") }
   let(:feature) { ActiveRecord::Rollout::Feature.create(name: "foo") }
-  let!(:flag) { feature.flags.create(group_type: "User", group_name: "foo_users") }
+  let!(:flag) { feature.group_flags.create(flaggable_type: "User", group_name: "foo_users") }
 
   describe "creating a group rollout" do
     before do

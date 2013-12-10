@@ -2,9 +2,10 @@ require "spec_helper"
 
 describe ActiveRecord::Rollout::Flaggable do
   subject { User.new }
-  it { should have_many :flags }
-  it { should have_many :features }
-  it { should have_many :opt_outs }
+
+  it { should have_many :flaggable_flags }
+  it { should have_many :opt_out_flags }
+  it { should have_many(:features).through(:flaggable_flags) }
 
   describe "#feature?" do
     let(:user) { User.create(name: "foo") }
@@ -13,7 +14,7 @@ describe ActiveRecord::Rollout::Flaggable do
     context "when given a block" do
       context "and the user is flagged in" do
         before do
-          feature.flags.create(flag_subject: user)
+          feature.flaggable_flags.create(flaggable: user)
         end
 
         it "calls the block" do
@@ -61,8 +62,8 @@ describe ActiveRecord::Rollout::Flaggable do
     context "when the user is flagged in" do
       context "and the user is opted out" do
         before do
-          feature.flags.create(flag_subject: user)
-          user.opt_outs.create(feature: feature)
+          feature.flaggable_flags.create(flaggable: user)
+          user.opt_out_flags.create(feature: feature)
         end
 
         it "returns false" do
@@ -73,7 +74,7 @@ describe ActiveRecord::Rollout::Flaggable do
       context "and the user is not opted out" do
         context "and the user is flagged in individually" do
           before do
-            feature.flags.create(flag_subject: user)
+            feature.flaggable_flags.create(flaggable: user)
           end
 
           it "returns true" do
@@ -83,7 +84,7 @@ describe ActiveRecord::Rollout::Flaggable do
 
         context "and the user is flagged in as a percentage" do
           before do
-            feature.flags.create(percentage_type: "User", percentage: 100)
+            feature.percentage_flags.create(flaggable_type: "User", percentage: 100)
           end
 
           it "returns true" do
@@ -97,7 +98,7 @@ describe ActiveRecord::Rollout::Flaggable do
               user.name == "foo"
             end
 
-            feature.flags.create(group_type: "User", group_name: "name_foo")
+            feature.group_flags.create(flaggable_type: "User", group_name: "name_foo")
           end
 
           it "returns true" do
