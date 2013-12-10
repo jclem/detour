@@ -1,4 +1,15 @@
 namespace :rollout do
+  desc "Create a feature"
+  task :create, [:feature] => :environment do |task, args|
+    ActiveRecord::Rollout::Feature.find_or_create_by_name! args[:feature]
+  end
+
+  desc "Destroy a feature"
+  task :destroy, [:feature] => :environment do |task, args|
+    feature = ActiveRecord::Rollout::Feature.find_by_name! args[:feature]
+    feature.destroy
+  end
+
   desc "Activate a feature for a record"
   task :activate, [:feature, :flaggable_type, :flaggable_id] => :environment do |task, args|
     record = args[:flaggable_type].constantize.find args[:flaggable_id]

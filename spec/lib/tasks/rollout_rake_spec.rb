@@ -1,5 +1,26 @@
 require "spec_helper"
 
+describe "rollout:create" do
+  include_context "rake"
+
+  it "creates the given feature" do
+    ActiveRecord::Rollout::Feature.should_receive(:find_or_create_by_name!).with("foo")
+    subject.invoke("foo")
+  end
+end
+
+describe "rollout:destroy" do
+  include_context "rake"
+
+  let(:feature) { ActiveRecord::Rollout::Feature.create(name: "foo") }
+
+  it "destroys the given feature" do
+    ActiveRecord::Rollout::Feature.should_receive(:find_by_name!).with(feature.name).and_return(feature)
+    feature.should_receive(:destroy)
+    subject.invoke("foo")
+  end
+end
+
 describe "rollout:activate" do
   include_context "rake"
 
