@@ -38,6 +38,14 @@ class User < ActiveRecord::Base
 end
 ```
 
+Or, in order to user emails rather than IDs to identify records in rake tasks:
+
+```ruby
+class User < ActiveRecord::Base
+  acts_as_flaggable find_by: :email
+end
+```
+
 This module adds `has_many` associations to `User` for `flaggable_flags` (where
 the user has been individually flagged into a feature), `opt_out_flags` (where
 the user has been opted out of a feature), and `features` (the features that

@@ -3,6 +3,26 @@ require "spec_helper"
 describe ActiveRecord::Rollout::Flaggable do
   subject { User.new }
 
+  describe "#flaggable_find!" do
+    context "when a non-default find_by is not specified" do
+      it "finds by id" do
+        User.should_receive(:find_by_id!).with(1)
+        User.flaggable_find!(1)
+      end
+    end
+
+    context "when a non-default find_by is not specified" do
+      class Foo < ActiveRecord::Base
+        acts_as_flaggable find_by: :email
+      end
+
+      it "finds by id" do
+        Foo.should_receive(:find_by_email!).with("user@example.com")
+        Foo.flaggable_find!("user@example.com")
+      end
+    end
+  end
+
   describe "#has_feature?" do
     let(:user) { User.create(name: "foo") }
     let(:feature) { ActiveRecord::Rollout::Feature.create(name: "bar") }

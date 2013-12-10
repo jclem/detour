@@ -1,4 +1,14 @@
 module ActiveRecord::Rollout::Flaggable
+  module ClassMethods
+    # Finds a record by the field set by the :find_by param in
+    # `acts_as_flaggable`. If no :find_by param was provided, :id is used.
+    #
+    # @param [String,Integer] value The value to find the record by.
+    def flaggable_find!(value)
+      send("find_by_#{@active_record_rollout_flaggable_find_by}!", value)
+    end
+  end
+
   # Returns whether or not the object has access to the given feature. If given
   # a block, it will call the block if the user has access to the feature.
   #
