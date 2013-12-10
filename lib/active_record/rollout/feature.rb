@@ -216,7 +216,9 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     #   {ActiveRecord::Rollout::Flag Flag} created.
     def add_percentage_to_feature(flaggable_type, percentage, feature_name)
       feature = find_by_name!(feature_name)
-      feature.percentage_flags.create!(flaggable_type: flaggable_type, percentage: percentage)
+
+      flag = feature.percentage_flags.where(flaggable_type: flaggable_type).first_or_initialize
+      flag.update_attributes!(percentage: percentage)
     end
 
     # Remove any percentage flags for the given feature. If the feature is not

@@ -5,5 +5,7 @@ class ActiveRecord::Rollout::PercentageFlag < ActiveRecord::Rollout::Flag
     presence: true,
     numericality: { greater_than: 0, less_than_or_equal_to: 100 }
 
+  validates :feature_id, uniqueness: { scope: :flaggable_type }
+
   attr_accessible :percentage
 end
