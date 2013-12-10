@@ -7,7 +7,7 @@ describe ActiveRecord::Rollout::Flaggable do
   it { should have_many :opt_out_flags }
   it { should have_many(:features).through(:flaggable_flags) }
 
-  describe "#feature?" do
+  describe "#has_feature?" do
     let(:user) { User.create(name: "foo") }
     let(:feature) { ActiveRecord::Rollout::Feature.create(name: "bar") }
 
@@ -19,14 +19,14 @@ describe ActiveRecord::Rollout::Flaggable do
 
         it "calls the block" do
           foo = "foo"
-          user.feature?(:bar) { foo = "bar" }
+          user.has_feature?(:bar) { foo = "bar" }
           foo.should eq "bar"
         end
 
         context "when the block raises an exception" do
           it "increments the failure_count of the feature" do
             begin
-              user.feature? :bar do
+              user.has_feature? :bar do
                 raise "This is an exception"
               end
             rescue
@@ -36,7 +36,7 @@ describe ActiveRecord::Rollout::Flaggable do
 
           it "raises the exception" do
             expect do
-              user.feature? :bar do
+              user.has_feature? :bar do
                 raise "This is an exception"
               end
             end.to raise_error "This is an exception"
@@ -47,7 +47,7 @@ describe ActiveRecord::Rollout::Flaggable do
       context "and the user is not flagged in" do
         it "does not call the block" do
           foo = "foo"
-          user.feature?(:bar) { foo = "bar" }
+          user.has_feature?(:bar) { foo = "bar" }
           foo.should eq "foo"
         end
       end
@@ -55,7 +55,7 @@ describe ActiveRecord::Rollout::Flaggable do
 
     context "when the user is not flagged in" do
       it "returns false" do
-        user.feature?(:bar).should be_false
+        user.has_feature?(:bar).should be_false
       end
     end
 
@@ -67,7 +67,7 @@ describe ActiveRecord::Rollout::Flaggable do
         end
 
         it "returns false" do
-          user.feature?(:bar).should be_false
+          user.has_feature?(:bar).should be_false
         end
       end
 
@@ -78,7 +78,7 @@ describe ActiveRecord::Rollout::Flaggable do
           end
 
           it "returns true" do
-            user.feature?(:bar).should be_true
+            user.has_feature?(:bar).should be_true
           end
         end
 
@@ -88,7 +88,7 @@ describe ActiveRecord::Rollout::Flaggable do
           end
 
           it "returns true" do
-            user.feature?(:bar).should be_true
+            user.has_feature?(:bar).should be_true
           end
         end
 
@@ -102,7 +102,7 @@ describe ActiveRecord::Rollout::Flaggable do
           end
 
           it "returns true" do
-            user.feature?(:bar).should be_true
+            user.has_feature?(:bar).should be_true
           end
         end
       end

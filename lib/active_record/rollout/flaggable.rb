@@ -29,13 +29,13 @@ module ActiveRecord::Rollout::Flaggable
   #
   # @example
   #   # Exceptions will be tracked in the `failure_count` of :new_user_interface.
-  #   user.feature?(:new_user_interface) do
+  #   user.has_feature?(:new_user_interface) do
   #     # ...
   #   end
   #
   # @example
   #   # Exceptions will *not* be tracked in the `failure_count` of :new_user_interface.
-  #   if user.feature?(:new_user_interface)
+  #   if user.has_feature?(:new_user_interface)
   #     # ...
   #   end
   #
@@ -43,7 +43,7 @@ module ActiveRecord::Rollout::Flaggable
   #   {ActiveRecord::Rollout::Feature Feature} being checked.
   # @param [Proc] &block A block to be called if the user is flagged in to the
   #   feature.
-  def feature?(feature_name, &block)
+  def has_feature?(feature_name, &block)
     feature = ActiveRecord::Rollout::Feature.find_by_name(feature_name)
     return false unless feature
 

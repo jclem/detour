@@ -54,7 +54,7 @@ describe ActiveRecord::Rollout::Feature do
     end
 
     it "opts the record out of the feature" do
-      user.feature?("foo").should be_false
+      user.has_feature?("foo").should be_false
     end
   end
 
@@ -69,7 +69,7 @@ describe ActiveRecord::Rollout::Feature do
     end
 
     it "opts the record out of the feature" do
-      user.feature?("foo").should be_true
+      user.has_feature?("foo").should be_true
     end
   end
 
