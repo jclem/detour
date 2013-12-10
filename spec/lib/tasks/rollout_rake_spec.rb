@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "rollout:activate_record" do
+describe "rollout:activate" do
   include_context "rake"
 
   let(:user) { User.create(name: "foo") }
@@ -11,7 +11,7 @@ describe "rollout:activate_record" do
   end
 end
 
-describe "rollout:deactivate_record" do
+describe "rollout:deactivate" do
   include_context "rake"
 
   let(:user) { User.create(name: "foo") }
@@ -22,7 +22,7 @@ describe "rollout:deactivate_record" do
   end
 end
 
-describe "rollout:opt_out_record" do
+describe "rollout:opt_out" do
   include_context "rake"
 
   let(:user) { User.create(name: "foo") }
@@ -33,7 +33,7 @@ describe "rollout:opt_out_record" do
   end
 end
 
-describe "rollout:un_opt_out_record" do
+describe "rollout:un_opt_out" do
   include_context "rake"
 
   let(:user) { User.create(name: "foo") }
