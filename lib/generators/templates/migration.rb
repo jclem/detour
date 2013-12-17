@@ -20,5 +20,11 @@ class SetupActiveRecordRollout < ActiveRecord::Migration
 
     add_index :active_record_rollout_flags, :type
     add_index :active_record_rollout_flags, :feature_id
+    add_index :active_record_rollout_flags,
+      [:type, :feature_id, :flaggable_type, :flaggable_id],
+      name: "flag_type_feature_flaggable_type_id"
+    add_index :active_record_rollout_flags,
+      [:type, :feature_id, :flaggable_type],
+    name: "flag_type_feature_flaggable_type"
   end
 end
