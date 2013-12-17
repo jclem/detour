@@ -140,7 +140,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
 
         File.open path do |file|
           file.each_line.with_index(1) do |line, i|
-            line.scan(/\.has_feature\?\s*\(*:(?<foo>\w+)/).each do |match|
+            line.scan(/\.has_feature\?\s*\(*:(\w+)/).each do |match|
               match = match[0]
               obj[match] ||= find_or_initialize_by_name(match)
               obj[match].lines << "#{path}#L#{i}"
