@@ -1,5 +1,6 @@
 require "active_record"
 require "active_record/rollout/version"
+require "active_record/rollout/engine"
 require "active_record/rollout/feature"
 require "active_record/rollout/flag"
 require "active_record/rollout/flaggable_flag"
