@@ -36,7 +36,7 @@ describe ActiveRecord::Rollout::Feature do
 
       File.open("/foo/baz.rb", "w") do |file|
         file.write <<-EOF
-          # ...
+          current_user.has_feature?(:foo) || current_user.has_feature?(:bar)
 
           current_user.has_feature? :bar do
           end
@@ -46,12 +46,12 @@ describe ActiveRecord::Rollout::Feature do
 
     it "fetches lines for persisted features" do
       persisted_feature = ActiveRecord::Rollout::Feature.all_with_lines.detect { |f| f.name == feature.name }
-      persisted_feature.lines.should eq %w[/foo/bar.rb#L1 /foo/bar.rb#L7]
+      persisted_feature.lines.should eq %w[/foo/bar.rb#L1 /foo/bar.rb#L7 /foo/baz.rb#L1]
     end
 
     it "fetches lines for un-persisted features" do
       unpersisted_feature = ActiveRecord::Rollout::Feature.all_with_lines.detect { |f| f.name == "bar" }
-      unpersisted_feature.lines.should eq %w[/foo/bar.rb#L4 /foo/baz.rb#L3]
+      unpersisted_feature.lines.should eq %w[/foo/bar.rb#L4 /foo/baz.rb#L1 /foo/baz.rb#L3]
     end
   end
 

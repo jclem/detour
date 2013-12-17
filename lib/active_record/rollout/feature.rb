@@ -142,13 +142,17 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
         unless File.directory? path
           File.open path do |file|
             file.each_line.with_index(1) do |line, i|
-              next unless match = line.match(/\.has_feature\?\s*\(*:(\w+)/)
+              next unless matches = line.scan(/\.has_feature\?\s*\(*:(\w+)/)
 
-              if obj[match[1]]
-                obj[match[1]].lines << "#{path}#L#{i}"
-              else
-                obj[match[1]] = find_by_name(match[1]) || new(name: match[1])
-                obj[match[1]].lines << "#{path}#L#{i}"
+              matches.each do |match|
+                match = match[0]
+
+                if obj[match]
+                  obj[match].lines << "#{path}#L#{i}"
+                else
+                  obj[match] = find_by_name(match[1]) || new(name: match)
+                  obj[match].lines << "#{path}#L#{i}"
+                end
               end
             end
           end
