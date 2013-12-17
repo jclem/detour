@@ -4,6 +4,9 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
   # A hash representing the groups that have been defined.
   @defined_groups = {}
 
+  # Directories to grep for feature tests
+  @grep_dirs  = []
+
   self.table_name = :active_record_rollout_features
 
   has_many :flaggable_flags
@@ -15,6 +18,15 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
 
   attr_accessible :name
+
+  # Returns an instance variable intended to hold an array of the lines of code
+  # that this feature appears on.
+  #
+  # @return [Array<String>] The lines that this rollout appears on (if
+  #   {ActiveRecord::Rollout::Feature.all_with_lines} has already been called).
+  def lines
+    @lines ||= []
+  end
 
   # Determines whether or not the given instance has had the feature rolled out
   # to it either via direct flagging-in, percentage, or by group membership.
@@ -100,6 +112,44 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # Sets the default flaggable class.
     def default_flaggable_class_name=(klass)
       @default_flaggable_class_name = klass
+    end
+
+    # A list of directories to search through when finding feature checks.
+    def grep_dirs
+      @grep_dirs
+    end
+
+    # Set the list of directories to search through when finding feature checks.
+    def grep_dirs=(grep_dirs)
+      @grep_dirs = grep_dirs
+    end
+
+    # Return an array of both every feature in the database as well as every
+    # feature that is checked for in `@grep_dirs`. Features that are checked
+    # for but not persisted will be returned as unpersisted instances of this
+    # class. Each instance returned will have its `@lines` set to an array
+    # containing every line in `@grep_dirs` where it is checked for.
+    #
+    # @return [Array<ActiveRecord::Rollout::Feature>] Every persisted and
+    #   checked-for feature.
+    def all_with_lines
+      obj = all.each_with_object({}) { |feature, obj| obj[feature.name] = feature }
+
+      Dir[*@grep_dirs].each do |path|
+        next if File.directory? path
+
+        File.open path do |file|
+          file.each_line.with_index(1) do |line, i|
+            line.scan(/\.has_feature\?\s*\(*:(?<foo>\w+)/).each do |match|
+              match = match[0]
+              obj[match] ||= find_or_initialize_by_name(match)
+              obj[match].lines << "#{path}#L#{i}"
+            end
+          end
+        end
+      end
+
+      obj.values
     end
 
     # Add a record to the given feature. If the feature is not found, an
