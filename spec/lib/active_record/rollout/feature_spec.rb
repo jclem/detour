@@ -1,4 +1,5 @@
 require "spec_helper"
+require "fakefs/spec_helpers"
 
 describe ActiveRecord::Rollout::Feature do
   it { should have_many(:flaggable_flags) }
@@ -9,6 +10,50 @@ describe ActiveRecord::Rollout::Feature do
   it { should validate_presence_of :name }
   it { should validate_uniqueness_of :name }
   it { should allow_mass_assignment_of :name }
+
+  describe ".all_with_lines" do
+    include FakeFS::SpecHelpers
+
+    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+
+    before do
+      ActiveRecord::Rollout::Feature.grep_dirs = ["/foo/**/*.rb"]
+
+      FileUtils.mkdir("/foo")
+
+      File.open("/foo/bar.rb", "w") do |file|
+        file.write <<-EOF
+          current_user.has_feature?(:foo) do
+          end
+
+          current_user.has_feature?(:bar) do
+          end
+
+          current_user.has_feature?(:foo) do
+          end
+        EOF
+      end
+
+      File.open("/foo/baz.rb", "w") do |file|
+        file.write <<-EOF
+          # ...
+
+          current_user.has_feature? :bar do
+          end
+        EOF
+      end
+    end
+
+    it "fetches lines for persisted features" do
+      persisted_feature = ActiveRecord::Rollout::Feature.all_with_lines.detect { |f| f.name == feature.name }
+      persisted_feature.lines.should eq %w[/foo/bar.rb#L1 /foo/bar.rb#L7]
+    end
+
+    it "fetches lines for un-persisted features" do
+      unpersisted_feature = ActiveRecord::Rollout::Feature.all_with_lines.detect { |f| f.name == "bar" }
+      unpersisted_feature.lines.should eq %w[/foo/bar.rb#L4 /foo/baz.rb#L3]
+    end
+  end
 
   describe ".define_{klass}_group" do
     let(:block) { Proc.new {} }

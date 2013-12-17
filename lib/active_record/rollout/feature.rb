@@ -141,7 +141,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
       Dir[*@grep_dirs].inject(all_persisted) do |obj, path|
         unless File.directory? path
           File.open path do |file|
-            file.lines.with_index(1).each do |line, i|
+            file.each_line.with_index(1) do |line, i|
               next unless match = line.match(/\.has_feature\?\s*\(*:(\w+)/)
 
               if obj[match[1]]
