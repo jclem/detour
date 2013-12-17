@@ -133,33 +133,23 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # @return [Array<ActiveRecord::Rollout::Feature>] Every persisted and
     #   checked-for feature.
     def all_with_lines
-      all_persisted = all.inject({}) do |obj, feature|
-        obj[feature.name] = feature
-        obj
-      end
+      obj = all.each_with_object({}) { |feature, obj| obj[feature.name] = feature }
 
-      Dir[*@grep_dirs].inject(all_persisted) do |obj, path|
-        unless File.directory? path
-          File.open path do |file|
-            file.each_line.with_index(1) do |line, i|
-              next unless matches = line.scan(/\.has_feature\?\s*\(*:(\w+)/)
+      Dir[*@grep_dirs].each do |path|
+        next if File.directory? path
 
-              matches.each do |match|
-                match = match[0]
-
-                if obj[match]
-                  obj[match].lines << "#{path}#L#{i}"
-                else
-                  obj[match] = find_by_name(match[1]) || new(name: match)
-                  obj[match].lines << "#{path}#L#{i}"
-                end
-              end
+        File.open path do |file|
+          file.each_line.with_index(1) do |line, i|
+            line.scan(/\.has_feature\?\s*\(*:(?<foo>\w+)/).each do |match|
+              match = match[0]
+              obj[match] ||= find_or_initialize_by_name(match)
+              obj[match].lines << "#{path}#L#{i}"
             end
           end
         end
+      end
 
-        obj
-      end.map { |k, v| v }
+      obj.values
     end
 
     # Add a record to the given feature. If the feature is not found, an
