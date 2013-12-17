@@ -57,8 +57,10 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
   # @return Whether or not the given instance has the feature rolled out to it
   #   via direct percentage.
   def match_percentage?(instance)
-    percentage = percentage_flags.where("flaggable_type = ?", instance.class.to_s).first.try(:percentage)
-    instance.id % 10 < (percentage || 0) / 10
+    flag = percentage_flags.find(:first, conditions: ["flaggable_type = ?", instance.class.to_s])
+    percentage = flag ? flag.percentage : 0
+
+    instance.id % 10 < percentage / 10
   end
 
   # Determines whether or not the given instance has had the feature rolled out
