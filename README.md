@@ -12,6 +12,28 @@ Rollouts for `ActiveRecord` models. It is a spiritual fork of [ArRollout](https:
 [code_climate_image]: https://codeclimate.com/github/jclem/active_record_rollout.png
 [code_climate]: https://codeclimate.com/github/jclem/active_record_rollout
 
+## Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Marking a model as flaggable](#marking-a-model-as-flaggable)
+  - [Determining if a record is flagged into a feature](#determining-if-a-record-is-flagged-into-a-feature)
+  - [Feature operations](#feature-operations)
+    - [Creating features](#creating-features)
+    - [Destroying features](#destroying-features)
+    - [Flagging a record into a feature](#flagging-a-record-into-a-feature)
+    - [Removing a flag-in for a record for a feature](#removing-a-flag-in-for-a-record-for-a-feature)
+    - [Opt a record out of a feature](#opt-a-record-out-of-a-feature)
+    - [Un-opt out a record from a feature](#un-opt-out-a-record-from-a-feature)
+    - [Flag a programmatic group into a feature](#flag-a-programmatic-group-into-a-feature)
+    - [Remove a flag-in for a programmatic group for a feature](#remove-a-flag-in-for-a-programmatic-group-for-a-feature)
+    - [Flag a percentage of records into a feature](#flag-a-percentage-of-records-into-a-feature)
+    - [Remove a flag-in for a percentage of records for a feature](#remove-a-flag-in-for-a-percentage-of-records-for-a-feature)
+  - [Defining a default class](#defining-a-default-class)
+  - [Defining programmatic groups](#defining-programmatic-groups)
+- [Contributing](#contributing)
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
