@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ActiveRecord::Rollout::Flaggable do
+describe Detour::Flaggable do
   subject { User.new }
 
   describe "#flaggable_find!" do
@@ -25,10 +25,10 @@ describe ActiveRecord::Rollout::Flaggable do
 
   describe "#has_feature?" do
     let(:user) { User.create(name: "foo") }
-    let(:feature) { ActiveRecord::Rollout::Feature.create(name: "bar") }
+    let(:feature) { Detour::Feature.create(name: "bar") }
 
     it "memoizes found features" do
-      ActiveRecord::Rollout::Feature.stub(:find_by_name) { feature }
+      Detour::Feature.stub(:find_by_name) { feature }
       feature.flaggable_flags.create(flaggable: user)
 
       feature.should_receive(:match?).with(user).and_return(true)
@@ -132,7 +132,7 @@ describe ActiveRecord::Rollout::Flaggable do
 
         context "and the user is flagged in via a group" do
           before do
-            ActiveRecord::Rollout::Feature.define_user_group "name_foo" do |user|
+            Detour::Feature.define_user_group "name_foo" do |user|
               user.name == "foo"
             end
 

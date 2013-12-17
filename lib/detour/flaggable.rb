@@ -1,11 +1,11 @@
-module ActiveRecord::Rollout::Flaggable
+module Detour::Flaggable
   module ClassMethods
     # Finds a record by the field set by the :find_by param in
     # `acts_as_flaggable`. If no :find_by param was provided, :id is used.
     #
     # @param [String,Integer] value The value to find the record by.
     def flaggable_find!(value)
-      send("find_by_#{@active_record_rollout_flaggable_find_by}!", value)
+      send("find_by_#{@detour_flaggable_find_by}!", value)
     end
   end
 
@@ -28,14 +28,14 @@ module ActiveRecord::Rollout::Flaggable
   #   end
   #
   # @param [Symbol] feature_name The name of the
-  #   {ActiveRecord::Rollout::Feature Feature} being checked.
+  #   {Detour::Feature Feature} being checked.
   # @param [Proc] &block A block to be called if the user is flagged in to the
   #   feature.
   def has_feature?(feature_name, &block)
-    if active_record_rollout_features.include? feature_name.to_s
+    if detour_features.include? feature_name.to_s
       match = true
     else
-      feature = ActiveRecord::Rollout::Feature.find_by_name(feature_name)
+      feature = Detour::Feature.find_by_name(feature_name)
       return false unless feature
 
       opt_out = opt_out_flags.find_by_feature_id(feature.id)
@@ -44,7 +44,7 @@ module ActiveRecord::Rollout::Flaggable
       match = feature.match? self
 
       if match
-        active_record_rollout_features << feature.name.to_s
+        detour_features << feature.name.to_s
       end
     end
 
@@ -60,7 +60,7 @@ module ActiveRecord::Rollout::Flaggable
     match
   end
 
-  def active_record_rollout_features
-    @active_record_rollout_features ||= []
+  def detour_features
+    @detour_features ||= []
   end
 end

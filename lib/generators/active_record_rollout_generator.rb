@@ -1,20 +1,20 @@
-require "active_record/rollout"
+require "detour"
 require "rails/generators"
 require "rails/generators/active_record"
 
-class ActiveRecordRolloutGenerator < Rails::Generators::Base
+class DetourGenerator < Rails::Generators::Base
   include Rails::Generators::Migration
   extend ActiveRecord::Generators::Migration
 
   source_root File.expand_path("../templates", __FILE__)
 
-  desc "Creates migration for ActiveRecord::Rollout"
+  desc "Creates migration for Detour"
   def create_migration_file
-    migration_template "migration.rb", "db/migrate/setup_active_record_rollout.rb"
+    migration_template "migration.rb", "db/migrate/setup_detour.rb"
   end
 
-  desc "Sets up an initializer for ActiveRecord::Rollout"
+  desc "Sets up an initializer for Detour"
   def create_initializer
-    copy_file "active_record_rollout.rb", "config/initializers/active_record_rollout.rb"
+    copy_file "detour.rb", "config/initializers/detour.rb"
   end
 end

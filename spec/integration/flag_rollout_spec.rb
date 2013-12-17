@@ -2,11 +2,11 @@ require "spec_helper"
 
 describe "flag rollouts" do
   let(:user) { User.create }
-  let(:feature) { ActiveRecord::Rollout::Feature.create(name: "foo") }
+  let(:feature) { Detour::Feature.create(name: "foo") }
 
   describe "creating a flag rollout" do
     before do
-      ActiveRecord::Rollout::Feature.add_record_to_feature user, feature.name
+      Detour::Feature.add_record_to_feature user, feature.name
     end
 
     it "sets the feature on the user" do
@@ -16,8 +16,8 @@ describe "flag rollouts" do
 
   describe "removing a flag rollout" do
     before do
-      ActiveRecord::Rollout::Feature.add_record_to_feature user, feature.name
-      ActiveRecord::Rollout::Feature.remove_record_from_feature user, feature.name
+      Detour::Feature.add_record_to_feature user, feature.name
+      Detour::Feature.remove_record_from_feature user, feature.name
     end
 
     it "removes the feature from the user" do

@@ -1,7 +1,7 @@
 require "spec_helper"
 require "fakefs/spec_helpers"
 
-describe ActiveRecord::Rollout::Feature do
+describe Detour::Feature do
   it { should have_many(:flaggable_flags) }
   it { should have_many(:group_flags) }
   it { should have_many(:percentage_flags) }
@@ -14,10 +14,10 @@ describe ActiveRecord::Rollout::Feature do
   describe ".all_with_lines" do
     include FakeFS::SpecHelpers
 
-    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+    let!(:feature) { Detour::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.grep_dirs = ["/foo/**/*.rb"]
+      Detour::Feature.grep_dirs = ["/foo/**/*.rb"]
 
       FileUtils.mkdir("/foo")
 
@@ -45,12 +45,12 @@ describe ActiveRecord::Rollout::Feature do
     end
 
     it "fetches lines for persisted features" do
-      persisted_feature = ActiveRecord::Rollout::Feature.all_with_lines.detect { |f| f.name == feature.name }
+      persisted_feature = Detour::Feature.all_with_lines.detect { |f| f.name == feature.name }
       persisted_feature.lines.should eq %w[/foo/bar.rb#L1 /foo/bar.rb#L7 /foo/baz.rb#L1]
     end
 
     it "fetches lines for un-persisted features" do
-      unpersisted_feature = ActiveRecord::Rollout::Feature.all_with_lines.detect { |f| f.name == "bar" }
+      unpersisted_feature = Detour::Feature.all_with_lines.detect { |f| f.name == "bar" }
       unpersisted_feature.lines.should eq %w[/foo/bar.rb#L4 /foo/baz.rb#L1 /foo/baz.rb#L3]
     end
   end
@@ -58,17 +58,17 @@ describe ActiveRecord::Rollout::Feature do
   describe ".define_{klass}_group" do
     let(:block) { Proc.new {} }
     it "defines a group for the given class" do
-      ActiveRecord::Rollout::Feature.should_receive(:define_group_for_class).with("User", :id_is_1)
-      ActiveRecord::Rollout::Feature.define_user_group :id_is_1, block
+      Detour::Feature.should_receive(:define_group_for_class).with("User", :id_is_1)
+      Detour::Feature.define_user_group :id_is_1, block
     end
   end
 
   describe ".add_record_to_feature" do
     let(:user) { User.create }
-    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+    let!(:feature) { Detour::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.add_record_to_feature user, :foo
+      Detour::Feature.add_record_to_feature user, :foo
     end
 
     it "creates a flag for the given instance and feature" do
@@ -78,11 +78,11 @@ describe ActiveRecord::Rollout::Feature do
 
   describe ".remove_record_from_feature" do
     let(:user) { User.create }
-    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+    let!(:feature) { Detour::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.add_record_to_feature user, :foo
-      ActiveRecord::Rollout::Feature.remove_record_from_feature user, :foo
+      Detour::Feature.add_record_to_feature user, :foo
+      Detour::Feature.remove_record_from_feature user, :foo
     end
 
     it "creates a flag for the given instance and feature" do
@@ -92,11 +92,11 @@ describe ActiveRecord::Rollout::Feature do
 
   describe ".opt_record_out_of_feature" do
     let(:user) { User.create }
-    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+    let!(:feature) { Detour::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.add_percentage_to_feature "User", 100, "foo"
-      ActiveRecord::Rollout::Feature.opt_record_out_of_feature user, "foo"
+      Detour::Feature.add_percentage_to_feature "User", 100, "foo"
+      Detour::Feature.opt_record_out_of_feature user, "foo"
     end
 
     it "opts the record out of the feature" do
@@ -106,12 +106,12 @@ describe ActiveRecord::Rollout::Feature do
 
   describe ".un_opt_record_out_of_feature" do
     let(:user) { User.create }
-    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+    let!(:feature) { Detour::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.add_percentage_to_feature "User", 100, "foo"
-      ActiveRecord::Rollout::Feature.opt_record_out_of_feature user, "foo"
-      ActiveRecord::Rollout::Feature.un_opt_record_out_of_feature user, "foo"
+      Detour::Feature.add_percentage_to_feature "User", 100, "foo"
+      Detour::Feature.opt_record_out_of_feature user, "foo"
+      Detour::Feature.un_opt_record_out_of_feature user, "foo"
     end
 
     it "opts the record out of the feature" do
@@ -120,12 +120,12 @@ describe ActiveRecord::Rollout::Feature do
   end
 
   describe ".add_group_to_feature" do
-    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+    let!(:feature) { Detour::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.define_user_group :bar do
+      Detour::Feature.define_user_group :bar do
       end
-      ActiveRecord::Rollout::Feature.add_group_to_feature "User", :bar, "foo"
+      Detour::Feature.add_group_to_feature "User", :bar, "foo"
     end
 
     it "creates a flag for the given group and feature" do
@@ -134,13 +134,13 @@ describe ActiveRecord::Rollout::Feature do
   end
 
   describe ".remove_group_from_feature" do
-    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+    let!(:feature) { Detour::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.define_user_group :bar do
+      Detour::Feature.define_user_group :bar do
       end
-      ActiveRecord::Rollout::Feature.add_group_to_feature "User", :bar, "foo"
-      ActiveRecord::Rollout::Feature.remove_group_from_feature "User", :bar, "foo"
+      Detour::Feature.add_group_to_feature "User", :bar, "foo"
+      Detour::Feature.remove_group_from_feature "User", :bar, "foo"
     end
 
     it "destroys flags for the given group and feature" do
@@ -149,10 +149,10 @@ describe ActiveRecord::Rollout::Feature do
   end
 
   describe ".add_percentage_to_feature" do
-    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+    let!(:feature) { Detour::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.add_percentage_to_feature "User", 50, "foo"
+      Detour::Feature.add_percentage_to_feature "User", 50, "foo"
     end
 
     it "creates a flag for the given percentage and feature" do
@@ -161,11 +161,11 @@ describe ActiveRecord::Rollout::Feature do
   end
 
   describe ".remove_percentage_from_feature" do
-    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+    let!(:feature) { Detour::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.add_percentage_to_feature "User", 50, "foo"
-      ActiveRecord::Rollout::Feature.remove_percentage_from_feature "User", "foo"
+      Detour::Feature.add_percentage_to_feature "User", 50, "foo"
+      Detour::Feature.remove_percentage_from_feature "User", "foo"
     end
 
     it "creates a flag for the given percentage and feature" do
@@ -176,17 +176,17 @@ describe ActiveRecord::Rollout::Feature do
   describe ".define_group_for_class" do
     let(:block) { Proc.new {} }
     before do
-      ActiveRecord::Rollout::Feature.send :define_group_for_class, "User", "user_id_1", &block
+      Detour::Feature.send :define_group_for_class, "User", "user_id_1", &block
     end
 
     it "defines a group for the given class" do
-      ActiveRecord::Rollout::Feature.defined_groups["User"].should eq({ "user_id_1" => block })
+      Detour::Feature.defined_groups["User"].should eq({ "user_id_1" => block })
     end
   end
 
   describe "#match?" do
     let(:user) { User.create }
-    let(:feature) { ActiveRecord::Rollout::Feature.create(name: "foo") }
+    let(:feature) { Detour::Feature.create(name: "foo") }
 
     it "checks if the user is flagged individually" do
       feature.should_receive(:match_id?).with(user)
@@ -207,10 +207,10 @@ describe ActiveRecord::Rollout::Feature do
   describe "#match_id?" do
     let(:user) { User.create }
     let(:user2) { User.create }
-    let!(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+    let!(:feature) { Detour::Feature.create!(name: "foo") }
 
     before do
-      ActiveRecord::Rollout::Feature.add_record_to_feature user, :foo
+      Detour::Feature.add_record_to_feature user, :foo
     end
 
     context "when the feature exists for the instance" do
@@ -228,7 +228,7 @@ describe ActiveRecord::Rollout::Feature do
 
   describe "#match_percentage?" do
     let(:user) { User.create }
-    let(:feature) { ActiveRecord::Rollout::Feature.create!(name: "foo") }
+    let(:feature) { Detour::Feature.create!(name: "foo") }
     let!(:flag) { feature.percentage_flags.create(flaggable_type: "User", percentage: 50) }
 
     context "when the user's ID matches `id % 10 < percentage / 10" do
@@ -250,11 +250,11 @@ describe ActiveRecord::Rollout::Feature do
     let!(:user) { User.create(name: "foo") }
     let!(:user2) { User.create(name: "bar") }
     let!(:organization) { Organization.create(name: "foo") }
-    let(:feature) { ActiveRecord::Rollout::Feature.create!(name: "baz") }
+    let(:feature) { Detour::Feature.create!(name: "baz") }
     let!(:flag) { feature.group_flags.create(flaggable_type: "User", group_name: "foo_users") }
 
     before do
-      ActiveRecord::Rollout::Feature.define_user_group "foo_users" do |user|
+      Detour::Feature.define_user_group "foo_users" do |user|
         user.name == "foo"
       end
     end

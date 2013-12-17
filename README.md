@@ -1,4 +1,4 @@
-# ActiveRecord::Rollout
+# Detour
 
 Rollouts for `ActiveRecord` models. It is a spiritual fork of [ArRollout](https://github.com/markpundsack/ar_rollout).
 
@@ -6,11 +6,11 @@ Rollouts for `ActiveRecord` models. It is a spiritual fork of [ArRollout](https:
 | ------------------ | ------------- | ------------ |
 | [![development status][dev_image]][branch_status] | [![master status][master_image]][branch_status] | [![Code Climate][code_climate_image]][code_climate]
 
-[dev_image]: https://api.travis-ci.org/jclem/active_record_rollout.png?branch=development
-[master_image]: https://api.travis-ci.org/jclem/active_record_rollout.png?branch=master
-[branch_status]: https://travis-ci.org/jclem/active_record_rollout/branches
-[code_climate_image]: https://codeclimate.com/github/jclem/active_record_rollout.png
-[code_climate]: https://codeclimate.com/github/jclem/active_record_rollout
+[dev_image]: https://api.travis-ci.org/jclem/detour.png?branch=development
+[master_image]: https://api.travis-ci.org/jclem/detour.png?branch=master
+[branch_status]: https://travis-ci.org/jclem/detour/branches
+[code_climate_image]: https://codeclimate.com/github/jclem/detour.png
+[code_climate]: https://codeclimate.com/github/jclem/detour
 
 ## Contents
 
@@ -38,7 +38,7 @@ Rollouts for `ActiveRecord` models. It is a spiritual fork of [ArRollout](https:
 
 Add this line to your application's Gemfile:
 
-    gem 'active_record_rollout', require: 'active_record/rollout'
+    gem 'detour'
 
 And then execute:
 
@@ -46,11 +46,11 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install active_record_rollout
+    $ gem install detour
 
 ## Usage
 
-`ActiveRecord::Rollout` works by determining whether or not a specific record
+`Detour` works by determining whether or not a specific record
 should have features accessible to it based on individual flags, flags for a
 percentage of records, or flags for a programmable group of records.
 
@@ -77,7 +77,7 @@ the user has been individually flagged into, regardless of opt outs).
 
 However, these methods aren't enough to determine whether or not the user is
 flagged into a specific feature. The `#has_feature?` method provided by
-`ActiveRecord::Rollout::Flaggable` should be used for this.
+`Detour::Flaggable` should be used for this.
 
 ### Determining if a record is flagged into a feature
 
@@ -121,13 +121,13 @@ them programmatically, consult the documentation.
 #### Creating features
 
 ```sh
-$ bundle exec rake rollout:create[new_ui]
+$ bundle exec rake detour:create[new_ui]
 ```
 
 #### Destroying features
 
 ```sh
-$ bundle exec rake rollout:destroy[new_ui]
+$ bundle exec rake detour:destroy[new_ui]
 ```
 
 #### Flagging a record into a feature
@@ -136,7 +136,7 @@ This task requires passing the feature name, the record's class, and the
 record's ID.
 
 ```sh
-$ bundle exec rake rollout:activate[new_ui,User,2]
+$ bundle exec rake detour:activate[new_ui,User,2]
 ```
 
 #### Removing a flag-in for a record for a feature
@@ -145,7 +145,7 @@ This task requires passing the feature name, the record's class, and the
 record's ID.
 
 ```sh
-$ bundle exec rake rollout:deactivate[new_ui,User,2]
+$ bundle exec rake detour:deactivate[new_ui,User,2]
 ```
 
 #### Opt a record out of a feature
@@ -158,7 +158,7 @@ This task requires passing the feature name, the record's class, and the
 record's ID.
 
 ```sh
-$ bundle exec rake rollout:opt_out[new_ui,User,2]
+$ bundle exec rake detour:opt_out[new_ui,User,2]
 ```
 
 #### Un-opt out a record from a feature
@@ -167,7 +167,7 @@ This task requires passing the feature name, the record's class, and the
 record's ID.
 
 ```sh
-$ bundle exec rake rollout:un_opt_out[new_ui,User,2]
+$ bundle exec rake detour:un_opt_out[new_ui,User,2]
 ```
 
 #### Flag a programmatic group into a feature
@@ -176,7 +176,7 @@ This task requires passing the feature name, the record class for the group,
 and the name of the group.
 
 ```sh
-$ bundle exec rake rollout:activate_group[new_ui,User,admins]
+$ bundle exec rake detour:activate_group[new_ui,User,admins]
 ```
 
 #### Remove a flag-in for a programmatic group for a feature
@@ -185,7 +185,7 @@ This task requires passing the feature name, the record class for the group,
 and the name of the group.
 
 ```sh
-$ bundle exec rake rollout:deactivate_group[new_ui,User,admins]
+$ bundle exec rake detour:deactivate_group[new_ui,User,admins]
 ```
 
 #### Flag a percentage of records into a feature
@@ -201,7 +201,7 @@ This task requires passing the feature name, the record class for the group,
 and the percentage of records to be flagged in.
 
 ```sh
-$ bundle exec rake rollout:activate_percentage[new_ui,User,20]
+$ bundle exec rake detour:activate_percentage[new_ui,User,20]
 ```
 
 #### Remove a flag-in for a percentage of records for a feature
@@ -209,7 +209,7 @@ $ bundle exec rake rollout:activate_percentage[new_ui,User,20]
 This task requires passing the feature name, and the record class for the group.
 
 ```sh
-$ bundle exec rake rollout:deactivate_percentage[new_ui,User]
+$ bundle exec rake detour:deactivate_percentage[new_ui,User]
 ```
 
 ### Defining a default class
@@ -218,7 +218,7 @@ In order to provide passing a class name into rake tasks, a default class can
 be set:
 
 ```ruby
-ActiveRecord::Rollout.configure do |config|
+Detour.configure do |config|
   config.default_flaggable_class_name = "User"
 end
 ```
@@ -227,17 +227,17 @@ Then, in your rake tasks:
 
 ```sh
 # Will activate feature "foo" for all instances of User that match the admins group.
-$ bundle exec rake rollout:activate_group[foo,admins]
+$ bundle exec rake detour:activate_group[foo,admins]
 ```
 
 ### Defining programmatic groups
 
 A specific group of records matching a given block can be flagged into a
 feature. In order to define these groups, use
-`ActiveRecord::Rollout.configure`:
+`Detour.configure`:
 
 ```ruby
-ActiveRecord::Rollout.configure do |config|
+Detour.configure do |config|
   # Any User that returns truthy for `user.admin?` will be included in this
   # group: `admins`.
   config.define_user_group :admins do |user|
@@ -254,7 +254,7 @@ end
 
 ## Contributing
 
-1. Fork it ( http://github.com/<my-github-username>/active_record_rollout/fork )
+1. Fork it ( http://github.com/<my-github-username>/detour/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

@@ -1,6 +1,6 @@
 require "rails"
 require "active_record"
-require "active_record/rollout"
+require "detour"
 require "shoulda-matchers"
 require "generators/templates/migration"
 require "support/shared_contexts/rake"
@@ -24,17 +24,17 @@ RSpec.configure do |config|
   end
 
   config.before :each do
-    SetupActiveRecordRollout.migrate :up
+    SetupDetour.migrate :up
     ActiveRecord::Schema.migrate :up
   end
 
   config.after :each do
-    SetupActiveRecordRollout.migrate :down
+    SetupDetour.migrate :down
     ActiveRecord::Schema.migrate :down
   end
 
   config.after :each do
-    ActiveRecord::Rollout::Feature.instance_variable_set "@defined_groups", {}
-    ActiveRecord::Rollout::Feature.instance_variable_set "@default_flaggable_class_name", nil
+    Detour::Feature.instance_variable_set "@defined_groups", {}
+    Detour::Feature.instance_variable_set "@default_flaggable_class_name", nil
   end
 end

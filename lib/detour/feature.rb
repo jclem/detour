@@ -1,13 +1,13 @@
 # Represents an individual feature that may be rolled out to a set of records
 # via individual flags, percentages, or defined groups.
-class ActiveRecord::Rollout::Feature < ActiveRecord::Base
+class Detour::Feature < ActiveRecord::Base
   # A hash representing the groups that have been defined.
   @defined_groups = {}
 
   # Directories to grep for feature tests
   @grep_dirs  = []
 
-  self.table_name = :active_record_rollout_features
+  self.table_name = :detour_features
 
   has_many :flaggable_flags
   has_many :group_flags
@@ -23,7 +23,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
   # that this feature appears on.
   #
   # @return [Array<String>] The lines that this rollout appears on (if
-  #   {ActiveRecord::Rollout::Feature.all_with_lines} has already been called).
+  #   {Detour::Feature.all_with_lines} has already been called).
   def lines
     @lines ||= []
   end
@@ -130,7 +130,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # class. Each instance returned will have its `@lines` set to an array
     # containing every line in `@grep_dirs` where it is checked for.
     #
-    # @return [Array<ActiveRecord::Rollout::Feature>] Every persisted and
+    # @return [Array<Detour::Feature>] Every persisted and
     #   checked-for feature.
     def all_with_lines
       obj = all.each_with_object({}) { |feature, obj| obj[feature.name] = feature }
@@ -156,13 +156,13 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # ActiveRecord::RecordNotFound will be raised.
     #
     # @example
-    #   ActiveRecord::Rollout::Feature.add_record_to_feature user, :new_ui
+    #   Detour::Feature.add_record_to_feature user, :new_ui
     #
     # @param [ActiveRecord::Base] record A record to add the feature to.
     # @param [String,Symbol] feature_name The feature to be added to the record.
     #
-    # @return [ActiveRecord::Rollout::Flag] The
-    #   {ActiveRecord::Rollout::Flag Flag} created.
+    # @return [Detour::Flag] The
+    #   {Detour::Flag Flag} created.
     def add_record_to_feature(record, feature_name)
       feature = find_by_name!(feature_name)
       feature.flaggable_flags.where(flaggable_type: record.class.to_s, flaggable_id: record.id).first_or_create!
@@ -172,7 +172,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # ActiveRecord::RecordNotFound will be raised.
     #
     # @example
-    #   ActiveRecord::Rollout::Feature.remove_record_from_feature user, :new_ui
+    #   Detour::Feature.remove_record_from_feature user, :new_ui
     #
     # @param [ActiveRecord::Base] record A record to remove the feature from.
     # @param [String,Symbol] feature_name The feature to be removed from the
@@ -191,10 +191,10 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # @param [String,Symbol] feature_name The feature to be opted out of.
     #
     # @example
-    #   ActiveRecord::Rollout::Feature.opt_record_out_of_feature user, :new_ui
+    #   Detour::Feature.opt_record_out_of_feature user, :new_ui
     #
-    # @return [ActiveRecord::Rollout::OptOut] The
-    #   {ActiveRecord::Rollout::OptOut OptOut} created.
+    # @return [Detour::OptOut] The
+    #   {Detour::OptOut OptOut} created.
     def opt_record_out_of_feature(record, feature_name)
       feature = find_by_name!(feature_name)
       feature.opt_out_flags.where(flaggable_type: record.class.to_s, flaggable_id: record.id).first_or_create!
@@ -204,7 +204,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # is not found, an ActiveRecord::RecordNotFound will be raised.
     #
     # @example
-    #   ActiveRecord::Rollout::Feature.un_opt_record_out_of_feature user, :new_ui
+    #   Detour::Feature.un_opt_record_out_of_feature user, :new_ui
     #
     # @param [ActiveRecord::Base] record A record to un-opt-out of the feature.
     # @param [String,Symbol] feature_name The feature to be un-opted-out of.
@@ -217,7 +217,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # ActiveRecord::RecordNotFound will be raised.
     #
     # @example
-    #   ActiveRecord::Rollout::Feature.add_group_to_feature "User", "admin", :delete_records
+    #   Detour::Feature.add_group_to_feature "User", "admin", :delete_records
     #
     # @param [String] flaggable_type The class (as a string) that the group
     #   should be associated with.
@@ -225,8 +225,8 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     #   added to it.
     # @param [String,Symbol] feature_name The feature to be added to the group.
     #
-    # @return [ActiveRecord::Rollout::Flag] The
-    #   {ActiveRecord::Rollout::Flag Flag} created.
+    # @return [Detour::Flag] The
+    #   {Detour::Flag Flag} created.
     def add_group_to_feature(flaggable_type, group_name, feature_name)
       feature = find_by_name!(feature_name)
       feature.group_flags.where(flaggable_type: flaggable_type, group_name: group_name).first_or_create!
@@ -236,7 +236,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # ActiveRecord::RecordNotFound will be raised.
     #
     # @example
-    #   ActiveRecord::Rollout::Feature.remove_group_from_feature "User", "admin", :delete_records
+    #   Detour::Feature.remove_group_from_feature "User", "admin", :delete_records
     #
     # @param [String] flaggable_type The class (as a string) that the group should
     #   be removed from.
@@ -253,7 +253,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # found, an ActiveRecord::RecordNotFound will be raised.
     #
     # @example
-    #   ActiveRecord::Rollout::Feature.add_percentage_to_feature "User", 75, :delete_records
+    #   Detour::Feature.add_percentage_to_feature "User", 75, :delete_records
     #
     # @param [String] flaggable_type The class (as a string) that the percetnage
     #   should be associated with.
@@ -262,8 +262,8 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # @param [String,Symbol] feature_name The feature to be added to the
     #   percentage of records.
     #
-    # @return [ActiveRecord::Rollout::Flag] The
-    #   {ActiveRecord::Rollout::Flag Flag} created.
+    # @return [Detour::Flag] The
+    #   {Detour::Flag Flag} created.
     def add_percentage_to_feature(flaggable_type, percentage, feature_name)
       feature = find_by_name!(feature_name)
 
@@ -275,7 +275,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # found, an ActiveRecord::RecordNotFound will be raised.
     #
     # @example
-    #   ActiveRecord::Rollout::Feature.remove_percentage_from_feature "User", delete_records
+    #   Detour::Feature.remove_percentage_from_feature "User", delete_records
     #
     # @param [String] flaggable_type The class (as a string) that the percetnage
     #   should be removed from.
@@ -291,7 +291,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     # be created that rollouts can be attached to.
     #
     # @example
-    #   ActiveRecord::Rollout::Feature.define_user_group :admins do |user|
+    #   Detour::Feature.define_user_group :admins do |user|
     #     user.admin?
     #   end
     def method_missing(method, *args, &block)
