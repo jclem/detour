@@ -26,7 +26,7 @@ describe ActiveRecord::Rollout::Feature do
       ActiveRecord::Rollout::Feature.add_record_to_feature user, :foo
     end
 
-    it "creats a flag for the given instance and feature" do
+    it "creates a flag for the given instance and feature" do
       user.features.should include feature
     end
   end
@@ -40,7 +40,7 @@ describe ActiveRecord::Rollout::Feature do
       ActiveRecord::Rollout::Feature.remove_record_from_feature user, :foo
     end
 
-    it "creats a flag for the given instance and feature" do
+    it "creates a flag for the given instance and feature" do
       user.features.should_not include feature
     end
   end

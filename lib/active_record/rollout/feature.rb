@@ -42,7 +42,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
   # @return Whether or not the given instance has the feature rolled out to it
   #   via direct flagging-in.
   def match_id?(instance)
-    flaggable_flags.where(flaggable_type: instance.class, flaggable_id: instance.id).any?
+    flaggable_flags.where(flaggable_type: instance.class.to_s, flaggable_id: instance.id).any?
   end
 
   # Determines whether or not the given instance has had the feature rolled out
@@ -113,7 +113,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     #   {ActiveRecord::Rollout::Flag Flag} created.
     def add_record_to_feature(record, feature_name)
       feature = find_by_name!(feature_name)
-      feature.flaggable_flags.create!(flaggable: record)
+      feature.flaggable_flags.where(flaggable_type: record.class.to_s, flaggable_id: record.id).first_or_create!
     end
 
     # Remove a record from the given feature. If the feature is not found, an
@@ -127,7 +127,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     #   record.
     def remove_record_from_feature(record, feature_name)
       feature = find_by_name!(feature_name)
-      feature.flaggable_flags.where(flaggable_type: record.class, flaggable_id: record.id).destroy_all
+      feature.flaggable_flags.where(flaggable_type: record.class.to_s, flaggable_id: record.id).destroy_all
     end
 
     # Opt the given record out of a feature. If the feature is not found, an
@@ -145,7 +145,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     #   {ActiveRecord::Rollout::OptOut OptOut} created.
     def opt_record_out_of_feature(record, feature_name)
       feature = find_by_name!(feature_name)
-      feature.opt_out_flags.create!(flaggable: record)
+      feature.opt_out_flags.where(flaggable_type: record.class.to_s, flaggable_id: record.id).first_or_create!
     end
 
     # Remove any opt out for the given record out of a feature. If the feature
@@ -177,7 +177,7 @@ class ActiveRecord::Rollout::Feature < ActiveRecord::Base
     #   {ActiveRecord::Rollout::Flag Flag} created.
     def add_group_to_feature(flaggable_type, group_name, feature_name)
       feature = find_by_name!(feature_name)
-      feature.group_flags.create!(flaggable_type: flaggable_type, group_name: group_name)
+      feature.group_flags.where(flaggable_type: flaggable_type, group_name: group_name).first_or_create!
     end
 
     # Remove a group from agiven feature. If the feature is not found, an
