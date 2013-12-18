@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["jonathan@heroku.com"]
   spec.summary       = %q{Rollouts (feature flags) for Rails.}
   spec.description   = %q{Rollouts (feature flags) for Rails.}
-  spec.homepage      = "https://github.com/jclem/detour"
+  spec.homepage      = "https://github.com/heroku/detour"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
