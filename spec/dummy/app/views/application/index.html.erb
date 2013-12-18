@@ -1,0 +1,22 @@
+<% if @user.has_feature? :show_widget_table do %>
+  <table>
+    <thead>
+      <tr>
+        <th>Widget Name</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @user.widgets.each do |widget| %>
+        <tr>
+          <td><%= widget.name %></td>
+      <% end %>
+    </tbody>
+  </table>
+<% end; else %>
+  <ul>
+    <% @user.widgets.each do |widget| %>
+      <li><%= widget.name %></li>
+    <% end %>
+  </ul>
+<% end %>
