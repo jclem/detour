@@ -13,7 +13,9 @@ module Detour
   #     end
   #   end
   def self.configure(&block)
-    yield Detour::Feature
+    ActionDispatch::Reloader.to_prepare do
+      yield Detour::Feature
+    end
   end
 end
 
