@@ -1,4 +1,4 @@
-module Detour
-  class ApplicationController < ActionController::Base
+class Detour::ApplicationController < ActionController::Base
+  def index
   end
 end
