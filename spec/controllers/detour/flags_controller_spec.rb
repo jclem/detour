@@ -5,11 +5,12 @@ describe Detour::FlagsController do
 
   describe "GET #index" do
     before do
+      Detour.config.grep_dirs = ["spec/dummy/app/**/*.{rb,erb}"]
       get :index, flaggable_type: "user"
     end
 
     it "assigns every feature with lines" do
-      assigns(:features).should eq Detour::Feature.all_with_lines
+      assigns(:features).collect(&:name).should eq Detour::Feature.all_with_lines.collect(&:name)
     end
 
     it "renders the 'index' template" do
