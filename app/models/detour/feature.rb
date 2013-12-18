@@ -22,6 +22,10 @@ class Detour::Feature < ActiveRecord::Base
     @lines ||= []
   end
 
+  def to_s
+    name
+  end
+
   # Determines whether or not the given instance has had the feature rolled out
   # to it either via direct flagging-in, percentage, or by group membership.
   #

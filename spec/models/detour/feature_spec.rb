@@ -165,6 +165,14 @@ describe Detour::Feature do
     end
   end
 
+  describe "#to_s" do
+    let(:feature) { create :feature }
+
+    it "returns the name of the feature" do
+      feature.to_s.should eq feature.name
+    end
+  end
+
   describe "#match?" do
     let(:user)    { create :user }
     let(:feature) { create :feature }
