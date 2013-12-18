@@ -1,0 +1,17 @@
+<h1><%= params[:flaggable_type].classify %> Flags</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Feature</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @features.each do |feature| %>
+      <tr>
+        <td><%= feature %></td>
+      </tr>
+    <% end %>
+  </body>
+</table>
