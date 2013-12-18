@@ -1,0 +1,6 @@
+test: &postgresql
+  adapter: postgresql
+  username: postgres
+  password:
+  database: dashboard_travis
+  min_messages: ERROR
