@@ -1,5 +1,11 @@
 language: ruby
+cache: bundler
 rvm:
   - 1.9.3
   - 2.0.0
-script: bundle exec rspec
+before_script:
+  - cp spec/dummy/config/database.travis.yml spec/dummy/config/database.yml
+  - psql -c 'create database dashboard_travis' -U postgres
+script:
+  - RAILS_ENV=test bundle exec rake db:migrate
+  - bundle exec rspec spec

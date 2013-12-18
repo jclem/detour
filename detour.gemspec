@@ -19,12 +19,13 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 1.9.3"
 
   spec.add_dependency "rails", "~> 3.2.16"
+  spec.add_dependency "pg", "~> 0.17.0"
+  spec.add_dependency "activerecord-postgres-hstore", "~> 0.7.7"
 
   spec.add_development_dependency "capybara"
   spec.add_development_dependency "factory_girl_rails"
   spec.add_development_dependency "pry-debugger"
   spec.add_development_dependency "rspec-rails"
   spec.add_development_dependency "shoulda-matchers"
-  spec.add_development_dependency "sqlite3-ruby"
   spec.add_development_dependency "yard"
 end
