@@ -10,6 +10,5 @@
  *
  *= require_self
  *= require detour/bootstrap
- *= require detour/bootstrap-theme
  *= require_tree .
  */
