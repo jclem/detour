@@ -1,12 +1,6 @@
 # Represents an individual feature that may be rolled out to a set of records
 # via individual flags, percentages, or defined groups.
 class Detour::Feature < ActiveRecord::Base
-  # A hash representing the groups that have been defined.
-  @defined_groups = {}
-
-  # Directories to grep for feature tests
-  @grep_dirs  = []
-
   self.table_name = :detour_features
 
   has_many :flaggable_flags
@@ -89,41 +83,16 @@ class Detour::Feature < ActiveRecord::Base
   def match_groups?(instance)
     klass = instance.class.to_s
 
-    return unless self.class.defined_groups[klass]
+    return unless Detour.config.defined_groups[klass]
 
     group_names = group_flags.find_all_by_flaggable_type(klass).collect(&:group_name)
 
-    self.class.defined_groups[klass].collect { |group_name, block|
+    Detour.config.defined_groups[klass].collect { |group_name, block|
       block.call(instance) if group_names.include? group_name
     }.any?
   end
 
   class << self
-    # Returns the defined groups.
-    def defined_groups
-      @defined_groups
-    end
-
-    # Returns the default flaggable class.
-    def default_flaggable_class_name
-      @default_flaggable_class_name
-    end
-
-    # Sets the default flaggable class.
-    def default_flaggable_class_name=(klass)
-      @default_flaggable_class_name = klass
-    end
-
-    # A list of directories to search through when finding feature checks.
-    def grep_dirs
-      @grep_dirs
-    end
-
-    # Set the list of directories to search through when finding feature checks.
-    def grep_dirs=(grep_dirs)
-      @grep_dirs = grep_dirs
-    end
-
     # Return an array of both every feature in the database as well as every
     # feature that is checked for in `@grep_dirs`. Features that are checked
     # for but not persisted will be returned as unpersisted instances of this
@@ -135,7 +104,7 @@ class Detour::Feature < ActiveRecord::Base
     def all_with_lines
       obj = all.each_with_object({}) { |feature, obj| obj[feature.name] = feature }
 
-      Dir[*@grep_dirs].each do |path|
+      Dir[*Detour.config.grep_dirs].each do |path|
         next if File.directory? path
 
         File.open path do |file|
@@ -284,29 +253,6 @@ class Detour::Feature < ActiveRecord::Base
     def remove_percentage_from_feature(flaggable_type, feature_name)
       feature = find_by_name!(feature_name)
       feature.percentage_flags.where(flaggable_type: flaggable_type).destroy_all
-    end
-
-    # Allows for methods of the form `define_user_group` that call the private
-    # method `define_group_for_class`. A new group for any `User` records will
-    # be created that rollouts can be attached to.
-    #
-    # @example
-    #   Detour::Feature.define_user_group :admins do |user|
-    #     user.admin?
-    #   end
-    def method_missing(method, *args, &block)
-      if /^define_(?<klass>[a-z0-9_]+)_group/ =~ method
-        define_group_for_class(klass.classify, args[0], &block)
-      else
-        super
-      end
-    end
-
-    private
-
-    def define_group_for_class(klass, group_name, &block)
-      @defined_groups[klass] ||= {}
-      @defined_groups[klass][group_name] = block
     end
   end
 end

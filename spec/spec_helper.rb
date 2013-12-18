@@ -25,7 +25,7 @@ RSpec.configure do |config|
   end
 
   config.after :each do
-    Detour::Feature.instance_variable_set "@defined_groups", {}
-    Detour::Feature.instance_variable_set "@default_flaggable_class_name", nil
+    Detour.config.instance_variable_set "@defined_groups", {}
+    Detour.config.default_flaggable_class_name = nil
   end
 end

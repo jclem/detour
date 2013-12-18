@@ -1,6 +1,7 @@
 require "detour/engine"
 require "detour/acts_as_flaggable"
 require "detour/flaggable"
+require "detour/configuration"
 
 module Detour
   # Allows for configuration of Detour::Feature, mostly intended
@@ -14,16 +15,14 @@ module Detour
   #   end
   def self.configure(&block)
     ActionDispatch::Reloader.to_prepare do
-      yield Detour::Feature
+      yield Detour.config
     end
   end
-end
 
-# class Detour::Task < Rails::Railtie
-  # rake_tasks do
-    # Dir[File.join(File.dirname(__FILE__), '../tasks/*.rake')].each { |f| load f }
-  # end
-# end
+  def self.config
+    @config ||= Detour::Configuration.new
+  end
+end
 
 if defined?(ActiveRecord::Base)
   ActiveRecord::Base.extend Detour::ActsAsFlaggable

@@ -17,7 +17,7 @@ describe Detour::Feature do
     let(:feature) { create :feature, name: "foo" }
 
     before do
-      Detour::Feature.grep_dirs = ["/foo/**/*.rb"]
+      Detour.config.grep_dirs = ["/foo/**/*.rb"]
 
       FileUtils.mkdir("/foo")
 
@@ -52,14 +52,6 @@ describe Detour::Feature do
     it "fetches lines for un-persisted features" do
       unpersisted_feature = Detour::Feature.all_with_lines.detect { |f| f.name == "bar" }
       unpersisted_feature.lines.should eq %w[/foo/bar.rb#L4 /foo/baz.rb#L1 /foo/baz.rb#L3]
-    end
-  end
-
-  describe ".define_{klass}_group" do
-    let(:block) { Proc.new {} }
-    it "defines a group for the given class" do
-      Detour::Feature.should_receive(:define_group_for_class).with("User", :id_is_1)
-      Detour::Feature.define_user_group :id_is_1, block
     end
   end
 
@@ -123,7 +115,7 @@ describe Detour::Feature do
     let(:feature) { create :feature }
 
     before do
-      Detour::Feature.define_user_group :bar do
+      Detour.config.define_user_group :bar do
       end
       Detour::Feature.add_group_to_feature "User", :bar, feature.name
     end
@@ -137,7 +129,7 @@ describe Detour::Feature do
     let(:feature) { create :feature }
 
     before do
-      Detour::Feature.define_user_group :bar do
+      Detour.config.define_user_group :bar do
       end
       Detour::Feature.add_group_to_feature "User", :bar, feature.name
       Detour::Feature.remove_group_from_feature "User", :bar, feature.name
@@ -170,18 +162,6 @@ describe Detour::Feature do
 
     it "creates a flag for the given percentage and feature" do
       feature.percentage_flags.where(flaggable_type: "User").first.should be_nil
-    end
-  end
-
-  describe ".define_group_for_class" do
-    let(:block) { Proc.new {} }
-
-    before do
-      Detour::Feature.send :define_group_for_class, "User", "user_id_1", &block
-    end
-
-    it "defines a group for the given class" do
-      Detour::Feature.defined_groups["User"].should eq({ "user_id_1" => block })
     end
   end
 
@@ -255,7 +235,7 @@ describe Detour::Feature do
     let!(:flag)   { create :group_flag, feature: feature, flaggable_type: user.class.to_s, group_name: "foo_users" }
 
     before do
-      Detour::Feature.define_user_group "foo_users" do |user|
+      Detour.config.define_user_group "foo_users" do |user|
         user.name == "foo"
       end
     end

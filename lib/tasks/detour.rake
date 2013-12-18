@@ -12,8 +12,8 @@ namespace :detour do
 
   desc "Activate a feature for a record"
   task :activate, [:feature, :flaggable_type, :flaggable_id] => :environment do |task, args|
-    if args.to_a.length < 3 && Detour::Feature.default_flaggable_class_name
-      klass = Detour::Feature.default_flaggable_class_name.constantize
+    if args.to_a.length < 3 && Detour.config.default_flaggable_class_name
+      klass = Detour.config.default_flaggable_class_name.constantize
       record_locator = args[:flaggable_type]
     else
       klass = args[:flaggable_type].constantize
@@ -27,8 +27,8 @@ namespace :detour do
 
   desc "Deactivate a feature for a record"
   task :deactivate, [:feature, :flaggable_type, :flaggable_id] => :environment do |task, args|
-    if args.to_a.length < 3 && Detour::Feature.default_flaggable_class_name
-      klass = Detour::Feature.default_flaggable_class_name.constantize
+    if args.to_a.length < 3 && Detour.config.default_flaggable_class_name
+      klass = Detour.config.default_flaggable_class_name.constantize
       record_locator = args[:flaggable_type]
     else
       klass = args[:flaggable_type].constantize
@@ -41,8 +41,8 @@ namespace :detour do
 
   desc "Opt a record out of a feature"
   task :opt_out, [:feature, :flaggable_type, :flaggable_id] => :environment do |task, args|
-    if args.to_a.length < 3 && Detour::Feature.default_flaggable_class_name
-      klass = Detour::Feature.default_flaggable_class_name.constantize
+    if args.to_a.length < 3 && Detour.config.default_flaggable_class_name
+      klass = Detour.config.default_flaggable_class_name.constantize
       record_locator = args[:flaggable_type]
     else
       klass = args[:flaggable_type].constantize
@@ -55,8 +55,8 @@ namespace :detour do
 
   desc "Remove an opt out of a record from a feature"
   task :un_opt_out, [:feature, :flaggable_type, :flaggable_id] => :environment do |task, args|
-    if args.to_a.length < 3 && Detour::Feature.default_flaggable_class_name
-      klass = Detour::Feature.default_flaggable_class_name.constantize
+    if args.to_a.length < 3 && Detour.config.default_flaggable_class_name
+      klass = Detour.config.default_flaggable_class_name.constantize
       record_locator = args[:flaggable_type]
     else
       klass = args[:flaggable_type].constantize
@@ -69,8 +69,8 @@ namespace :detour do
 
   desc "Activate a feature for a group"
   task :activate_group, [:feature, :flaggable_type, :group_name] => :environment do |task, args|
-    if args.to_a.length < 3 && Detour::Feature.default_flaggable_class_name
-      klass = Detour::Feature.default_flaggable_class_name
+    if args.to_a.length < 3 && Detour.config.default_flaggable_class_name
+      klass = Detour.config.default_flaggable_class_name
       group_name = args[:flaggable_type]
     else
       klass = args[:flaggable_type]
@@ -82,8 +82,8 @@ namespace :detour do
 
   desc "Deactivate a feature for a group"
   task :deactivate_group, [:feature, :flaggable_type, :group_name] => :environment do |task, args|
-    if args.to_a.length < 3 && Detour::Feature.default_flaggable_class_name
-      klass = Detour::Feature.default_flaggable_class_name
+    if args.to_a.length < 3 && Detour.config.default_flaggable_class_name
+      klass = Detour.config.default_flaggable_class_name
       group_name = args[:flaggable_type]
     else
       klass = args[:flaggable_type]
@@ -95,8 +95,8 @@ namespace :detour do
 
   desc "Activate a feature for a percentage"
   task :activate_percentage, [:feature, :flaggable_type, :percentage] => :environment do |task, args|
-    if args.to_a.length < 3 && Detour::Feature.default_flaggable_class_name
-      klass = Detour::Feature.default_flaggable_class_name
+    if args.to_a.length < 3 && Detour.config.default_flaggable_class_name
+      klass = Detour.config.default_flaggable_class_name
       percentage = args[:flaggable_type]
     else
       klass = args[:flaggable_type]
@@ -108,8 +108,8 @@ namespace :detour do
 
   desc "Deactivate a feature for a percentage"
   task :deactivate_percentage, [:feature, :flaggable_type] => :environment do |task, args|
-    if args.to_a.length < 3 && Detour::Feature.default_flaggable_class_name
-      klass = Detour::Feature.default_flaggable_class_name
+    if args.to_a.length < 3 && Detour.config.default_flaggable_class_name
+      klass = Detour.config.default_flaggable_class_name
     else
       klass = args[:flaggable_type]
     end

@@ -7,7 +7,7 @@ describe "group rollouts" do
 
   describe "creating a group rollout" do
     before do
-      Detour::Feature.define_user_group "foo_users" do |user|
+      Detour.config.define_user_group "foo_users" do |user|
         user.name == "foo"
       end
     end

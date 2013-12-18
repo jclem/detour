@@ -132,7 +132,7 @@ describe Detour::Flaggable do
 
         context "and the user is flagged in via a group" do
           before do
-            Detour::Feature.define_user_group "name_foo" do |_user|
+            Detour.config.define_user_group "name_foo" do |_user|
               _user.name == user.name
             end
 
