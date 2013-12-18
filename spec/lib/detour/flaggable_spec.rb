@@ -24,18 +24,18 @@ describe Detour::Flaggable do
   end
 
   describe "#has_feature?" do
-    let(:user) { User.create(name: "foo") }
-    let(:feature) { Detour::Feature.create(name: "bar") }
+    let(:user)    { create :user }
+    let(:feature) { create :feature }
 
     it "memoizes found features" do
       Detour::Feature.stub(:find_by_name) { feature }
       feature.flaggable_flags.create(flaggable: user)
 
       feature.should_receive(:match?).with(user).and_return(true)
-      user.has_feature?(:bar)
+      user.has_feature?(feature.name)
 
       feature.should_not_receive(:match?).with(user)
-      user.has_feature?(:bar)
+      user.has_feature?(feature.name)
     end
 
     context "when given a block" do
@@ -46,7 +46,7 @@ describe Detour::Flaggable do
 
         it "calls the block" do
           foo = "foo"
-          user.has_feature?(:bar) { foo = "bar" }
+          user.has_feature?(feature.name) { foo = "bar" }
           foo.should eq "bar"
         end
 
@@ -64,7 +64,7 @@ describe Detour::Flaggable do
         context "when the block raises an exception" do
           it "increments the failure_count of the feature" do
             begin
-              user.has_feature? :bar do
+              user.has_feature? feature.name do
                 raise "This is an exception"
               end
             rescue
@@ -74,7 +74,7 @@ describe Detour::Flaggable do
 
           it "raises the exception" do
             expect do
-              user.has_feature? :bar do
+              user.has_feature? feature.name do
                 raise "This is an exception"
               end
             end.to raise_error "This is an exception"
@@ -85,7 +85,7 @@ describe Detour::Flaggable do
       context "and the user is not flagged in" do
         it "does not call the block" do
           foo = "foo"
-          user.has_feature?(:bar) { foo = "bar" }
+          user.has_feature?(feature.name) { foo = "bar" }
           foo.should eq "foo"
         end
       end
@@ -93,7 +93,7 @@ describe Detour::Flaggable do
 
     context "when the user is not flagged in" do
       it "returns false" do
-        user.has_feature?(:bar).should be_false
+        user.has_feature?(feature.name).should be_false
       end
     end
 
@@ -105,7 +105,7 @@ describe Detour::Flaggable do
         end
 
         it "returns false" do
-          user.has_feature?(:bar).should be_false
+          user.has_feature?(feature.name).should be_false
         end
       end
 
@@ -116,7 +116,7 @@ describe Detour::Flaggable do
           end
 
           it "returns true" do
-            user.has_feature?(:bar).should be_true
+            user.has_feature?(feature.name).should be_true
           end
         end
 
@@ -126,21 +126,21 @@ describe Detour::Flaggable do
           end
 
           it "returns true" do
-            user.has_feature?(:bar).should be_true
+            user.has_feature?(feature.name).should be_true
           end
         end
 
         context "and the user is flagged in via a group" do
           before do
-            Detour::Feature.define_user_group "name_foo" do |user|
-              user.name == "foo"
+            Detour::Feature.define_user_group "name_foo" do |_user|
+              _user.name == user.name
             end
 
             feature.group_flags.create(flaggable_type: "User", group_name: "name_foo")
           end
 
           it "returns true" do
-            user.has_feature?(:bar).should be_true
+            user.has_feature?(feature.name).should be_true
           end
         end
       end

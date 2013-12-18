@@ -1,36 +1,27 @@
-require "rails"
-require "active_record"
-require "detour"
+ENV["RAILS_ENV"] ||= "test"
+
+require File.expand_path("../dummy/config/environment.rb",  __FILE__)
+
+require "rspec/rails"
+require "rspec/autorun"
+require "factory_girl_rails"
 require "shoulda-matchers"
-require "generators/templates/migration"
-require "support/shared_contexts/rake"
 require "pry"
 
-class User < ActiveRecord::Base
-  acts_as_flaggable
-end
+Rails.backtrace_cleaner.remove_silencers!
 
-class Organization < ActiveRecord::Base
-  acts_as_flaggable
-end
+# Load support files
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 RSpec.configure do |config|
-  config.before :suite do
-    ActiveRecord::Base.establish_connection \
-      adapter: "sqlite3",
-      database: File.dirname(__FILE__) + "/spec.sqlite3"
-
-    require File.dirname(__FILE__) + "/support/schema.rb"
-  end
-
-  config.before :each do
-    SetupDetour.migrate :up
-    ActiveRecord::Schema.migrate :up
-  end
+  config.mock_with :rspec
+  config.use_transactional_fixtures = true
+  config.infer_base_class_for_anonymous_controllers = false
+  config.order = "random"
+  config.include FactoryGirl::Syntax::Methods
 
   config.after :each do
-    SetupDetour.migrate :down
-    ActiveRecord::Schema.migrate :down
+    Rake::Task.tasks.each { |t| t.reenable }
   end
 
   config.after :each do

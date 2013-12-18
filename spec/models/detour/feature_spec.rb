@@ -14,7 +14,7 @@ describe Detour::Feature do
   describe ".all_with_lines" do
     include FakeFS::SpecHelpers
 
-    let!(:feature) { Detour::Feature.create!(name: "foo") }
+    let(:feature) { create :feature, name: "foo" }
 
     before do
       Detour::Feature.grep_dirs = ["/foo/**/*.rb"]
@@ -64,11 +64,11 @@ describe Detour::Feature do
   end
 
   describe ".add_record_to_feature" do
-    let(:user) { User.create }
-    let!(:feature) { Detour::Feature.create!(name: "foo") }
+    let(:user)    { create :user }
+    let(:feature) { create :feature }
 
     before do
-      Detour::Feature.add_record_to_feature user, :foo
+      Detour::Feature.add_record_to_feature user, feature.name
     end
 
     it "creates a flag for the given instance and feature" do
@@ -77,12 +77,12 @@ describe Detour::Feature do
   end
 
   describe ".remove_record_from_feature" do
-    let(:user) { User.create }
-    let!(:feature) { Detour::Feature.create!(name: "foo") }
+    let(:user)    { create :user }
+    let(:feature) { create :feature }
 
     before do
-      Detour::Feature.add_record_to_feature user, :foo
-      Detour::Feature.remove_record_from_feature user, :foo
+      Detour::Feature.add_record_to_feature user, feature.name
+      Detour::Feature.remove_record_from_feature user, feature.name
     end
 
     it "creates a flag for the given instance and feature" do
@@ -91,41 +91,41 @@ describe Detour::Feature do
   end
 
   describe ".opt_record_out_of_feature" do
-    let(:user) { User.create }
-    let!(:feature) { Detour::Feature.create!(name: "foo") }
+    let(:user)    { create :user }
+    let(:feature) { create :feature }
 
     before do
-      Detour::Feature.add_percentage_to_feature "User", 100, "foo"
-      Detour::Feature.opt_record_out_of_feature user, "foo"
+      Detour::Feature.add_percentage_to_feature user.class.to_s, 100, feature.name
+      Detour::Feature.opt_record_out_of_feature user, feature.name
     end
 
     it "opts the record out of the feature" do
-      user.has_feature?("foo").should be_false
+      user.has_feature?(feature.name).should be_false
     end
   end
 
   describe ".un_opt_record_out_of_feature" do
-    let(:user) { User.create }
-    let!(:feature) { Detour::Feature.create!(name: "foo") }
+    let(:user)    { create :user }
+    let(:feature) { create :feature }
 
     before do
-      Detour::Feature.add_percentage_to_feature "User", 100, "foo"
-      Detour::Feature.opt_record_out_of_feature user, "foo"
-      Detour::Feature.un_opt_record_out_of_feature user, "foo"
+      Detour::Feature.add_percentage_to_feature user.class.to_s, 100, feature.name
+      Detour::Feature.opt_record_out_of_feature user, feature.name
+      Detour::Feature.un_opt_record_out_of_feature user, feature.name
     end
 
     it "opts the record out of the feature" do
-      user.has_feature?("foo").should be_true
+      user.has_feature?(feature.name).should be_true
     end
   end
 
   describe ".add_group_to_feature" do
-    let!(:feature) { Detour::Feature.create!(name: "foo") }
+    let(:feature) { create :feature }
 
     before do
       Detour::Feature.define_user_group :bar do
       end
-      Detour::Feature.add_group_to_feature "User", :bar, "foo"
+      Detour::Feature.add_group_to_feature "User", :bar, feature.name
     end
 
     it "creates a flag for the given group and feature" do
@@ -134,13 +134,13 @@ describe Detour::Feature do
   end
 
   describe ".remove_group_from_feature" do
-    let!(:feature) { Detour::Feature.create!(name: "foo") }
+    let(:feature) { create :feature }
 
     before do
       Detour::Feature.define_user_group :bar do
       end
-      Detour::Feature.add_group_to_feature "User", :bar, "foo"
-      Detour::Feature.remove_group_from_feature "User", :bar, "foo"
+      Detour::Feature.add_group_to_feature "User", :bar, feature.name
+      Detour::Feature.remove_group_from_feature "User", :bar, feature.name
     end
 
     it "destroys flags for the given group and feature" do
@@ -149,10 +149,10 @@ describe Detour::Feature do
   end
 
   describe ".add_percentage_to_feature" do
-    let!(:feature) { Detour::Feature.create!(name: "foo") }
+    let(:feature) { create :feature }
 
     before do
-      Detour::Feature.add_percentage_to_feature "User", 50, "foo"
+      Detour::Feature.add_percentage_to_feature "User", 50, feature.name
     end
 
     it "creates a flag for the given percentage and feature" do
@@ -161,11 +161,11 @@ describe Detour::Feature do
   end
 
   describe ".remove_percentage_from_feature" do
-    let!(:feature) { Detour::Feature.create!(name: "foo") }
+    let(:feature) { create :feature }
 
     before do
-      Detour::Feature.add_percentage_to_feature "User", 50, "foo"
-      Detour::Feature.remove_percentage_from_feature "User", "foo"
+      Detour::Feature.add_percentage_to_feature "User", 50, feature.name
+      Detour::Feature.remove_percentage_from_feature "User", feature.name
     end
 
     it "creates a flag for the given percentage and feature" do
@@ -175,6 +175,7 @@ describe Detour::Feature do
 
   describe ".define_group_for_class" do
     let(:block) { Proc.new {} }
+
     before do
       Detour::Feature.send :define_group_for_class, "User", "user_id_1", &block
     end
@@ -185,8 +186,8 @@ describe Detour::Feature do
   end
 
   describe "#match?" do
-    let(:user) { User.create }
-    let(:feature) { Detour::Feature.create(name: "foo") }
+    let(:user)    { create :user }
+    let(:feature) { create :feature }
 
     it "checks if the user is flagged individually" do
       feature.should_receive(:match_id?).with(user)
@@ -205,12 +206,12 @@ describe Detour::Feature do
   end
 
   describe "#match_id?" do
-    let(:user) { User.create }
-    let(:user2) { User.create }
-    let!(:feature) { Detour::Feature.create!(name: "foo") }
+    let(:user)    { create :user }
+    let(:user2)   { create :user }
+    let(:feature) { create :feature }
 
     before do
-      Detour::Feature.add_record_to_feature user, :foo
+      Detour::Feature.add_record_to_feature user, feature.name
     end
 
     context "when the feature exists for the instance" do
@@ -227,9 +228,9 @@ describe Detour::Feature do
   end
 
   describe "#match_percentage?" do
-    let(:user) { User.create }
-    let(:feature) { Detour::Feature.create!(name: "foo") }
-    let!(:flag) { feature.percentage_flags.create(flaggable_type: "User", percentage: 50) }
+    let(:user)    { create :user }
+    let(:feature) { create :feature }
+    let!(:flag)   { create :percentage_flag, feature: feature, flaggable_type: user.class.to_s, percentage: 50 }
 
     context "when the user's ID matches `id % 10 < percentage / 10" do
       it "returns true" do
@@ -247,11 +248,11 @@ describe Detour::Feature do
   end
 
   describe "#match_groups?" do
-    let!(:user) { User.create(name: "foo") }
-    let!(:user2) { User.create(name: "bar") }
-    let!(:organization) { Organization.create(name: "foo") }
-    let(:feature) { Detour::Feature.create!(name: "baz") }
-    let!(:flag) { feature.group_flags.create(flaggable_type: "User", group_name: "foo_users") }
+    let(:user)    { create :user, name: "foo" }
+    let(:user2)   { create :user }
+    let(:widget)  { create :widget }
+    let(:feature) { create :feature }
+    let!(:flag)   { create :group_flag, feature: feature, flaggable_type: user.class.to_s, group_name: "foo_users" }
 
     before do
       Detour::Feature.define_user_group "foo_users" do |user|
@@ -273,7 +274,7 @@ describe Detour::Feature do
 
     context "when the instance is not of the type of the block" do
       it "returns false" do
-        feature.match_groups?(organization).should be_false
+        feature.match_groups?(widget).should be_false
       end
     end
   end

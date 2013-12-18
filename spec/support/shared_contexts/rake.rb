@@ -1,20 +1,10 @@
 require "rake"
 
+APP_RAKEFILE = File.expand_path("../../../../spec/dummy/Rakefile", __FILE__)
+load "rails/tasks/engine.rake"
+
 # Hat tip: http://robots.thoughtbot.com/test-rake-tasks-like-a-boss
 shared_context "rake" do
-  let(:rake)      { Rake::Application.new }
   let(:task_name) { self.class.top_level_description }
-  let(:task_path) { File.join(File.dirname(__FILE__), "../../../lib/tasks/#{task_name.split(":").first}") }
-  subject         { rake[task_name] }
-
-  def loaded_files_excluding_current_rake_file
-    $".reject { |file| file == "#{task_path}.rake" }
-  end
-
-  before do
-    Rake.application = rake
-    Rake.application.rake_require(task_path, [Rails.root.to_s], loaded_files_excluding_current_rake_file)
-
-    Rake::Task.define_task(:environment)
-  end
+  subject         { Rake::Task["app:#{task_name}"] }
 end
