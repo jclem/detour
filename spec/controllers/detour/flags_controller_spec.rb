@@ -10,7 +10,7 @@ describe Detour::FlagsController do
     end
 
     it "assigns every feature with lines" do
-      assigns(:features).collect(&:name).should eq Detour::Feature.all_with_lines.collect(&:name)
+      assigns(:features).collect(&:name).should eq Detour::Feature.with_lines.collect(&:name)
     end
 
     it "renders the 'index' template" do

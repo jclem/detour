@@ -11,7 +11,7 @@ describe Detour::Feature do
   it { should validate_uniqueness_of :name }
   it { should allow_mass_assignment_of :name }
 
-  describe ".all_with_lines" do
+  describe ".with_lines" do
     include FakeFS::SpecHelpers
 
     let(:feature) { create :feature, name: "foo" }
@@ -45,12 +45,12 @@ describe Detour::Feature do
     end
 
     it "fetches lines for persisted features" do
-      persisted_feature = Detour::Feature.all_with_lines.detect { |f| f.name == feature.name }
+      persisted_feature = Detour::Feature.with_lines.detect { |f| f.name == feature.name }
       persisted_feature.lines.should eq %w[/foo/bar.rb#L1 /foo/bar.rb#L7 /foo/baz.rb#L1]
     end
 
     it "fetches lines for un-persisted features" do
-      unpersisted_feature = Detour::Feature.all_with_lines.detect { |f| f.name == "bar" }
+      unpersisted_feature = Detour::Feature.with_lines.detect { |f| f.name == "bar" }
       unpersisted_feature.lines.should eq %w[/foo/bar.rb#L4 /foo/baz.rb#L1 /foo/baz.rb#L3]
     end
   end
