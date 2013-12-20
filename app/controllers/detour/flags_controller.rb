@@ -8,15 +8,18 @@ class Detour::FlagsController < Detour::ApplicationController
   def update
     @features = Detour::Feature.includes("#{params[:flaggable_type]}_percentage_flag").with_lines
 
-    results = @features.map do |feature|
-      feature.update_attributes params[:features][feature.name]
-    end
+    Detour::Feature.transaction do |transaction|
+      @features.map do |feature|
+        feature.update_attributes params[:features][feature.name]
+      end
 
-    if results.all?
-      flash[:notice] = "Your flags have been successfully updated."
-      redirect_to flags_path
-    else
-      render :index
+      if @features.any? { |feature| feature.errors.any? }
+        render :index
+        raise ActiveRecord::Rollback
+      else
+        flash[:notice] = "Your flags have been successfully updated."
+        redirect_to flags_path
+      end
     end
   end
 

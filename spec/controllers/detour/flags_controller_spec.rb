@@ -66,7 +66,7 @@ describe Detour::FlagsController do
       end
 
       it "does not save anything" do
-        feature.users_percentage_flag.should_not be_persisted
+        feature.users_percentage_flag.should be_nil
       end
 
       it "renders the index template" do

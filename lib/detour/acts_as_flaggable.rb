@@ -18,11 +18,10 @@ module Detour::ActsAsFlaggable
         conditions: { flaggable_type: "#{self}" }
 
       attr_accessible :#{table_name}_percentage_flag_attributes
-      accepts_nested_attributes_for :#{table_name}_percentage_flag, reject_if: :all_blank
 
-      def #{table_name}_percentage_flag
-        super || build_#{table_name}_percentage_flag
-      end
+      accepts_nested_attributes_for :#{table_name}_percentage_flag,
+        update_only: true,
+        reject_if: proc { |attrs| attrs[:percentage].blank? }
     EOF
 
     class_eval do
