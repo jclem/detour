@@ -54,8 +54,8 @@ class Detour::FlagForm
     flag_params = params[key]
 
     if flag.present? && flag_params[:percentage].blank?
-      feature.users_percentage_flag.mark_for_destruction
-      feature.users_percentage_flag = nil
+      feature.send("#{@flaggable_type}_percentage_flag").mark_for_destruction
+      feature.send("#{@flaggable_type}_percentage_flag=", nil)
     end
 
     if flag.present? && flag_params[:percentage].to_i == flag.percentage
