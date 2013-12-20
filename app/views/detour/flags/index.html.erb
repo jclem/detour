@@ -39,5 +39,11 @@
     </table>
   </div>
 
-  <%= submit_tag "Save Changes", class: "btn btn-primary pull-right" %>
+  <div class="btn-group pull-right">
+    <% if @flag_form.features.any? { |feature| feature.errors.any? } %>
+      <%= link_to "Cancel", request.path, class: "btn btn-default" %>
+    <% end %>
+
+    <%= submit_tag "Save Changes", class: "btn btn-primary" %>
+  </div>
 <% end %>
