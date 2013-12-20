@@ -3,7 +3,7 @@
     <td><%= feature %></td>
 
     <%= feature_form.fields_for "#{params[:flaggable_type]}_percentage_flag_attributes", feature.send("#{params[:flaggable_type]}_percentage_flag") do |percentage_flag_form| %>
-      <td><%= percentage_flag_form.text_field :percentage, class: "form-control" %></td>
+      <td><%= percentage_flag_form.text_field :percentage, class: "form-control input-sm" %></td>
     <% end %>
   <% end %>
 </tr>
