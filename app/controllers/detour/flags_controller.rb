@@ -2,24 +2,17 @@ class Detour::FlagsController < Detour::ApplicationController
   before_filter :ensure_flaggable_type_exists
 
   def index
-    @features = Detour::Feature.includes("#{params[:flaggable_type]}_percentage_flag").with_lines
+    @flag_form = Detour::FlagForm.new(params[:flaggable_type])
   end
 
   def update
-    @features = Detour::Feature.includes("#{params[:flaggable_type]}_percentage_flag").with_lines
+    @flag_form = Detour::FlagForm.new(params[:flaggable_type])
 
-    Detour::Feature.transaction do |transaction|
-      @features.map do |feature|
-        feature.update_attributes params[:features][feature.name]
-      end
-
-      if @features.any? { |feature| feature.errors.any? }
-        render :index
-        raise ActiveRecord::Rollback
-      else
-        flash[:notice] = "Your flags have been successfully updated."
-        redirect_to flags_path
-      end
+    if @flag_form.update_attributes(params)
+      flash[:notice] = "Your flags have been successfully updated."
+      redirect_to flags_path
+    else
+      render :index
     end
   end
 

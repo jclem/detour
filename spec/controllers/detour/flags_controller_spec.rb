@@ -9,8 +9,8 @@ describe Detour::FlagsController do
       get :index, flaggable_type: "users"
     end
 
-    it "assigns every feature with lines" do
-      assigns(:features).collect(&:name).should eq Detour::Feature.with_lines.collect(&:name)
+    it "assigns a new FlagForm" do
+      assigns(:flag_form).should be_a Detour::FlagForm
     end
 
     it "renders the 'index' template" do
@@ -27,7 +27,7 @@ describe Detour::FlagsController do
   describe "POST #update" do
     it "assigns every feature with lines" do
       post :update, flaggable_type: "users"
-      assigns(:features).collect(&:name).should eq Detour::Feature.with_lines.collect(&:name)
+      assigns(:flag_form).should be_a Detour::FlagForm
     end
 
     context "when the save is successful" do

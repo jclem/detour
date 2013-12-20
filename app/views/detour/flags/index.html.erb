@@ -8,9 +8,9 @@
 
 <h1><%= params[:flaggable_type].classify %> Flags</h1>
 
-<% if @features.any? { |feature| feature.errors.any? } %>
+<% if @flag_form.features.any? { |feature| feature.errors.any? } %>
   <ul class="list-group danger">
-    <% @features.each do |feature| %>
+    <% @flag_form.features.each do |feature| %>
       <% feature.errors.full_messages.each do |msg| %>
         <li class="list-group-item"><strong><%= feature.name %>:</strong> <%= msg %></li>
       <% end %>
@@ -29,7 +29,7 @@
       </thead>
 
       <tbody>
-        <%= render partial: "feature_form", collection: @features, as: :feature %>
+        <%= render partial: "feature_form", collection: @flag_form.features, as: :feature %>
       </tbody>
     </table>
   </div>
