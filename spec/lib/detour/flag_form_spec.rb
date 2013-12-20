@@ -34,7 +34,9 @@ describe Detour::FlagForm do
     end
 
     it "updates the feature attributes" do
-      Detour::Feature.any_instance.should_receive :update_attributes
+      Detour::Feature.any_instance.should_receive :assign_attributes
+      Detour::Feature.any_instance.stub(:changed_for_autosave?) { true }
+      Detour::Feature.any_instance.should_receive :save
       subject.update_attributes({ features: features_params })
     end
 
