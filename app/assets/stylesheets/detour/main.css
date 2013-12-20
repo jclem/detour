@@ -1,3 +1,15 @@
 body {
   padding-bottom: 40px;
 }
+
+.panel-danger {
+  margin-top: 20px;
+}
+
+.panel-danger ul {
+  margin-bottom: 0;
+}
+
+table.table tbody tr td {
+  vertical-align: middle;
+}

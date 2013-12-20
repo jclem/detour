@@ -9,13 +9,19 @@
 <h1><%= params[:flaggable_type].classify %> Flags</h1>
 
 <% if @flag_form.errors? %>
-  <ul class="list-group danger">
-    <% @flag_form.features.each do |feature| %>
-      <% feature.errors.full_messages.each do |msg| %>
-        <li class="list-group-item"><strong><%= feature.name %>:</strong> <%= msg %></li>
-      <% end %>
-    <% end %>
-  </ul>
+  <div class="panel panel-danger">
+    <div class="panel-heading">Whoops! There were some errors saving your flags:</div>
+
+    <div class="panel-body">
+      <ul>
+        <% @flag_form.features.each do |feature| %>
+          <% feature.errors.full_messages.each do |msg| %>
+              <li><strong><%= feature.name %>:</strong> <%= msg %></li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </div>
 <% end %>
 
 <%= form_tag do %>
