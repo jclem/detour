@@ -13,6 +13,7 @@ module Detour::ActsAsFlaggable
     Detour::Feature.class_eval <<-EOF
       has_one :#{table_name}_percentage_flag,
         class_name: "Detour::PercentageFlag",
+        inverse_of: :feature,
         dependent:  :destroy,
         conditions: { flaggable_type: "#{self}" }
 
@@ -24,6 +25,7 @@ module Detour::ActsAsFlaggable
 
       has_many :#{table_name}_group_flags,
         class_name: "Detour::GroupFlag",
+        inverse_of: :feature,
         dependent: :destroy,
         conditions: { flaggable_type: "#{self}" }
 
