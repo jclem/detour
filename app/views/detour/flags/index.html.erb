@@ -1,15 +1,17 @@
 <h1><%= params[:flaggable_type].classify %> Flags</h1>
 
 <%= form_tag do %>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Feature</th>
-      </tr>
-    </thead>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Feature</th>
+        </tr>
+      </thead>
 
-    <tbody>
-      <%= render partial: "feature_form", collection: @features, as: :feature %>
-    </tbody>
-  </table>
+      <tbody>
+        <%= render partial: "feature_form", collection: @features, as: :feature %>
+      </tbody>
+    </table>
+  </div>
 <% end %>
