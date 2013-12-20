@@ -24,6 +24,11 @@
       <thead>
         <tr>
           <th>Feature</th>
+
+          <% @flag_form.groups.each do |group| %>
+            <th><%= group %></th>
+          <% end %>
+
           <th>Percentage</th>
         </tr>
       </thead>

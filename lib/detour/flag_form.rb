@@ -7,6 +7,10 @@ class Detour::FlagForm
     @features ||= Detour::Feature.includes("#{@flaggable_type}_percentage_flag").with_lines
   end
 
+  def groups
+    @groups ||= Detour.config.defined_groups.fetch(@flaggable_type.classify, {}).keys
+  end
+
   def update_attributes(params)
     Detour::Feature.transaction do |transaction|
       features.map do |feature|
