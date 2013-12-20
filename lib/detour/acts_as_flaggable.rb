@@ -14,10 +14,11 @@ module Detour::ActsAsFlaggable
       has_one :#{table_name}_percentage_flag,
         class_name: "Detour::PercentageFlag",
         dependent:  :destroy,
-        inverse_of: :feature
+        inverse_of: :feature,
+        conditions: { flaggable_type: "#{self}" }
 
-      attr_accessible :users_percentage_flag_attributes
-      accepts_nested_attributes_for :users_percentage_flag, reject_if: :all_blank
+      attr_accessible :#{table_name}_percentage_flag_attributes
+      accepts_nested_attributes_for :#{table_name}_percentage_flag, reject_if: :all_blank
 
       def #{table_name}_percentage_flag
         super || build_#{table_name}_percentage_flag
