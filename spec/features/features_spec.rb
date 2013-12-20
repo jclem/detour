@@ -5,7 +5,7 @@ describe "listing features for a type" do
 
   before do
     Detour.config.grep_dirs = %w[spec/dummy/app/**/*.{rb,erb}]
-    visit "/detour/flags/user"
+    visit "/detour/flags/users"
   end
 
   it "lists every persisted feature" do
