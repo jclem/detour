@@ -15,14 +15,14 @@ describe Detour::FlagForm do
     end
   end
 
-  describe "#groups" do
+  describe "#group_names" do
     before do
       Detour.config.define_user_group :admins do |user|
       end
     end
 
     it "returns the name of defined groups" do
-      subject.groups.should eq [:admins]
+      subject.group_names.should eq ["admins"]
     end
   end
 

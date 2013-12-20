@@ -3,6 +3,10 @@ Detour.configure do |config|
     user.admin?
   end
 
+  config.define_user_group :vip do |user|
+    user.admin?
+  end
+
   config.define_widget_group :foo do |widget|
   end
 

@@ -14,7 +14,6 @@ module Detour::ActsAsFlaggable
       has_one :#{table_name}_percentage_flag,
         class_name: "Detour::PercentageFlag",
         dependent:  :destroy,
-        inverse_of: :feature,
         conditions: { flaggable_type: "#{self}" }
 
       attr_accessible :#{table_name}_percentage_flag_attributes
@@ -22,6 +21,15 @@ module Detour::ActsAsFlaggable
       accepts_nested_attributes_for :#{table_name}_percentage_flag,
         update_only: true,
         reject_if: proc { |attrs| attrs[:percentage].blank? }
+
+      has_many :#{table_name}_group_flags,
+        class_name: "Detour::GroupFlag",
+        dependent: :destroy,
+        conditions: { flaggable_type: "#{self}" }
+
+      attr_accessible :#{table_name}_group_flags_attributes
+
+      accepts_nested_attributes_for :#{table_name}_group_flags, allow_destroy: true
     EOF
 
     class_eval do
