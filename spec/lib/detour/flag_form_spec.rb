@@ -16,14 +16,20 @@ describe Detour::FlagForm do
   end
 
   describe "#update_attributes" do
+    let(:features_params) do
+      {
+        "foo_feature" => { users_percentage_flag_attributes: {} }
+      }
+    end
+
     it "updates the feature attributes" do
       Detour::Feature.any_instance.should_receive :update_attributes
-      subject.update_attributes({ features: {} })
+      subject.update_attributes({ features: features_params })
     end
 
     context "when successful" do
       it "returns true" do
-        subject.update_attributes({ features: {} }).should be_true
+        subject.update_attributes({ features: features_params }).should be_true
       end
     end
 
@@ -41,6 +47,24 @@ describe Detour::FlagForm do
         } })
 
         feature2.users_percentage_flag.should be_nil
+      end
+    end
+
+    context "when a percentage flag should be removed" do
+      let!(:percentage_flag) { create :percentage_flag, feature: feature }
+
+      let(:features_params) do
+        {
+          "foo_feature" => { users_percentage_flag_attributes: { percentage: "" } },
+        }
+      end
+
+      before do
+        subject.update_attributes({ features: features_params });
+      end
+
+      it "destroys the percentage flag" do
+        feature.reload.users_percentage_flag.should be_nil
       end
     end
   end

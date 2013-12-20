@@ -46,3 +46,18 @@ describe "creating a percentage flag" do
     end
   end
 end
+
+describe "destroying a percentage flag" do
+  let(:feature)          { create :feature }
+  let!(:percentage_flag) { create :percentage_flag, feature: feature }
+
+  before do
+    visit "/detour/flags/users"
+    fill_in "features[#{feature.name}][users_percentage_flag_attributes][percentage]", with: ""
+    click_button "Save Changes"
+  end
+
+  it "destroys the percentage flag" do
+    feature.users_percentage_flag.should be_nil
+  end
+end
