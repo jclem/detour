@@ -1,4 +1,22 @@
+<% if flash.notice %>
+  <div class="alert alert-success"><%= flash.notice %></div>
+<% end %>
+
+<% if flash.alert %>
+  <div class="alert alert-danger"><%= flash.alert %></div>
+<% end %>
+
 <h1><%= params[:flaggable_type].classify %> Flags</h1>
+
+<% if @features.any? { |feature| feature.errors.any? } %>
+  <ul class="list-group danger">
+    <% @features.each do |feature| %>
+      <% feature.errors.full_messages.each do |msg| %>
+        <li class="list-group-item"><strong><%= feature.name %>:</strong> <%= msg %></li>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>
 
 <%= form_tag do %>
   <div class="table-responsive">
@@ -15,4 +33,6 @@
       </tbody>
     </table>
   </div>
+
+  <%= submit_tag "Save Changes", class: "btn btn-primary pull-right" %>
 <% end %>
