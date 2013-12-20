@@ -7,6 +7,10 @@ class Detour::FlagForm
     @features ||= Detour::Feature.includes("#{@flaggable_type}_percentage_flag", "#{@flaggable_type}_group_flags").with_lines
   end
 
+  def errors?
+    features.any? { |feature| feature.errors.any? }
+  end
+
   def group_names
     return @group_names if @group_names
     all_names           = features.collect { |feature| feature.send("#{@flaggable_type}_group_flags").collect(&:group_name) }.flatten.map(&:to_s).uniq

@@ -8,7 +8,7 @@
 
 <h1><%= params[:flaggable_type].classify %> Flags</h1>
 
-<% if @flag_form.features.any? { |feature| feature.errors.any? } %>
+<% if @flag_form.errors? %>
   <ul class="list-group danger">
     <% @flag_form.features.each do |feature| %>
       <% feature.errors.full_messages.each do |msg| %>
@@ -40,7 +40,7 @@
   </div>
 
   <div class="btn-group pull-right">
-    <% if @flag_form.features.any? { |feature| feature.errors.any? } %>
+    <% if @flag_form.errors? %>
       <%= link_to "Cancel", request.path, class: "btn btn-default" %>
     <% end %>
 
