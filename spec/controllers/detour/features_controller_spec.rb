@@ -40,6 +40,10 @@ describe Detour::FeaturesController do
       Detour::Feature.find_by_id(feature.id).should be_nil
     end
 
+    it "displays a flash message" do
+      flash[:notice].should eq "Feature #{feature.name} has been destroyed."
+    end
+
     it "renders the destroyed template" do
       response.should redirect_to flags_path(:users)
     end

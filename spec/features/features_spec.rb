@@ -58,6 +58,10 @@ describe "destroying a feature", js: true do
     click_link "Delete Feature"
   end
 
+  it "displays a flash message" do
+    page.should have_content "Feature #{feature.name} has been destroyed."
+  end
+
   it "destroys the feature" do
     Detour::Feature.find_by_id(feature.id).should be_nil
   end
