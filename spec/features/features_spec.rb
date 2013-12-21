@@ -20,7 +20,7 @@ end
 describe "creating a new feature", js: true do
   before do
     visit "/detour/flags/users"
-    click_link "Create a Feature"
+    click_button "Create a Feature"
   end
 
   context "when successful" do
