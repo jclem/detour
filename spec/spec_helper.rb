@@ -45,8 +45,11 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
-  config.after :each do
+  config.before :each do
     User.instance_variable_set "@detour_flaggable_find_by", :id
+  end
+
+  config.after :each do
     Detour.config.default_flaggable_class_name = nil
     Detour.config.grep_dirs = []
     Detour.config.instance_variable_set "@defined_groups", {}
