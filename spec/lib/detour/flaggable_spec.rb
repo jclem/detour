@@ -29,7 +29,7 @@ describe Detour::Flaggable do
 
     it "memoizes found features" do
       Detour::Feature.stub(:find_by_name) { feature }
-      feature.flaggable_flags.create(flaggable: user)
+      feature.flag_in_flags.create(flaggable: user)
 
       feature.should_receive(:match?).with(user).and_return(true)
       user.has_feature?(feature.name)
@@ -41,7 +41,7 @@ describe Detour::Flaggable do
     context "when given a block" do
       context "and the user is flagged in" do
         before do
-          feature.flaggable_flags.create(flaggable: user)
+          feature.flag_in_flags.create(flaggable: user)
         end
 
         it "calls the block" do
@@ -100,7 +100,7 @@ describe Detour::Flaggable do
     context "when the user is flagged in" do
       context "and the user is opted out" do
         before do
-          feature.flaggable_flags.create(flaggable: user)
+          feature.flag_in_flags.create(flaggable: user)
           feature.opt_out_flags.create(flaggable: user)
         end
 
@@ -112,7 +112,7 @@ describe Detour::Flaggable do
       context "and the user is not opted out" do
         context "and the user is flagged in individually" do
           before do
-            feature.flaggable_flags.create(flaggable: user)
+            feature.flag_in_flags.create(flaggable: user)
           end
 
           it "returns true" do

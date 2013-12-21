@@ -37,16 +37,16 @@ module Detour::ActsAsFlaggable
     class_eval do
       @detour_flaggable_find_by = :id
 
-      has_many :flaggable_flags,
+      has_many :flag_in_flags,
         as: :flaggable,
-        class_name: "Detour::FlaggableFlag"
+        class_name: "Detour::FlagInFlag"
 
       has_many :opt_out_flags,
         as: :flaggable,
         class_name: "Detour::OptOutFlag"
 
       has_many :features,
-        through: :flaggable_flags,
+        through: :flag_in_flags,
         class_name: "Detour::Feature"
 
       if options[:find_by]

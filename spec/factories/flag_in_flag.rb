@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :flaggable_flag, class: "Detour::FlaggableFlag" do
+  factory :flag_in_flag, class: "Detour::FlagInFlag" do
     feature
     association :flaggable, factory: :user
   end

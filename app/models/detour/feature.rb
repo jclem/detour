@@ -6,7 +6,7 @@ class Detour::Feature < ActiveRecord::Base
   serialize :flag_in_counts, JSON
   serialize :opt_out_counts, JSON
 
-  has_many :flaggable_flags
+  has_many :flag_in_flags
   has_many :group_flags
   has_many :percentage_flags
   has_many :opt_out_flags
@@ -75,7 +75,7 @@ class Detour::Feature < ActiveRecord::Base
   # @return Whether or not the given instance has the feature rolled out to it
   #   via direct flagging-in.
   def match_id?(instance)
-    flaggable_flags.where(flaggable_type: instance.class.to_s, flaggable_id: instance.id).any?
+    flag_in_flags.where(flaggable_type: instance.class.to_s, flaggable_id: instance.id).any?
   end
 
   # Determines whether or not the given instance has had the feature rolled out
@@ -161,7 +161,7 @@ class Detour::Feature < ActiveRecord::Base
     #   {Detour::Flag Flag} created.
     def add_record_to_feature(record, feature_name)
       feature = find_by_name!(feature_name)
-      feature.flaggable_flags.where(flaggable_type: record.class.to_s, flaggable_id: record.id).first_or_create!
+      feature.flag_in_flags.where(flaggable_type: record.class.to_s, flaggable_id: record.id).first_or_create!
     end
 
     # Remove a record from the given feature. If the feature is not found, an
@@ -175,7 +175,7 @@ class Detour::Feature < ActiveRecord::Base
     #   record.
     def remove_record_from_feature(record, feature_name)
       feature = find_by_name!(feature_name)
-      feature.flaggable_flags.where(flaggable_type: record.class.to_s, flaggable_id: record.id).destroy_all
+      feature.flag_in_flags.where(flaggable_type: record.class.to_s, flaggable_id: record.id).destroy_all
     end
 
     # Opt the given record out of a feature. If the feature is not found, an

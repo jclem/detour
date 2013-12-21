@@ -1,6 +1,6 @@
 # An individual record of a certain type may be flagged into a feature with
 # this class.
-class Detour::FlaggableFlag < Detour::Flag
+class Detour::FlagInFlag < Detour::Flag
   belongs_to :flaggable, polymorphic: true
 
   validates :flaggable,  presence: true

@@ -3,9 +3,9 @@ require "spec_helper"
 describe Detour::ActsAsFlaggable do
   subject { User.new }
 
-  it { should have_many :flaggable_flags }
+  it { should have_many :flag_in_flags }
   it { should have_many :opt_out_flags }
-  it { should have_many(:features).through(:flaggable_flags) }
+  it { should have_many(:features).through(:flag_in_flags) }
 
   it "includes Detour::Flaggable" do
     subject.class.ancestors.should include Detour::Flaggable

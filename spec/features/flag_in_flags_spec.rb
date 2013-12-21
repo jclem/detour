@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe "counting flaggable flags" do
-  let!(:flag) { create :flaggable_flag }
+  let!(:flag) { create :flag_in_flag }
 
   before do
     visit "/detour/flags/users"
