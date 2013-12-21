@@ -6,11 +6,11 @@ Rollouts for `ActiveRecord` models. It is a spiritual fork of [ArRollout](https:
 | ------------------ | ------------- | ------------ |
 | [![development status][dev_image]][branch_status] | [![master status][master_image]][branch_status] | [![Code Climate][code_climate_image]][code_climate]
 
-[dev_image]: https://api.travis-ci.org/heroku/detour.png?branch=development
-[master_image]: https://api.travis-ci.org/heroku/detour.png?branch=master
-[branch_status]: https://travis-ci.org/heroku/detour/branches
-[code_climate_image]: https://codeclimate.com/github/heroku/detour.png
-[code_climate]: https://codeclimate.com/github/heroku/detour
+[dev_image]: https://api.travis-ci.org/jclem/detour.png?branch=development
+[master_image]: https://api.travis-ci.org/jclem/detour.png?branch=master
+[branch_status]: https://travis-ci.org/jclem/detour/branches
+[code_climate_image]: https://codeclimate.com/github/jclem/detour.png
+[code_climate]: https://codeclimate.com/github/jclem/detour
 
 ## Contents
 
