@@ -1,7 +1,7 @@
 # An individual record of a certain type may be flagged into a feature with
 # this class.
 class Detour::FlagInFlag < Detour::Flag
-  include Detour::CountableFlag
+  include Detour::Concerns::CountableFlag
 
   belongs_to :flaggable, polymorphic: true
 

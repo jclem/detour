@@ -1,7 +1,7 @@
 # Ensures that a feature will never be available to the associated record,
 # even in the case of, for example, a 100% flag.
 class Detour::OptOutFlag < Detour::Flag
-  include Detour::CountableFlag
+  include Detour::Concerns::CountableFlag
 
   belongs_to :flaggable, polymorphic: true
 
