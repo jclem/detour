@@ -46,6 +46,7 @@ RSpec.configure do |config|
   end
 
   config.after :each do
+    User.instance_variable_set "@detour_flaggable_find_by", :id
     Detour.config.default_flaggable_class_name = nil
     Detour.config.grep_dirs = []
     Detour.config.instance_variable_set "@defined_groups", {}

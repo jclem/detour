@@ -53,6 +53,10 @@ module Detour::ActsAsFlaggable
         @detour_flaggable_find_by = options[:find_by]
       end
 
+      def self.detour_flaggable_find_by
+        @detour_flaggable_find_by
+      end
+
       extend  Detour::Flaggable::ClassMethods
       include Detour::Flaggable
     end

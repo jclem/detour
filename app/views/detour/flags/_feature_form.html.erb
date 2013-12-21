@@ -24,7 +24,9 @@
     <% end %>
 
     <td class="flag-in-count">
-      <%= feature.flag_in_count_for(params[:flaggable_type]) %>
+      <%= link_to flag_in_flags_path(feature.name, params[:flaggable_type]) do %>
+        <%= feature.flag_in_count_for(params[:flaggable_type]) %>
+      <% end %>
     </td>
 
     <td class="opt-out-count">

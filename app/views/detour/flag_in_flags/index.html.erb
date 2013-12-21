@@ -1,0 +1,9 @@
+<%= table do %>
+  <thead>
+    <tr>
+      <th><%= flaggable_class.detour_flaggable_find_by %></th>
+    </tr>
+  </thead>
+
+  <%= render partial: "flag_in", collection: @flags, as: :flag %>
+<% end %>

@@ -1,5 +1,6 @@
 require "detour/engine"
 require "detour/acts_as_flaggable"
+require "detour/countable_flag"
 require "detour/flaggable"
 require "detour/flag_form"
 require "detour/configuration"

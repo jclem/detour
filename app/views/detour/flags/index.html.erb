@@ -25,34 +25,32 @@
 <% end %>
 
 <%= form_tag do %>
-  <div class="table-responsive">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Feature</th>
+  <%= table do %>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Feature</th>
 
-          <%= render partial: "detour/shared/spacer_cells", locals: { tag: "th" } %>
+        <%= render partial: "detour/shared/spacer_cells", locals: { tag: "th" } %>
 
-          <% @flag_form.group_names.each do |group_name| %>
-            <th>
-              <span class="group-header">
-                <%= group_name %>
-              </span>
-            </th>
-          <% end %>
+        <% @flag_form.group_names.each do |group_name| %>
+          <th>
+            <span class="group-header">
+              <%= group_name %>
+            </span>
+          </th>
+        <% end %>
 
-          <th class="percentage-header">Percentage</th>
-          <th class="counter-header">Flag-ins</th>
-          <th class="counter-header">Opt-outs</th>
-        </tr>
-      </thead>
+        <th class="percentage-header">Percentage</th>
+        <th class="counter-header">Flag-ins</th>
+        <th class="counter-header">Opt-outs</th>
+      </tr>
+    </thead>
 
-      <tbody>
-        <%= render partial: "feature_form", collection: @flag_form.features, as: :feature %>
-      </tbody>
-    </table>
-  </div>
+    <tbody>
+      <%= render partial: "feature_form", collection: @flag_form.features, as: :feature %>
+    </tbody>
+  <% end %>
 
   <%= content_tag :span, "Create a Feature", class: "btn btn-default pull-left", data: { toggle: "modal", target: "#create-feature" } %>
 
