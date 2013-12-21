@@ -11,13 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131218055352) do
+ActiveRecord::Schema.define(:version => 20131221052201) do
 
   create_table "detour_features", :force => true do |t|
     t.string   "name"
-    t.integer  "failure_count", :default => 0
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.integer  "failure_count",  :default => 0
+    t.text     "flag_in_counts", :default => "{}"
+    t.text     "opt_out_counts", :default => "{}"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
   add_index "detour_features", ["name"], :name => "index_detour_features_on_name", :unique => true

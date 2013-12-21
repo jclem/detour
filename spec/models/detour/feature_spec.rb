@@ -193,6 +193,43 @@ describe Detour::Feature do
     end
   end
 
+  describe "#flag_in_count_for" do
+    context "when a value does not exist" do
+      let(:feature) { create :feature }
+
+      it "returns 0" do
+        feature.flag_in_count_for("users").should eq 0
+      end
+    end
+
+    context "when a value exists" do
+      let(:feature) { create :feature, flag_in_counts: { "users" => 10 } }
+
+      it "returns the value" do
+        feature.flag_in_count_for("users").should eq 10
+      end
+    end
+  end
+
+  describe "#opt_out_count_for" do
+    context "when a value does not exist" do
+      let(:feature) { create :feature }
+
+      it "returns 0" do
+        feature.opt_out_count_for("users").should eq 0
+      end
+    end
+
+    context "when a value exists" do
+      let(:feature) { create :feature, opt_out_counts: { "users" => 10 } }
+
+      it "returns the value" do
+        feature.opt_out_count_for("users").should eq 10
+      end
+    end
+  end
+
+
   describe "#match_id?" do
     let(:user)    { create :user }
     let(:user2)   { create :user }

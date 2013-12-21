@@ -3,6 +3,9 @@
 class Detour::Feature < ActiveRecord::Base
   self.table_name = :detour_features
 
+  serialize :flag_in_counts, JSON
+  serialize :opt_out_counts, JSON
+
   has_many :flaggable_flags
   has_many :group_flags
   has_many :percentage_flags
@@ -24,6 +27,26 @@ class Detour::Feature < ActiveRecord::Base
 
   def to_s
     name
+  end
+
+  # Returns the number of flag-ins for a given type.
+  #
+  # @example
+  #   feature.flag_in_count_for("users")
+  #
+  # @return [Fixnum] The number of flag-ins for the given type.
+  def flag_in_count_for(type)
+    flag_in_counts[type] || 0
+  end
+
+  # Returns the number of opt-outs for a given type.
+  #
+  # @example
+  #   feature.opt_out_count_for("users")
+  #
+  # @return [Fixnum] The number of opt-outs for the given type.
+  def opt_out_count_for(type)
+    opt_out_counts[type] || 0
   end
 
   # Determines whether or not the given instance has had the feature rolled out

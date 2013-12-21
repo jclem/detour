@@ -3,6 +3,8 @@ class SetupDetour < ActiveRecord::Migration
     create_table :detour_features do |t|
       t.string :name
       t.integer :failure_count, default: 0
+      t.text    :flag_in_counts, default: "{}"
+      t.text    :opt_out_counts, default: "{}"
       t.timestamps
     end
 
