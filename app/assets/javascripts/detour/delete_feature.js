@@ -7,7 +7,7 @@ $(function () {
         $link   = $modal.find('a');
 
     $link.attr('href', href);
-    $name.text(feature);
+    $name.text(feature.trim());
     $modal.modal('show');
   });
 });

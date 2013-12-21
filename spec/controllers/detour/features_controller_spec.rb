@@ -41,7 +41,7 @@ describe Detour::FeaturesController do
     end
 
     it "displays a flash message" do
-      flash[:notice].should eq "Feature #{feature.name} has been destroyed."
+      flash[:notice].should eq "Feature #{feature.name} has been deleted."
     end
 
     it "renders the destroyed template" do

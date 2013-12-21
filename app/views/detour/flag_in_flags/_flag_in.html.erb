@@ -1,5 +1,11 @@
 <tr>
   <td>
+    <button type="button" class="btn btn-danger btn-xs delete-flag" data-path="<%= flag_in_flag_path(feature_name, flaggable_type, flag.id) %>">
+      <span class="glyphicon glyphicon-remove"></span>
+    </button>
+  </td>
+
+  <td>
     <%= flag.flaggable.send flaggable_class.detour_flaggable_find_by %>
   </td>
 </tr>

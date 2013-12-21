@@ -59,7 +59,7 @@ describe "destroying a feature", js: true do
   end
 
   it "displays a flash message" do
-    page.should have_content "Feature #{feature.name} has been destroyed."
+    page.should have_content "Feature #{feature.name} has been deleted."
   end
 
   it "destroys the feature" do

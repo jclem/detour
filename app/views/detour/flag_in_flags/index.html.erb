@@ -1,9 +1,32 @@
+<h1><%= flaggable_type.capitalize %> flagged-in to <%= feature_name %></h1>
+
 <%= table do %>
   <thead>
     <tr>
+      <th></th>
       <th><%= flaggable_class.detour_flaggable_find_by %></th>
     </tr>
   </thead>
 
   <%= render partial: "flag_in", collection: @flags, as: :flag %>
 <% end %>
+
+<div class="modal" id="delete-flag" tabindex="-1" role="dialog" aria-labelledby="delete-flag-modal-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="delete-flag-modal-label">Delete Flag-in</h4>
+      </div>
+
+      <div class="modal-body">
+        <p>Are you sure you want to delete <%= feature_name %> flag-in for <%= flaggable_class %> <span class="flaggable-identifier"></span>?</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <%= link_to "Delete Flag-in", "javascript:void(0)", method: :delete, class: "btn btn-danger" %>
+      </div>
+    </div>
+  </div>
+</div>
