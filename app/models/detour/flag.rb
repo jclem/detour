@@ -6,8 +6,8 @@ class Detour::Flag < ActiveRecord::Base
 
   belongs_to :feature
 
-  validates :feature, presence: true
-  validates :flaggable_type, presence: true
+  validates_presence_of :feature
+  validates_presence_of :flaggable_type
 
   attr_accessible :flaggable_type
 

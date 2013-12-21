@@ -5,8 +5,8 @@ class Detour::FlagInFlag < Detour::Flag
 
   belongs_to :flaggable, polymorphic: true
 
-  validates :flaggable,  presence: true
-  validates :feature_id, uniqueness: { scope: [:flaggable_type, :flaggable_id] }
+  validates_presence_of   :flaggable
+  validates_uniqueness_of :feature_id, scope: [:flaggable_type, :flaggable_id]
 
   attr_accessible :flaggable
 end

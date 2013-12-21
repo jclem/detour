@@ -12,7 +12,8 @@ class Detour::Feature < ActiveRecord::Base
   has_many :opt_out_flags
   has_many :flags, dependent: :destroy
 
-  validates :name, presence: true, uniqueness: true
+  validates_presence_of   :name
+  validates_uniqueness_of :name
 
   attr_accessible :name
 
