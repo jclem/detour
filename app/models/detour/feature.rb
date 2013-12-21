@@ -145,7 +145,7 @@ class Detour::Feature < ActiveRecord::Base
         end
       end
 
-      obj.values
+      obj.values.sort_by(&:name)
     end
 
     # Add a record to the given feature. If the feature is not found, an
