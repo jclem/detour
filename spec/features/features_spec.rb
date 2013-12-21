@@ -20,7 +20,7 @@ end
 describe "creating a new feature", js: true do
   before do
     visit "/detour/flags/users"
-    click_button "Create a Feature"
+    page.find("[data-target='#create-feature']").click
   end
 
   context "when successful" do
