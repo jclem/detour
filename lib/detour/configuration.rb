@@ -1,11 +1,13 @@
 class Detour::Configuration
   attr_reader   :defined_groups
   attr_accessor :default_flaggable_class_name
+  attr_accessor :flaggable_types
   attr_accessor :grep_dirs
 
   def initialize
-    @defined_groups = {}
-    @grep_dirs  = []
+    @defined_groups  = {}
+    @flaggable_types = []
+    @grep_dirs       = []
   end
 
   # Allows for methods of the form `define_user_group` that call the private

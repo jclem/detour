@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131218023124) do
+ActiveRecord::Schema.define(:version => 20131218055352) do
 
   create_table "detour_features", :force => true do |t|
     t.string   "name"
@@ -49,6 +49,9 @@ ActiveRecord::Schema.define(:version => 20131218023124) do
     t.string   "name"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "user_id"
   end
+
+  add_index "widgets", ["user_id"], :name => "index_widgets_on_user_id"
 
 end

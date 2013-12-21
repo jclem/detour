@@ -1,0 +1,55 @@
+<% if flash.notice %>
+  <div class="alert alert-success"><%= flash.notice %></div>
+<% end %>
+
+<% if flash.alert %>
+  <div class="alert alert-danger"><%= flash.alert %></div>
+<% end %>
+
+<h1><%= params[:flaggable_type].classify %> Flags</h1>
+
+<% if @flag_form.errors? %>
+  <div class="panel panel-danger">
+    <div class="panel-heading">Whoops! There were some errors saving your flags:</div>
+
+    <div class="panel-body">
+      <ul>
+        <% @flag_form.features.each do |feature| %>
+          <% feature.errors.full_messages.each do |msg| %>
+              <li><strong><%= feature.name %>:</strong> <%= msg %></li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+<% end %>
+
+<%= form_tag do %>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Feature</th>
+
+          <% @flag_form.group_names.each do |group_name| %>
+            <th><%= group_name %></th>
+          <% end %>
+
+          <th>Percentage</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <%= render partial: "feature_form", collection: @flag_form.features, as: :feature %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="btn-group pull-right">
+    <% if @flag_form.errors? %>
+      <%= link_to "Cancel", request.path, class: "btn btn-default" %>
+    <% end %>
+
+    <%= submit_tag "Save Changes", class: "btn btn-primary" %>
+  </div>
+<% end %>

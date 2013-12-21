@@ -1,6 +1,7 @@
 require "detour/engine"
 require "detour/acts_as_flaggable"
 require "detour/flaggable"
+require "detour/flag_form"
 require "detour/configuration"
 
 module Detour
@@ -16,6 +17,7 @@ module Detour
   def self.configure(&block)
     ActionDispatch::Reloader.to_prepare do
       yield Detour.config
+      Detour.config.flaggable_types.each { |f| f.constantize }
     end
   end
 

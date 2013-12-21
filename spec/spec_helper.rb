@@ -25,7 +25,8 @@ RSpec.configure do |config|
   end
 
   config.after :each do
-    Detour.config.instance_variable_set "@defined_groups", {}
     Detour.config.default_flaggable_class_name = nil
+    Detour.config.grep_dirs = []
+    Detour.config.instance_variable_set "@defined_groups", {}
   end
 end

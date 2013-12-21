@@ -10,6 +10,30 @@ module Detour::ActsAsFlaggable
   # @option options [Symbol] :find_by The field to find the record by when
   #   running rake tasks. Defaults to :id.
   def acts_as_flaggable(options = {})
+    Detour::Feature.class_eval <<-EOF
+      has_one :#{table_name}_percentage_flag,
+        class_name: "Detour::PercentageFlag",
+        inverse_of: :feature,
+        dependent:  :destroy,
+        conditions: { flaggable_type: "#{self}" }
+
+      attr_accessible :#{table_name}_percentage_flag_attributes
+
+      accepts_nested_attributes_for :#{table_name}_percentage_flag,
+        update_only: true,
+        reject_if: proc { |attrs| attrs[:percentage].blank? }
+
+      has_many :#{table_name}_group_flags,
+        class_name: "Detour::GroupFlag",
+        inverse_of: :feature,
+        dependent: :destroy,
+        conditions: { flaggable_type: "#{self}" }
+
+      attr_accessible :#{table_name}_group_flags_attributes
+
+      accepts_nested_attributes_for :#{table_name}_group_flags, allow_destroy: true
+    EOF
+
     class_eval do
       @detour_flaggable_find_by = :id
 

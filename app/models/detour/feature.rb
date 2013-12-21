@@ -17,9 +17,13 @@ class Detour::Feature < ActiveRecord::Base
   # that this feature appears on.
   #
   # @return [Array<String>] The lines that this rollout appears on (if
-  #   {Detour::Feature.all_with_lines} has already been called).
+  #   {Detour::Feature.with_lines} has already been called).
   def lines
     @lines ||= []
+  end
+
+  def to_s
+    name
   end
 
   # Determines whether or not the given instance has had the feature rolled out
@@ -101,7 +105,7 @@ class Detour::Feature < ActiveRecord::Base
     #
     # @return [Array<Detour::Feature>] Every persisted and
     #   checked-for feature.
-    def all_with_lines
+    def with_lines
       obj = all.each_with_object({}) { |feature, obj| obj[feature.name] = feature }
 
       Dir[*Detour.config.grep_dirs].each do |path|
