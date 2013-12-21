@@ -15,7 +15,7 @@
     <% @flag_form.group_flags_for(feature).each do |group_flag| %>
       <%= feature_form.fields_for "#{params[:flaggable_type]}_group_flags_attributes[#{group_flag.group_name}]", group_flag do |group_flag_form| %>
         <%= group_flag_form.hidden_field :id %>
-        <td><%= group_flag_form.check_box :to_keep %></td>
+        <td><%= group_flag_form.check_box :to_keep, data: { toggle: "tooltip", placement: "top", original_title: "#{group_flag.group_name}" } %></td>
       <% end %>
     <% end %>
 
