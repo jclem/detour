@@ -10,4 +10,10 @@ class Detour::Flag < ActiveRecord::Base
   validates :flaggable_type, presence: true
 
   attr_accessible :flaggable_type
+
+  private
+
+  def flag_type
+    self.class.to_s.underscore.gsub("detour/", "").split("_")[0..-2].join("_")
+  end
 end
