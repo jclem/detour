@@ -2,7 +2,7 @@
   <%= fields_for "features[#{feature}]", feature do |feature_form| %>
     <td>
       <% unless feature.new_record? %>
-        <button type="button" class="btn btn-default btn-xs delete-feature" data-path="<%= feature_path(feature.id, params: { flaggable_type: params[:flaggable_type] }) %>">
+        <button type="button" class="btn btn-danger btn-xs delete-feature" data-path="<%= feature_path(feature.id, params: { flaggable_type: params[:flaggable_type] }) %>">
           <span class="glyphicon glyphicon-remove"></span>
         </button>
       <% end %>
