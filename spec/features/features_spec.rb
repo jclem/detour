@@ -48,3 +48,21 @@ describe "creating a new feature", js: true do
     end
   end
 end
+
+describe "destroying a feature", js: true do
+  let!(:feature) { create :feature }
+
+  before do
+    visit "/detour/flags/users"
+    page.find(".delete-feature").click
+    click_link "Delete Feature"
+  end
+
+  it "destroys the feature" do
+    Detour::Feature.find_by_id(feature.id).should be_nil
+  end
+
+  it "removes the feature from the list" do
+    page.should_not have_selector "tr#feature_#{feature.id}"
+  end
+end

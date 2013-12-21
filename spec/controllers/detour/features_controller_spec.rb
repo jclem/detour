@@ -28,4 +28,20 @@ describe Detour::FeaturesController do
       end
     end
   end
+
+  describe "DELETE #destroy" do
+    let!(:feature) { create :feature }
+
+    before do
+      delete :destroy, format: :js, id: feature.id, flaggable_type: :users
+    end
+
+    it "destroys the feature" do
+      Detour::Feature.find_by_id(feature.id).should be_nil
+    end
+
+    it "renders the destroyed template" do
+      response.should redirect_to flags_path(:users)
+    end
+  end
 end
