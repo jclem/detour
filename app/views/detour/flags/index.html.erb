@@ -55,44 +55,22 @@
   </div>
 <% end %>
 
-<div class="modal" id="delete-feature" tabindex="-1" role="dialog" aria-labelledby="delete-feature-modal-label" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="delete-feature-modal-label">Delete Feature</h4>
-      </div>
+<%= modal title: "Delete Feature", id: "delete-feature" do %>
+  <p>Are you sure you want to delete <span class="feature-name"></span>?</p>
 
-      <div class="modal-body">
-        <p>Are you sure you want to delete <span class="feature-name"></span>?</p>
-      </div>
+  <%= modal_footer do %>
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <%= link_to "Delete Feature", "javascript:void(0)", method: :delete, class: "btn btn-danger" %>
+  <% end %>
+<% end %>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <%= link_to "Delete Feature", "javascript:void(0)", method: :delete, class: "btn btn-danger" %>
-      </div>
-    </div>
-  </div>
-</div>
+<%= modal title: "Create a Feature", id: "create-feature", fade: true do %>
+  <%= form_for Detour::Feature.new, remote: true do |form| %>
+    <%= form.text_field :name, class: "form-control", placeholder: "feature_name" %>
 
-<div class="modal fade" id="create-feature" tabindex="-1" role="dialog" aria-labelledby="create-feature-modal-label" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="create-feature-modal-label">Create a Feature</h4>
-      </div>
-
-      <%= form_for Detour::Feature.new, remote: true do |form| %>
-        <div class="modal-body">
-          <%= form.text_field :name, class: "form-control", placeholder: "feature_name" %>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <%= form.submit "Create Feature", class: "btn btn-primary" %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-</div>
+    <%= modal_footer do %>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <%= form.submit "Create Feature", class: "btn btn-primary" %>
+    <% end %>
+  <% end %>
+<% end %>
