@@ -10,6 +10,10 @@ body {
   margin-bottom: 0;
 }
 
+.modal-body .panel-danger {
+  margin-top: 0;
+}
+
 table.table tbody tr td {
   vertical-align: middle;
 }

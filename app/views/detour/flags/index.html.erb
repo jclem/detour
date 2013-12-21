@@ -45,6 +45,8 @@
     </table>
   </div>
 
+  <%= link_to "Create a Feature", "javascript:void(0)", class: "btn btn-default pull-left", data: { toggle: "modal", target: "#create-feature" } %>
+
   <div class="btn-group pull-right">
     <% if @flag_form.errors? %>
       <%= link_to "Cancel", request.path, class: "btn btn-default" %>
@@ -53,3 +55,25 @@
     <%= submit_tag "Save Changes", class: "btn btn-primary" %>
   </div>
 <% end %>
+
+<div class="modal fade" id="create-feature" tabindex="-1" role="dialog" aria-labelledby="create-feature-modal-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="create-feature-modal-label">Create a Feature</h4>
+      </div>
+
+      <%= form_for Detour::Feature.new, remote: true do |form| %>
+        <div class="modal-body">
+          <%= form.text_field :name, class: "form-control", placeholder: "feature_name" %>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <%= form.submit "Create Feature", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
