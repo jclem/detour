@@ -33,12 +33,16 @@
           <th>Feature</th>
 
           <% @flag_form.group_names.each do |group_name| %>
-            <th><%= group_name %></th>
+            <th>
+              <span class="group-header">
+                <%= group_name %>
+              </span>
+            </th>
           <% end %>
 
-          <th>Percentage</th>
-          <th>Flag-ins</th>
-          <th>Opt-outs</th>
+          <th class="percentage-header">Percentage</th>
+          <th class="counter-header">Flag-ins</th>
+          <th class="counter-header">Opt-outs</th>
         </tr>
       </thead>
 

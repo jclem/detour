@@ -20,6 +20,30 @@ body {
   margin-top: 0;
 }
 
+.table-responsive {
+  padding-top: 60px;
+}
+
 table.table tbody tr td {
   vertical-align: middle;
+}
+
+.group-header {
+  display: block;
+  width: 10px;
+  white-space: nowrap;
+
+  -webkit-transform: rotate(-30deg);
+  -moz-transform: rotate(-30deg);
+  -ms-transform: rotate(-30deg);
+  -o-transform: rotate(-30deg);
+  transform: rotate(-30deg);
+}
+
+.percentage-header {
+  width: 120px;
+}
+
+.counter-header {
+  width: 80px;
 }
