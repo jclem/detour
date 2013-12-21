@@ -10,6 +10,8 @@
 
     <td><%= feature %></td>
 
+    <%= render partial: "detour/shared/spacer_cells", locals: { tag: "td" } %>
+
     <% @flag_form.group_flags_for(feature).each do |group_flag| %>
       <%= feature_form.fields_for "#{params[:flaggable_type]}_group_flags_attributes[#{group_flag.group_name}]", group_flag do |group_flag_form| %>
         <%= group_flag_form.hidden_field :id %>

@@ -32,6 +32,8 @@
           <th></th>
           <th>Feature</th>
 
+          <%= render partial: "detour/shared/spacer_cells", locals: { tag: "th" } %>
+
           <% @flag_form.group_names.each do |group_name| %>
             <th>
               <span class="group-header">
