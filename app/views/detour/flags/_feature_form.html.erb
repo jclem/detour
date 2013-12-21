@@ -21,10 +21,12 @@
       <td><%= percentage_flag_form.text_field :percentage, class: "form-control input-sm" %></td>
     <% end %>
 
-    <td>
+    <td class="flag-in-count">
+      <%= feature.flag_in_count_for(params[:flaggable_type]) %>
     </td>
 
-    <td>
+    <td class="opt-out-count">
+      <%= feature.opt_out_count_for(params[:flaggable_type]) %>
     </td>
   <% end %>
 <% end %>
