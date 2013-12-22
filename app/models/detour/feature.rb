@@ -63,23 +63,21 @@ class Detour::Feature < ActiveRecord::Base
     # @return [Array<Detour::Feature>] Every persisted and
     #   checked-for feature.
     def with_lines
-      obj = all.each_with_object({}) { |feature, obj| obj[feature.name] = feature }
+      hash = all.each_with_object({}) { |feature, hash| hash[feature.name] = feature }
 
       Dir[*Detour.config.grep_dirs].each do |path|
         next if File.directory? path
 
         File.open path do |file|
           file.each_line.with_index(1) do |line, i|
-            line.scan(/\.has_feature\?\s*\(*:(\w+)/).each do |match|
-              match = match[0]
-              obj[match] ||= new(name: match)
-              obj[match].lines << "#{path}#L#{i}"
+            line.scan(/\.has_feature\?\s*\(*:(\w+)/).each do |match, _|
+              (hash[match] ||= new(name: match)).lines << "#{path}#L#{i}"
             end
           end
         end
       end
 
-      obj.values.sort_by(&:name)
+      hash.values.sort_by(&:name)
     end
   end
 end
