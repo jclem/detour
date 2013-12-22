@@ -3,7 +3,7 @@ Detour.configure do |config|
   #   user.admin?
   # end
 
-  config.grep_dirs = %w[app/**/*]
+  config.grep_dirs = %w[app/**/*.{rb,erb}]
 
   config.flaggable_types = %w[User Widget]
 
