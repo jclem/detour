@@ -66,7 +66,7 @@ class Detour::Feature < ActiveRecord::Base
       hash = all.each_with_object({}) { |feature, hash| hash[feature.name] = feature }
 
       Dir[*Detour.config.grep_dirs].each do |path|
-        next if File.directory? path
+        next unless File.file? path
 
         File.open path do |file|
           file.each_line.with_index(1) do |line, i|
