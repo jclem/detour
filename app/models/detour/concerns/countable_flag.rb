@@ -3,15 +3,15 @@ module Detour::Concerns
     extend ActiveSupport::Concern
 
     included do
-      after_save do
-        count = feature.send("#{flag_type}_count_for", flaggable_type.tableize)
-        feature.send("#{flag_type}_counts")[flaggable_type.tableize] = count + 1
-        feature.save!
-      end
+      after_save    :step_count
+      after_destroy :step_count
 
-      after_destroy do
+      private
+
+      def step_count
         count = feature.send("#{flag_type}_count_for", flaggable_type.tableize)
-        feature.send("#{flag_type}_counts")[flaggable_type.tableize] = count - 1
+        count = destroyed? ? count - 1 : count + 1
+        feature.send("#{flag_type}_counts")[flaggable_type.tableize] = count
         feature.save!
       end
     end
