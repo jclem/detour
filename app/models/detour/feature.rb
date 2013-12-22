@@ -53,31 +53,29 @@ class Detour::Feature < ActiveRecord::Base
     opt_out_counts[type] || 0
   end
 
-  class << self
-    # Return an array of both every feature in the database as well as every
-    # feature that is checked for in `@grep_dirs`. Features that are checked
-    # for but not persisted will be returned as unpersisted instances of this
-    # class. Each instance returned will have its `@lines` set to an array
-    # containing every line in `@grep_dirs` where it is checked for.
-    #
-    # @return [Array<Detour::Feature>] Every persisted and
-    #   checked-for feature.
-    def with_lines
-      hash = all.each_with_object({}) { |feature, hash| hash[feature.name] = feature }
+  # Return an array of both every feature in the database as well as every
+  # feature that is checked for in `@grep_dirs`. Features that are checked
+  # for but not persisted will be returned as unpersisted instances of this
+  # class. Each instance returned will have its `@lines` set to an array
+  # containing every line in `@grep_dirs` where it is checked for.
+  #
+  # @return [Array<Detour::Feature>] Every persisted and
+  #   checked-for feature.
+  def self.with_lines
+    hash = all.each_with_object({}) { |feature, hash| hash[feature.name] = feature }
 
-      Dir[*Detour.config.grep_dirs].each do |path|
-        next unless File.file? path
+    Dir[*Detour.config.grep_dirs].each do |path|
+      next unless File.file? path
 
-        File.open path do |file|
-          file.each_line.with_index(1) do |line, i|
-            line.scan(/\.has_feature\?\s*\(*:(\w+)/).each do |match, _|
-              (hash[match] ||= new(name: match)).lines << "#{path}#L#{i}"
-            end
+      File.open path do |file|
+        file.each_line.with_index(1) do |line, i|
+          line.scan(/\.has_feature\?\s*\(*:(\w+)/).each do |match, _|
+            (hash[match] ||= new(name: match)).lines << "#{path}#L#{i}"
           end
         end
       end
-
-      hash.values.sort_by(&:name)
     end
+
+    hash.values.sort_by(&:name)
   end
 end
