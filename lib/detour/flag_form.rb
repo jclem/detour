@@ -12,10 +12,11 @@ class Detour::FlagForm
   end
 
   def group_names
-    return @group_names if @group_names
-    all_names           = features.collect { |feature| feature.send("#{@flaggable_type}_group_flags").collect(&:group_name) }.flatten.map(&:to_s).uniq
-    defined_group_names = Detour.config.defined_groups.fetch(@flaggable_type.classify, {}).keys.map(&:to_s)
-    @group_names        = (all_names | defined_group_names).sort
+    @group_names ||= begin
+      all_names = features.collect { |feature| feature.send("#{@flaggable_type}_group_flags").collect(&:group_name) }.uniq.flatten
+      defined_group_names = Detour.config.defined_groups.fetch(@flaggable_type.classify, {}).keys.map(&:to_s)
+      (all_names | defined_group_names).sort
+    end
   end
 
   def group_flags_for(feature, initialize = true)
