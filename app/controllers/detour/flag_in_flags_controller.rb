@@ -6,6 +6,17 @@ class Detour::FlagInFlagsController < Detour::ApplicationController
     @flags  = feature.flag_in_flags.where(flaggable_type: flaggable_class.to_s)
   end
 
+  def create
+    feature   = Detour::Feature.find_by_name!(feature_name)
+    flaggable = flaggable_class.flaggable_find! params[:ids]
+    feature.send("#{flaggable_type}_flag_ins").create! flaggable: flaggable
+
+    flash[:notice] = "#{flaggable_class} #{params[:ids]} has been flagged in to #{feature.name}"
+    render :success
+  rescue ActiveRecord::RecordNotFound
+    return render :error unless flaggable
+  end
+
   def destroy
     feature = Detour::Feature.find_by_name!(feature_name)
     @flag   = feature.flag_in_flags.find(params[:id])

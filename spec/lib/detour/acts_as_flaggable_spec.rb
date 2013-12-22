@@ -21,6 +21,8 @@ describe Detour::ActsAsFlaggable do
       it { should have_one(:users_percentage_flag).class_name("Detour::PercentageFlag").dependent(:destroy) }
       it { should allow_mass_assignment_of(:users_percentage_flag_attributes) }
       it { should accept_nested_attributes_for(:users_percentage_flag) }
+
+      it { should have_many(:users_flag_ins).class_name("Detour::FlagInFlag").dependent(:destroy) }
     end
 
     context "when given a :find_by parameter" do

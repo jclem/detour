@@ -30,8 +30,13 @@ module Detour::ActsAsFlaggable
         conditions: { flaggable_type: "#{self}" }
 
       attr_accessible :#{table_name}_group_flags_attributes
-
       accepts_nested_attributes_for :#{table_name}_group_flags, allow_destroy: true
+
+      has_many :#{table_name}_flag_ins,
+        class_name: "Detour::FlagInFlag",
+        inverse_of: :feature,
+        dependent:  :destroy,
+        conditions: { flaggable_type: "#{self}" }
     EOF
 
     class_eval do

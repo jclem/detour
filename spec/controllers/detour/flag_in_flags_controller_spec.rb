@@ -19,6 +19,31 @@ describe Detour::FlagInFlagsController do
     end
   end
 
+  describe "POST #create" do
+    let!(:user)    { create :user }
+    let(:feature) { create :feature }
+
+    before do
+      post :create, feature_name: feature.name, flaggable_type: user.class.table_name, ids: ids, format: :js
+    end
+
+    context "when successful" do
+      let(:ids) { user.id.to_s }
+
+      it "sets a flash message" do
+        flash[:notice].should eq "#{user.class} #{user.id} has been flagged in to #{feature.name}"
+      end
+    end
+
+    context "when the flaggable can't be found" do
+      let(:ids) { "foo" }
+
+      it "renders the errors template" do
+        response.should render_template "error"
+      end
+    end
+  end
+
   describe "DELETE #destroy" do
     let(:flag) { create :flag_in_flag }
 
