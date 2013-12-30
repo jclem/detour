@@ -20,12 +20,12 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rails", "~> 3.2.16"
 
-  spec.add_development_dependency "selenium-webdriver"
-  spec.add_development_dependency "database_cleaner", "~> 1.2.0"
   spec.add_development_dependency "capybara"
+  spec.add_development_dependency "database_cleaner", "~> 1.2.0"
   spec.add_development_dependency "factory_girl_rails"
-  spec.add_development_dependency "pry-debugger"
+  spec.add_development_dependency "pry-nav"
   spec.add_development_dependency "rspec-rails"
+  spec.add_development_dependency "selenium-webdriver"
   spec.add_development_dependency "shoulda-matchers"
   spec.add_development_dependency "sqlite3-ruby"
   spec.add_development_dependency "yard"
