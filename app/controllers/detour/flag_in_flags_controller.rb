@@ -21,12 +21,11 @@ class Detour::FlagInFlagsController < Detour::ApplicationController
             @errors.concat flag.errors.full_messages
           end
         end
-
-        if @errors.any?
-          raise ActiveRecord::Rollback
-        end
       rescue ActiveRecord::RecordNotFound => e
         @errors << e.message
+      end
+
+      if @errors.any?
         raise ActiveRecord::Rollback
       end
     end
