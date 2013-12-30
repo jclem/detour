@@ -1,3 +1,5 @@
+require "indefinite_article"
+
 class Detour::FlaggableFlagsController < Detour::ApplicationController
   before_filter :ensure_flaggable_type_exists
 
