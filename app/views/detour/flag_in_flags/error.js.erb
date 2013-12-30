@@ -1,5 +1,0 @@
-if ($(".modal-body .panel-danger").length) {
-  $("#create-flag-in .modal-body .panel-danger").replaceWith("<%= j render "errors" %>");
-} else {
-  $("#create-flag-in .modal-body").prepend("<%= j render "errors" %>");
-}

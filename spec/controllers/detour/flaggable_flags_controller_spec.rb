@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Detour::FlagInFlagsController do
+describe Detour::FlaggableFlagsController do
   routes { Detour::Engine.routes }
 
   describe "GET #index" do

@@ -23,6 +23,7 @@ describe Detour::ActsAsFlaggable do
       it { should accept_nested_attributes_for(:users_percentage_flag) }
 
       it { should have_many(:users_flag_ins).class_name("Detour::FlagInFlag").dependent(:destroy) }
+      it { should have_many(:users_opt_outs).class_name("Detour::OptOutFlag").dependent(:destroy) }
     end
 
     context "when given a :find_by parameter" do

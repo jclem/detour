@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 1.9.3"
 
   spec.add_dependency "rails", "~> 3.2.16"
+  spec.add_dependency "indefinite_article", ">= 0.2.0"
 
   spec.add_development_dependency "capybara"
   spec.add_development_dependency "database_cleaner", "~> 1.2.0"

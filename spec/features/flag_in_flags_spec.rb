@@ -34,7 +34,7 @@ describe "creating flag-ins", js: true do
   before do
     User.instance_variable_set "@detour_flaggable_find_by", :email
     visit "/detour/flag-ins/#{feature.name}/users"
-    page.find("[data-target='#create-flag-in']").click
+    page.find("[data-target='#create-flaggable-flag']").click
   end
 
   context "when creating multiple flag-ins" do
@@ -74,10 +74,6 @@ describe "creating flag-ins", js: true do
         page.should have_content "User #{user.email} has been flagged in to #{feature.name}"
       end
 
-      it "creates the flag" do
-        feature.users_flag_ins.first.flaggable.should eq user
-      end
-
       it "renders the new flag-in" do
         within "table" do
           page.should have_content user.email
@@ -98,7 +94,7 @@ describe "creating flag-ins", js: true do
   end
 end
 
-describe "destroying flag_in_flags", js: true do
+describe "destroying flag-ins", js: true do
   let!(:flag) { create :flag_in_flag }
 
   before do

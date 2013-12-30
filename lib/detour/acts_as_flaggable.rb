@@ -37,6 +37,12 @@ module Detour::ActsAsFlaggable
         inverse_of: :feature,
         dependent:  :destroy,
         conditions: { flaggable_type: "#{self}" }
+
+      has_many :#{table_name}_opt_outs,
+        class_name: "Detour::OptOutFlag",
+        inverse_of: :feature,
+        dependent:  :destroy,
+        conditions: { flaggable_type: "#{self}" }
     EOF
 
     class_eval do

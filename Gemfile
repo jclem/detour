@@ -4,5 +4,6 @@ source 'https://rubygems.org'
 gemspec
 
 gem "jquery-rails"
+gem "indefinite_article", ">= 0.2.0"
 
 gem "fakefs", require: false
