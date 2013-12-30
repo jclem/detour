@@ -1,0 +1,11 @@
+<div class="panel panel-danger">
+  <div class="panel-heading">Whoops! There were some errors saving your feature:</div>
+
+  <div class="panel-body">
+    <ul>
+      <% @errors.each do |error| %>
+        <li><%= error %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>

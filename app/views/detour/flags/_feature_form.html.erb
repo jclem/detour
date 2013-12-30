@@ -30,7 +30,9 @@
     </td>
 
     <td class="opt-out-count">
-      <%= feature.opt_out_count_for(params[:flaggable_type]) %>
+      <%= link_to opt_out_flags_path(feature.name, params[:flaggable_type]) do %>
+        <%= feature.opt_out_count_for(params[:flaggable_type]) %>
+      <% end %>
     </td>
   <% end %>
 <% end %>

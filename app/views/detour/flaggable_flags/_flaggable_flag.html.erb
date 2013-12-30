@@ -1,6 +1,6 @@
 <tr>
   <td>
-    <button type="button" class="btn btn-danger btn-xs delete-flag" data-path="<%= flag_in_flag_path(feature_name, flaggable_type, flag.id) %>">
+      <button type="button" class="btn btn-danger btn-xs delete-flag" data-path="<%= send("#{flag_type}_flag_path", feature_name, flaggable_type, flag.id) %>">
       <span class="glyphicon glyphicon-remove"></span>
     </button>
   </td>
