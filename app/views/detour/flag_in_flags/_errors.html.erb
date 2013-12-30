@@ -3,7 +3,9 @@
 
   <div class="panel-body">
     <ul>
-      <li><%= flaggable_class %> <%= params[:ids] %> could not be found.</li>
+      <% @errors.each do |error| %>
+        <li><%= error %></li>
+      <% end %>
     </ul>
   </div>
 </div>

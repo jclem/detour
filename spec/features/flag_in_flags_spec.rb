@@ -27,7 +27,7 @@ describe "listing flag_in_flags" do
   end
 end
 
-describe "creating flag_in_flags", js: true do
+describe "creating flag-ins", js: true do
   let(:user) { create :user }
   let!(:feature) { create :feature }
 
@@ -37,35 +37,63 @@ describe "creating flag_in_flags", js: true do
     page.find("[data-target='#create-flag-in']").click
   end
 
-  context "when successful" do
-    before do
-      fill_in "ids", with: user.email
-      click_button "Create Flag-in"
+  context "when creating multiple flag-ins" do
+    let(:user2) { create :user, email: "another_user@example.com" }
+
+    context "when successful" do
+      before do
+        fill_in "ids", with: [user.email, user2.email].join(",")
+        click_button "Create Flag-in"
+      end
+
+      it "displays a success message" do
+        page.should have_content "Users #{user.email}, #{user2.email} have been flagged in to #{feature.name}"
+      end
     end
 
-    it "displays a success message" do
-      page.should have_content "User #{user.email} has been flagged in to #{feature.name}"
-    end
+    context "when unsuccessful" do
+      before do
+        fill_in "ids", with: "#{user.email},foo"
+        click_button "Create Flag-in"
+      end
 
-    it "creates the flag" do
-      feature.users_flag_ins.first.flaggable.should eq user
-    end
-
-    it "renders the new flag-in" do
-      within "table" do
-        page.should have_content user.email
+      it "displays error messages" do
+        page.should have_content "Couldn't find User with email = foo"
       end
     end
   end
 
-  context "when unsuccessful" do
-    before do
-      fill_in "ids", with: "foo"
-      click_button "Create Flag-in"
+  context "when creating single flag-ins" do
+    context "when successful" do
+      before do
+        fill_in "ids", with: user.email
+        click_button "Create Flag-in"
+      end
+
+      it "displays a success message" do
+        page.should have_content "User #{user.email} has been flagged in to #{feature.name}"
+      end
+
+      it "creates the flag" do
+        feature.users_flag_ins.first.flaggable.should eq user
+      end
+
+      it "renders the new flag-in" do
+        within "table" do
+          page.should have_content user.email
+        end
+      end
     end
 
-    it "displays error messages" do
-      page.should have_content "User foo could not be found"
+    context "when unsuccessful" do
+      before do
+        fill_in "ids", with: "foo"
+        click_button "Create Flag-in"
+      end
+
+      it "displays error messages" do
+        page.should have_content "Couldn't find User with email = foo"
+      end
     end
   end
 end

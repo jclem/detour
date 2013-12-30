@@ -23,23 +23,57 @@ describe Detour::FlagInFlagsController do
     let!(:user)    { create :user }
     let(:feature) { create :feature }
 
-    before do
-      post :create, feature_name: feature.name, flaggable_type: user.class.table_name, ids: ids, format: :js
-    end
+    context "when creating multiple flag-ins" do
+      let!(:user2) { create :user, email: "another@example.com" }
 
-    context "when successful" do
-      let(:ids) { user.id.to_s }
-
-      it "sets a flash message" do
-        flash[:notice].should eq "#{user.class} #{user.id} has been flagged in to #{feature.name}"
+      before do
+        post :create, feature_name: feature.name, flaggable_type: user.class.table_name, ids: ids, format: :js
       end
-    end
 
-    context "when the flaggable can't be found" do
-      let(:ids) { "foo" }
+      context "when successful" do
+        let(:ids) { [user.id.to_s, user2.id.to_s].join(",") }
 
-      it "renders the errors template" do
-        response.should render_template "error"
+        it "creates the flag-in" do
+          feature.users_flag_ins.collect(&:flaggable).should eq [user, user2]
+        end
+
+        it "sets a flash message" do
+          flash[:notice].should eq "#{user.class.to_s.pluralize} #{user.id}, #{user2.id} have been flagged in to #{feature.name}"
+        end
+      end
+
+      context "when unsuccessful" do
+        let(:ids) { "foo" }
+
+        it "renders the errors template" do
+          response.should render_template "error"
+        end
+      end
+
+      context "when creating a single flag-in" do
+        before do
+          post :create, feature_name: feature.name, flaggable_type: user.class.table_name, ids: ids, format: :js
+        end
+
+        context "when successful" do
+          let(:ids) { user.id.to_s }
+
+          it "creates the flag-in" do
+            feature.users_flag_ins.collect(&:flaggable).should eq [user]
+          end
+
+          it "sets a flash message" do
+            flash[:notice].should eq "#{user.class} #{user.id} has been flagged in to #{feature.name}"
+          end
+        end
+
+        context "when the flaggable can't be found" do
+          let(:ids) { "foo" }
+
+          it "renders the errors template" do
+            response.should render_template "error"
+          end
+        end
       end
     end
   end

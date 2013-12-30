@@ -7,14 +7,36 @@ class Detour::FlagInFlagsController < Detour::ApplicationController
   end
 
   def create
-    feature   = Detour::Feature.find_by_name!(feature_name)
-    flaggable = flaggable_class.flaggable_find! params[:ids]
-    feature.send("#{flaggable_type}_flag_ins").create! flaggable: flaggable
+    @feature = Detour::Feature.find_by_name! feature_name
+    ids      = params[:ids].split(",")
+    @errors   = []
 
-    flash[:notice] = "#{flaggable_class} #{params[:ids]} has been flagged in to #{feature.name}"
-    render :success
-  rescue ActiveRecord::RecordNotFound
-    return render :error unless flaggable
+    Detour::Feature.transaction do
+      begin
+        ids.each do |id|
+          flaggable = flaggable_class.flaggable_find! id
+          flag      = @feature.send("#{flaggable_type}_flag_ins").new flaggable: flaggable
+
+          unless flag.save
+            @errors.concat flag.errors.full_messages
+          end
+        end
+
+        if @errors.any?
+          raise ActiveRecord::Rollback
+        end
+      rescue ActiveRecord::RecordNotFound => e
+        @errors << e.message
+        raise ActiveRecord::Rollback
+      end
+    end
+
+    if @errors.empty?
+      flash[:notice] = success_message
+      render :success
+    else
+      render :error
+    end
   end
 
   def destroy
@@ -41,4 +63,12 @@ class Detour::FlagInFlagsController < Detour::ApplicationController
     flaggable_type.classify.constantize
   end
   helper_method :flaggable_class
+
+  def success_message
+    plural = params[:ids].split(",").length > 1
+    klass  = plural ? flaggable_class.to_s.pluralize : flaggable_class
+    has    = plural ? "have" : "has"
+
+    flash[:notice] = "#{klass} #{params[:ids].split(",").join(", ")} #{has} been flagged in to #{@feature.name}"
+  end
 end
