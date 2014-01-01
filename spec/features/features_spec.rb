@@ -34,7 +34,9 @@ describe "creating a new feature", js: true do
     end
 
     it "lists the new feature" do
-      Detour::Feature.find_by_name("foo").should_not be_nil
+      within "table" do
+        page.should have_content "foo"
+      end
     end
   end
 
@@ -60,10 +62,6 @@ describe "destroying a feature", js: true do
 
   it "displays a flash message" do
     page.should have_content "Feature #{feature.name} has been deleted."
-  end
-
-  it "destroys the feature" do
-    Detour::Feature.find_by_id(feature.id).should be_nil
   end
 
   it "removes the feature from the list" do
