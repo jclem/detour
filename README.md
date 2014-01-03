@@ -16,23 +16,11 @@ Rollouts for `ActiveRecord` models. It is a spiritual fork of [ArRollout](https:
 
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Configuration](#configuration)
   - [Marking a model as flaggable](#marking-a-model-as-flaggable)
   - [Determining if a record is flagged into a feature](#determining-if-a-record-is-flagged-into-a-feature)
-  - [Feature operations](#feature-operations)
-    - [Creating features](#creating-features)
-    - [Destroying features](#destroying-features)
-    - [Flagging a record into a feature](#flagging-a-record-into-a-feature)
-    - [Removing a flag-in for a record for a feature](#removing-a-flag-in-for-a-record-for-a-feature)
-    - [Opt a record out of a feature](#opt-a-record-out-of-a-feature)
-    - [Un-opt out a record from a feature](#un-opt-out-a-record-from-a-feature)
-    - [Flag a programmatic group into a feature](#flag-a-programmatic-group-into-a-feature)
-    - [Remove a flag-in for a programmatic group for a feature](#remove-a-flag-in-for-a-programmatic-group-for-a-feature)
-    - [Flag a percentage of records into a feature](#flag-a-percentage-of-records-into-a-feature)
-    - [Remove a flag-in for a percentage of records for a feature](#remove-a-flag-in-for-a-percentage-of-records-for-a-feature)
-  - [Defining a default class](#defining-a-default-class)
   - [Defining programmatic groups](#defining-programmatic-groups)
 - [Contributing](#contributing)
-
 
 ## Installation
 
@@ -44,9 +32,13 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
+In your rails app:
 
-    $ gem install detour
+    $ bundle exec rails generate detour
+
+Run the Detour migrations:
+
+    $ bundle exec rake db:migrate
 
 ## Usage
 
@@ -54,7 +46,41 @@ Or install it yourself as:
 should have features accessible to it based on individual flags, flags for a
 percentage of records, or flags for a programmable group of records.
 
+### Configuration
+
+Edit `config/initializers/detour.rb`:
+
+```ruby
+Detour.configure do |config|
+  # Detour needs to know at boot which models will
+  # have flags defined for them:
+  config.flaggable_types = %w[User Widget]
+
+  # Detour needs to know what directories to search
+  # through in order to find places where you're
+  # checking for flags in your code. Provide it an
+  # array of glob strings:
+  config.grep_dirs = %w[app/**/*.{rb,erb}]
+
+  # Provide a default class to manage rollouts for, if
+  # desired. This means you can omit the class name from
+  # rake tasks:
+  config.default_flaggable_class_name = "User"
+end
+```
+
+Mount the app in `config/routes.rb`:
+
+```ruby
+Rails.application.routes.draw do
+  mount Detour::Engine => "/detour"
+end
+```
+
 ### Marking a model as flaggable
+
+In addition to listing classes that are flaggable in your initializer, add
+`acts_as_flaggable` to the class definitions themselves:
 
 ```ruby
 class User < ActiveRecord::Base
@@ -111,123 +137,6 @@ if current_user.has_feature? :new_user_interface do
 end; else
   render_old_user_interface
 end
-```
-
-### Feature operations
-
-Features and flags are intended to be controlled by a rake tasks. To create
-them programmatically, consult the documentation.
-
-#### Creating features
-
-```sh
-$ bundle exec rake detour:create[new_ui]
-```
-
-#### Destroying features
-
-```sh
-$ bundle exec rake detour:destroy[new_ui]
-```
-
-#### Flagging a record into a feature
-
-This task requires passing the feature name, the record's class, and the
-record's ID.
-
-```sh
-$ bundle exec rake detour:activate[new_ui,User,2]
-```
-
-#### Removing a flag-in for a record for a feature
-
-This task requires passing the feature name, the record's class, and the
-record's ID.
-
-```sh
-$ bundle exec rake detour:deactivate[new_ui,User,2]
-```
-
-#### Opt a record out of a feature
-
-This will ensure that `record.has_feature?(:feature)` will always be false for
-the given feature, regardless of other individual flag, percentage, or group
-rollouts that would otherwise target this record.
-
-This task requires passing the feature name, the record's class, and the
-record's ID.
-
-```sh
-$ bundle exec rake detour:opt_out[new_ui,User,2]
-```
-
-#### Un-opt out a record from a feature
-
-This task requires passing the feature name, the record's class, and the
-record's ID.
-
-```sh
-$ bundle exec rake detour:un_opt_out[new_ui,User,2]
-```
-
-#### Flag a programmatic group into a feature
-
-This task requires passing the feature name, the record class for the group,
-and the name of the group.
-
-```sh
-$ bundle exec rake detour:activate_group[new_ui,User,admins]
-```
-
-#### Remove a flag-in for a programmatic group for a feature
-
-This task requires passing the feature name, the record class for the group,
-and the name of the group.
-
-```sh
-$ bundle exec rake detour:deactivate_group[new_ui,User,admins]
-```
-
-#### Flag a percentage of records into a feature
-
-This relies on the following formula to determine if a record is flagged in to
-a feature based on percentage:
-
-```ruby
-record.id % 10 < percentage / 10
-```
-
-This task requires passing the feature name, the record class for the group,
-and the percentage of records to be flagged in.
-
-```sh
-$ bundle exec rake detour:activate_percentage[new_ui,User,20]
-```
-
-#### Remove a flag-in for a percentage of records for a feature
-
-This task requires passing the feature name, and the record class for the group.
-
-```sh
-$ bundle exec rake detour:deactivate_percentage[new_ui,User]
-```
-
-### Defining a default class
-
-In order to provide passing a class name into rake tasks, a default class can
-be set:
-
-```ruby
-Detour.configure do |config|
-  config.default_flaggable_class_name = "User"
-end
-```
-
-Then, in your rake tasks:
-
-```sh
-# Will activate feature "foo" for all instances of User that match the admins group.
-$ bundle exec rake detour:activate_group[foo,admins]
 ```
 
 ### Defining programmatic groups
