@@ -66,7 +66,7 @@ module Detour::Concerns
       group_names = group_flags.find_all_by_flaggable_type(klass).collect(&:group_name)
 
       Detour.config.defined_groups[klass].collect { |group_name, block|
-        block.call(instance) if group_names.include? group_name
+        block.call(instance) if group_names.include? group_name.to_s
       }.any?
     end
   end
