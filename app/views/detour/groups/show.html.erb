@@ -11,7 +11,29 @@
   </tbody>
 <% end %>
 
-<%= content_tag :span, "Edit Group", class: "btn btn-default pull-left", data: { toggle: "modal", target: "#edit-group" } %>
+<%= content_tag :span, "Add Members", class: "btn btn-default", data: { toggle: "modal", target: "#add-members" } %>
+<%= content_tag :span, "Edit Group",  class: "btn btn-default", data: { toggle: "modal", target: "#edit-group" } %>
+
+<%= modal title: "Add Members", id: "add-members", fade: true do %>
+  <%= form_for @group.memberships.new, remote: true do |form| %>
+    <%= form.hidden_field :group_id %>
+
+    <div class="row">
+      <div class="col-sm-4">
+        <%= form.select :member_type, Detour.config.flaggable_types, {}, class: "form-control col-sm-2" %>
+      </div>
+
+      <div class="col-sm-8">
+        <%= form.text_field :member_id, class: "form-control" %>
+      </div>
+    </div>
+
+    <%= modal_footer do %>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <%= form.submit "Add Members", class: "btn btn-primary" %>
+    <% end %>
+  <% end %>
+<% end %>
 
 <%= modal title: "Edit Group", id: "edit-group", fade: true do %>
   <%= form_for @group, remote: true do |form| %>

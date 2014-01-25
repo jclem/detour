@@ -108,8 +108,44 @@ describe "updating a group", js: true do
   end
 end
 
-describe "adding a member to a group" do
-  it "shows the new group member", pending: true
+describe "adding a member to a group", js: true do
+  let(:group) { create :group }
+  let!(:user) { create :user }
+
+  before do
+    User.instance_variable_set "@detour_flaggable_find_by", :email
+    visit "/detour/groups/#{group.to_param}"
+    page.find("[data-target='#add-members']").click
+  end
+
+  context "when successful" do
+    before do
+      fill_in "membership[member_id]", with: user.email
+      select "User", from: "membership[member_type]"
+      click_button "Add Members"
+    end
+
+    it "displays a flash message" do
+      page.should have_content "A new member has been added to the group"
+    end
+
+    it "shows the newly added member" do
+      within "table#memberships tr.membership" do
+        page.should have_content user.email
+      end
+    end
+  end
+
+  context "when unsuccessful" do
+    before do
+      select "User", from: "membership[member_type]"
+      click_button "Add Members"
+    end
+
+    it "displays error messages" do
+      page.should have_content "Couldn't find User with email ="
+    end
+  end
 end
 
 describe "bulk adding members to a group" do

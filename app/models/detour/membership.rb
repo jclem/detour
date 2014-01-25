@@ -3,6 +3,10 @@ class Detour::Membership < ActiveRecord::Base
   validates :member_id,   presence: true
   validates :member_type, presence: true
 
+  attr_accessible :group_id
+  attr_accessible :member_id
+  attr_accessible :member_type
+
   default_scope { order("member_type ASC") }
 
   belongs_to :group

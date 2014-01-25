@@ -4,7 +4,7 @@
   <%= render @groups %>
 <% end %>
 
-<%= content_tag :span, "Create a Group", class: "btn btn-default pull-left", data: { toggle: "modal", target: "#create-group" } %>
+<%= content_tag :span, "Create a Group", class: "btn btn-default", data: { toggle: "modal", target: "#create-group" } %>
 
 <%= modal title: "Create a Group", id: "create-group", fade: true do %>
   <%= form_for Detour::Group.new, remote: true do |form| %>
