@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(:version => 20131221052201) do
 
   create_table "detour_memberships", :force => true do |t|
     t.integer  "group_id"
-    t.integer  "member_type"
+    t.string   "member_type"
     t.integer  "member_id"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false

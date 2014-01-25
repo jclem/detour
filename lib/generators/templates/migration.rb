@@ -36,11 +36,14 @@ class SetupDetour < ActiveRecord::Migration
 
     create_table :detour_memberships do |t|
       t.integer :group_id
-      t.integer :member_type
+      t.string  :member_type
       t.integer :member_id
       t.timestamps
     end
 
-    add_index :detour_memberships, [:group_id, :member_type, :member_id], unique: true
+    add_index :detour_memberships, [:group_id, :member_type, :member_id],
+      name: :detour_memberships_membership_index,
+      unique: true
   end
 end
+

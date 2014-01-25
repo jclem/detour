@@ -15,7 +15,26 @@ describe "listing groups" do
 end
 
 describe "showing a group" do
-  it "lists every member", pending: true
+  let(:user)       { create :user }
+  let(:group)      { create :group }
+
+  before do
+    User.instance_variable_set "@detour_flaggable_find_by", :email
+    create :membership, group: group, member: user
+    visit "/detour/groups/#{group.to_param}"
+  end
+
+  it "lists every membership type" do
+    within "table#memberships tbody tr.membership" do
+      page.should have_content "User"
+    end
+  end
+
+  it "lists every membership id" do
+    within "table#memberships tbody tr.membership" do
+      page.should have_content user.email
+    end
+  end
 end
 
 describe "creating a group" do

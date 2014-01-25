@@ -1,0 +1,4 @@
+<%= content_tag_for :tr, membership do %>
+  <td><%= membership.member.class %></td>
+  <td><%= membership.member.send membership.member.class.detour_flaggable_find_by %></td>
+<% end %>

@@ -1,0 +1,10 @@
+<%= content_tag :table, id: "memberships", class: "table table-striped" do %>
+  <thead>
+    <th>Membership Type</th>
+    <th>Membership ID</th>
+  </thead>
+
+  <tbody>
+    <%= render @group.memberships %>
+  </tbody>
+<% end %>

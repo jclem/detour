@@ -18,4 +18,20 @@ describe Detour::GroupsController do
       response.should render_template "groups/index"
     end
   end
+
+  describe "GET #show" do
+    let!(:group) { create :group }
+
+    before do
+      get :show, id: group.to_param
+    end
+
+    it "assigns the groups" do
+      assigns(:group).should eq group
+    end
+
+    it "renders the show template" do
+      response.should render_template "groups/show"
+    end
+  end
 end

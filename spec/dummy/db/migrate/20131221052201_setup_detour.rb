@@ -36,7 +36,7 @@ class SetupDetour < ActiveRecord::Migration
 
     create_table :detour_memberships do |t|
       t.integer :group_id
-      t.integer :member_type
+      t.string  :member_type
       t.integer :member_id
       t.timestamps
     end
