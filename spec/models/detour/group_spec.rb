@@ -4,6 +4,7 @@ describe Detour::Group do
   it { should validate_presence_of   :name }
   it { should validate_uniqueness_of :name }
   it { should have_many :memberships }
+  it { should allow_mass_assignment_of :name }
 
   describe "#to_s" do
     it "returns the group name" do

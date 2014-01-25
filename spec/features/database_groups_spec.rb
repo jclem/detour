@@ -37,8 +37,38 @@ describe "showing a group" do
   end
 end
 
-describe "creating a group" do
-  it "shows the newly created group", pending: true
+describe "creating a group", js: true do
+  before do
+    visit "/detour/groups"
+    page.find("[data-target='#create-group']").click
+  end
+
+  context "when successful" do
+    before do
+      fill_in "group[name]", with: "New Group"
+      click_button "Create Group"
+    end
+
+    it "displays a flash message" do
+      page.should have_content "Your group has been successfully created."
+    end
+
+    it "shows the newly created group" do
+      within "ul#groups li.group" do
+        page.should have_content "New Group"
+      end
+    end
+  end
+
+  context "when unsuccessful" do
+    before do
+      click_button "Create Group"
+    end
+
+    it "displays error messages" do
+      page.should have_content "Name can't be blank"
+    end
+  end
 end
 
 describe "updating a group" do

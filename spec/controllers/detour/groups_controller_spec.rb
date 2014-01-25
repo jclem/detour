@@ -34,4 +34,30 @@ describe Detour::GroupsController do
       response.should render_template "groups/show"
     end
   end
+
+  describe "POST #create" do
+    before do
+      post :create, format: :js, group: group_params
+    end
+
+    context "when successful" do
+      let(:group_params) { { name: "Foo Group" } }
+
+      it "sets a flash message" do
+        flash[:notice].should eq "Your group has been successfully created."
+      end
+
+      it "renders the success template" do
+        response.should render_template "success"
+      end
+    end
+
+    context "when unsuccessful" do
+      let(:group_params) { { name: "" } }
+
+      it "renders the errors template" do
+        response.should render_template "error"
+      end
+    end
+  end
 end

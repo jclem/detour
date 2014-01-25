@@ -4,9 +4,10 @@ class Detour::FeaturesController < Detour::ApplicationController
 
     if @feature.save
       flash[:notice] = "Your feature has been successfully created."
-      render :success
+      render "detour/shared/success"
     else
-      render :error
+      @model = @feature
+      render "detour/shared/error"
     end
   end
 

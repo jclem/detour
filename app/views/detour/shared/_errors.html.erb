@@ -1,0 +1,11 @@
+<div class="panel panel-danger">
+  <div class="panel-heading">Whoops! There were some errors saving your <%= model.class.model_name.singular %>:</div>
+
+  <div class="panel-body">
+    <ul>
+      <% model.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
