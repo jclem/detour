@@ -18,4 +18,16 @@ class Detour::GroupsController < Detour::ApplicationController
       render "detour/shared/error"
     end
   end
+
+  def update
+    @group = Detour::Group.find(params[:id])
+
+    if @group.update_attributes(params[:group])
+      flash[:notice] = "Your group has been successfully updated."
+      render "detour/shared/success"
+    else
+      @model = @group
+      render "detour/shared/error"
+    end
+  end
 end

@@ -71,8 +71,41 @@ describe "creating a group", js: true do
   end
 end
 
-describe "updating a group" do
-  it "shows the new group attributes", pending: true
+describe "updating a group", js: true do
+  let(:group) { create :group }
+
+  before do
+    visit "/detour/groups/#{group.to_param}"
+    page.find("[data-target='#edit-group']").click
+  end
+
+  context "when successful" do
+    before do
+      fill_in "group[name]", with: "New Group Name"
+      click_button "Update Group"
+    end
+
+    it "displays a flash message" do
+      page.should have_content "Your group has been successfully updated."
+    end
+
+    it "shows the newly updated group" do
+      within "h1" do
+        page.should have_content "New Group Name"
+      end
+    end
+  end
+
+  context "when unsuccessful" do
+    before do
+      fill_in "group[name]", with: ""
+      click_button "Update Group"
+    end
+
+    it "displays error messages" do
+      page.should have_content "Name can't be blank"
+    end
+  end
 end
 
 describe "adding a member to a group" do

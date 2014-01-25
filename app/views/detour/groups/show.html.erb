@@ -1,3 +1,5 @@
+<h1><%= @group %></h1>
+
 <%= content_tag :table, id: "memberships", class: "table table-striped" do %>
   <thead>
     <th>Membership Type</th>
@@ -7,4 +9,17 @@
   <tbody>
     <%= render @group.memberships %>
   </tbody>
+<% end %>
+
+<%= content_tag :span, "Edit Group", class: "btn btn-default pull-left", data: { toggle: "modal", target: "#edit-group" } %>
+
+<%= modal title: "Edit Group", id: "edit-group", fade: true do %>
+  <%= form_for @group, remote: true do |form| %>
+    <%= form.text_field :name, class: "form-control" %>
+
+    <%= modal_footer do %>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <%= form.submit "Update Group", class: "btn btn-primary" %>
+    <% end %>
+  <% end %>
 <% end %>
