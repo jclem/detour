@@ -66,11 +66,11 @@ class Detour::FlagForm
 
   def set_group_flag_params(feature, params)
     key          = :"#{@flaggable_type}_group_flags_attributes"
-    flags_params = params[key]
+    flags_params = params[key] || {}
     params.delete key
 
     group_names.zip(group_flags_for(feature, false)).each do |name, flag|
-      flag_params = flags_params[name]
+      flag_params = flags_params[name] || {}
       to_keep     = flag_params["to_keep"] == "1"
       flags_params.delete name
 
