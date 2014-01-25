@@ -40,6 +40,22 @@ ActiveRecord::Schema.define(:version => 20131221052201) do
   add_index "detour_flags", ["type", "feature_id", "flaggable_type"], :name => "flag_type_feature_flaggable_type"
   add_index "detour_flags", ["type"], :name => "index_detour_flags_on_type"
 
+  create_table "detour_groups", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "detour_memberships", :force => true do |t|
+    t.integer  "group_id"
+    t.integer  "member_type"
+    t.integer  "member_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "detour_memberships", ["group_id", "member_type", "member_id"], :name => "detour_memberships_membership_index", :unique => true
+
   create_table "users", :force => true do |t|
     t.string   "email"
     t.string   "name"
