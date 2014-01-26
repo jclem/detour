@@ -1,7 +1,8 @@
 module Detour::Concerns
   module Matchers
     # Determines whether or not the given instance has had the feature rolled out
-    # to it either via direct flagging-in, percentage, or by group membership.
+    # to it either via direct flagging-in, percentage, or by database or defined
+    # group membership.
     #
     # @example
     #   feature.match?(current_user)
@@ -11,7 +12,10 @@ module Detour::Concerns
     #
     # @return Whether or not the given instance has the feature rolled out to it.
     def match?(instance)
-      match_id?(instance) || match_percentage?(instance) || match_groups?(instance)
+      match_id?(instance)                ||
+        match_percentage?(instance)      ||
+        match_database_groups?(instance) ||
+        match_defined_groups?(instance)
     end
 
     # Determines whether or not the given instance has had the feature rolled out
@@ -48,17 +52,32 @@ module Detour::Concerns
     end
 
     # Determines whether or not the given instance has had the feature rolled out
-    # to it via group membership.
+    # to it via database group membership.
     #
     # @example
-    #   feature.match_groups?(current_user)
+    #   feature.match_database_groups?(current_user)
+    #
+    # @param [ActiveRecord::Base] instance A record to be tested for feature
+    #   rollout.
+    #
+    # @return Whether or not the given instance has the feature rolled out to it
+    #   via direct database group membership.
+    def match_database_groups?(instance)
+      database_group_flags.find_all_by_flaggable_type(instance.class.to_s).map(&:group).map(&:memberships).flatten.map(&:member).flatten.uniq.include? instance
+    end
+
+    # Determines whether or not the given instance has had the feature rolled out
+    # to it via defined group membership.
+    #
+    # @example
+    #   feature.match_defined_groups?(current_user)
     #
     # @param [ActiveRecord::Base] instance A record to be tested for feature
     #   rollout.
     #
     # @return Whether or not the given instance has the feature rolled out to it
     #   via direct group membership.
-    def match_groups?(instance)
+    def match_defined_groups?(instance)
       klass = instance.class.to_s
 
       return unless Detour::DefinedGroup.by_type(klass).any?

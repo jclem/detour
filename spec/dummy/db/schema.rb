@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(:version => 20131221052201) do
     t.integer  "feature_id"
     t.integer  "flaggable_id"
     t.string   "flaggable_type"
+    t.integer  "group_id"
     t.string   "group_name"
     t.integer  "percentage"
     t.datetime "created_at",     :null => false
@@ -36,8 +37,10 @@ ActiveRecord::Schema.define(:version => 20131221052201) do
   end
 
   add_index "detour_flags", ["feature_id"], :name => "index_detour_flags_on_feature_id"
+  add_index "detour_flags", ["group_id"], :name => "index_detour_flags_on_group_id"
   add_index "detour_flags", ["type", "feature_id", "flaggable_type", "flaggable_id"], :name => "flag_type_feature_flaggable_type_id"
   add_index "detour_flags", ["type", "feature_id", "flaggable_type"], :name => "flag_type_feature_flaggable_type"
+  add_index "detour_flags", ["type", "feature_id", "group_id"], :name => "index_detour_flags_on_type_and_feature_id_and_group_id"
   add_index "detour_flags", ["type"], :name => "index_detour_flags_on_type"
 
   create_table "detour_groups", :force => true do |t|
