@@ -1,7 +1,7 @@
 <% Detour.config.flaggable_types.each do |type| %>
   <h1><%= type %> Groups</h1>
 
-  <%= content_tag :ul, id: "groups" do %>
+  <%= content_tag :ul, class: "groups" do %>
     <%= render @groups.select { |group| group.flaggable_type == type } %>
   <% end %>
 <% end %>

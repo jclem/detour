@@ -8,7 +8,7 @@ describe "listing groups" do
   end
 
   it "lists every group" do
-    within "ul#groups li.group" do
+    within "ul li.group" do
       page.should have_content group.name
     end
   end
@@ -47,7 +47,7 @@ describe "creating a group", js: true do
     end
 
     it "shows the newly created group" do
-      within "ul#groups li.group" do
+      within "ul li.group" do
         page.should have_content "New Group"
       end
     end
@@ -155,6 +155,20 @@ describe "removing a member from a group" do
   end
 end
 
-describe "destroying a group" do
-  it "shows the remaining groups", pending: true
+describe "destroying a group", js: true do
+  let!(:group) { create :group }
+
+  before do
+    visit "/detour/groups/#{group.to_param}"
+    click_button "Delete Group"
+    page.find(".modal a").click
+  end
+
+  it "shows a flash message" do
+    page.should have_content "Group \"#{group.name}\" has been deleted"
+  end
+
+  it "shows the remaining groups" do
+    page.should_not have_selector ".group"
+  end
 end

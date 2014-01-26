@@ -29,4 +29,11 @@ class Detour::GroupsController < Detour::ApplicationController
       render :show
     end
   end
+
+  def destroy
+    @group = Detour::Group.find(params[:id])
+    @group.destroy
+    flash[:notice] = "Group \"#{@group.name}\" has been deleted."
+    redirect_to groups_path
+  end
 end

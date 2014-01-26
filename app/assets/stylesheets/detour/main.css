@@ -47,3 +47,7 @@ table.table tbody tr td {
 .counter-header {
   width: 80px;
 }
+
+.delete-group {
+  margin-left: 0.5em;
+}

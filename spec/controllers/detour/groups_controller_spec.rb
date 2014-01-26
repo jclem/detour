@@ -88,4 +88,20 @@ describe Detour::GroupsController do
       end
     end
   end
+
+  describe "DELETE #destroy" do
+    let(:group) { create :group }
+
+    before do
+      delete :destroy, id: group.to_param
+    end
+
+    it "sets a flash message" do
+      flash[:notice].should eq "Group \"#{group.name}\" has been deleted."
+    end
+
+    it "redirects to the groups path" do
+      response.should redirect_to groups_path
+    end
+  end
 end
