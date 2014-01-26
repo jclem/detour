@@ -41,7 +41,7 @@ describe Detour::GroupsController do
     end
 
     context "when successful" do
-      let(:group_params) { { name: "Foo Group" } }
+      let(:group_params) { { name: "Foo Group", flaggable_type: "User" } }
 
       it "sets a flash message" do
         flash[:notice].should eq "Your group has been successfully created."
@@ -65,7 +65,7 @@ describe Detour::GroupsController do
     let(:group) { create :group }
 
     before do
-      put :update, id: group.to_param, format: :js, group: group_params
+      put :update, id: group.to_param, group: group_params
     end
 
     context "when successful" do
@@ -75,16 +75,16 @@ describe Detour::GroupsController do
         flash[:notice].should eq "Your group has been successfully updated."
       end
 
-      it "renders the success template" do
-        response.should render_template "success"
+      it "redirect to the group" do
+        response.should redirect_to group_path group
       end
     end
 
     context "when unsuccessful" do
       let(:group_params) { { name: "" } }
 
-      it "renders the errors template" do
-        response.should render_template "error"
+      it "renders the show template" do
+        response.should render_template "show"
       end
     end
   end

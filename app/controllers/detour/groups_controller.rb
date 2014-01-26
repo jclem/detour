@@ -24,10 +24,9 @@ class Detour::GroupsController < Detour::ApplicationController
 
     if @group.update_attributes(params[:group])
       flash[:notice] = "Your group has been successfully updated."
-      render "detour/shared/success"
+      redirect_to group_path @group
     else
-      @model = @group
-      render "detour/shared/error"
+      render :show
     end
   end
 end

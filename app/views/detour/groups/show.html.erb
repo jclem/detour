@@ -1,47 +1,30 @@
 <h1><%= @group %></h1>
 
-<%= content_tag :table, id: "memberships", class: "table table-striped" do %>
-  <thead>
-    <th>Membership Type</th>
-    <th>Membership ID</th>
-  </thead>
-
-  <tbody>
-    <%= render @group.memberships %>
-  </tbody>
+<% if @group.errors.any? %>
+  <ul>
+    <% @group.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+  </ul>
 <% end %>
 
-<%= content_tag :span, "Add Members", class: "btn btn-default", data: { toggle: "modal", target: "#add-members" } %>
-<%= content_tag :span, "Edit Group",  class: "btn btn-default", data: { toggle: "modal", target: "#edit-group" } %>
+<%= form_for @group do |form| %>
+  <div class="row">
+    <%= form.label :name, class: "control-label col-sm-1" %>
 
-<%= modal title: "Add Members", id: "add-members", fade: true do %>
-  <%= form_for @group.memberships.new, remote: true do |form| %>
-    <%= form.hidden_field :group_id %>
-
-    <div class="row">
-      <div class="col-sm-4">
-        <%= form.select :member_type, Detour.config.flaggable_types, {}, class: "form-control col-sm-2" %>
-      </div>
-
-      <div class="col-sm-8">
-        <%= form.text_field :member_id, class: "form-control" %>
-      </div>
+    <div class="col-sm-3">
+      <%= form.text_field :name, class: "form-control" %>
     </div>
+  </div>
 
-    <%= modal_footer do %>
-      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      <%= form.submit "Add Members", class: "btn btn-primary" %>
-    <% end %>
+  <%= form.fields_for :memberships do |membership_form| %>
+    <%= render "membership_fields", f: membership_form %>
   <% end %>
-<% end %>
 
-<%= modal title: "Edit Group", id: "edit-group", fade: true do %>
-  <%= form_for @group, remote: true do |form| %>
-    <%= form.text_field :name, class: "form-control" %>
+  <%= link_to_add_fields "Add Member", form, :memberships %>
 
-    <%= modal_footer do %>
-      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      <%= form.submit "Update Group", class: "btn btn-primary" %>
-    <% end %>
-  <% end %>
+
+  <hr>
+
+  <%= form.submit class: "btn btn-primary" %>
 <% end %>

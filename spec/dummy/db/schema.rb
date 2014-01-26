@@ -42,8 +42,9 @@ ActiveRecord::Schema.define(:version => 20131221052201) do
 
   create_table "detour_groups", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string   "flaggable_type"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   create_table "detour_memberships", :force => true do |t|

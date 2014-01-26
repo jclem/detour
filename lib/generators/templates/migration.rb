@@ -31,13 +31,14 @@ class SetupDetour < ActiveRecord::Migration
 
     create_table :detour_groups do |t|
       t.string :name
+      t.string :flaggable_type
       t.timestamps
     end
 
     create_table :detour_memberships do |t|
-      t.integer :group_id
-      t.string  :member_type
-      t.integer :member_id
+      t.integer  :group_id
+      t.string   :member_type
+      t.integer  :member_id
       t.timestamps
     end
 
@@ -46,4 +47,3 @@ class SetupDetour < ActiveRecord::Migration
       unique: true
   end
 end
-

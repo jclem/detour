@@ -24,16 +24,8 @@ describe "showing a group" do
     visit "/detour/groups/#{group.to_param}"
   end
 
-  it "lists every membership type" do
-    within "table#memberships tbody tr.membership" do
-      page.should have_content "User"
-    end
-  end
-
-  it "lists every membership id" do
-    within "table#memberships tbody tr.membership" do
-      page.should have_content user.email
-    end
+  it "lists every membership" do
+    page.find("input[name=member_identifier]").value.should eq user.email
   end
 end
 
@@ -46,6 +38,7 @@ describe "creating a group", js: true do
   context "when successful" do
     before do
       fill_in "group[name]", with: "New Group"
+      select "User", from: "group[flaggable_type]"
       click_button "Create Group"
     end
 
@@ -71,12 +64,11 @@ describe "creating a group", js: true do
   end
 end
 
-describe "updating a group", js: true do
+describe "updating a group" do
   let(:group) { create :group }
 
   before do
     visit "/detour/groups/#{group.to_param}"
-    page.find("[data-target='#edit-group']").click
   end
 
   context "when successful" do
@@ -115,41 +107,34 @@ describe "adding a member to a group", js: true do
   before do
     User.instance_variable_set "@detour_flaggable_find_by", :email
     visit "/detour/groups/#{group.to_param}"
-    page.find("[data-target='#add-members']").click
+    page.find(".add-fields").click
   end
 
   context "when successful" do
     before do
-      fill_in "membership[member_id]", with: user.email
-      select "User", from: "membership[member_type]"
-      click_button "Add Members"
+      name = page.find("##{page.all("label")[-2][:for]}")[:name]
+      fill_in name, with: user.email
+      click_button "Update Group"
     end
 
     it "displays a flash message" do
-      page.should have_content "A new member has been added to the group"
+      page.should have_content "Your group has been successfully updated."
     end
 
     it "shows the newly added member" do
-      within "table#memberships tr.membership" do
-        page.should have_content user.email
-      end
+      page.find("input[type='text'][disabled]").value.should eq user.email
     end
   end
 
   context "when unsuccessful" do
     before do
-      select "User", from: "membership[member_type]"
-      click_button "Add Members"
+      click_button "Update Group"
     end
 
     it "displays error messages" do
-      page.should have_content "Couldn't find User with email ="
+      page.should have_content "Memberships user \"\" could not be found"
     end
   end
-end
-
-describe "bulk adding members to a group" do
-  it "shows the new group members", pending: true
 end
 
 describe "removing a member from a group" do

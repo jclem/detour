@@ -4,6 +4,7 @@ FactoryGirl.define do
   end
 
   factory :group, class: "Detour::Group" do
+    flaggable_type "User"
     name
   end
 end

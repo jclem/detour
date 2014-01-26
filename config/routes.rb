@@ -4,7 +4,6 @@ Detour::Engine.routes.draw do
 
   resources :features, only: [:create, :destroy]
   resources :groups, only: [:index, :show, :create, :update]
-  resources :memberships, only: [:create]
 
   get    "/flag-ins/:feature_name/:flaggable_type"     => "flaggable_flags#index",   as: "flag_in_flags"
   post   "/flag-ins/:feature_name/:flaggable_type"     => "flaggable_flags#create"
