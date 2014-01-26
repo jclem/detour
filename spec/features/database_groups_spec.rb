@@ -138,7 +138,21 @@ describe "adding a member to a group", js: true do
 end
 
 describe "removing a member from a group" do
-  it "shows the remaining group members", pending: true
+  let(:group) { create :group }
+  let(:user) { create :user }
+  let!(:membership) { create :membership, group: group, member: user }
+
+  before do
+    User.instance_variable_set "@detour_flaggable_find_by", :email
+    visit "/detour/groups/#{group.to_param}"
+    name = page.find("##{page.all("label").last[:for]}")[:name]
+    check name
+    click_button "Update Group"
+  end
+
+  it "does not show the removed member" do
+    page.should_not have_selector "label[for='group_memberships_attributes_0_member_key']"
+  end
 end
 
 describe "destroying a group" do
