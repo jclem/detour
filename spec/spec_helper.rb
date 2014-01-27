@@ -50,6 +50,7 @@ RSpec.configure do |config|
 
   config.before :each do
     User.instance_variable_set "@detour_flaggable_find_by", :id
+    Detour.config.instance_variable_set "@defined_groups", {}
   end
 
   config.after :each do
