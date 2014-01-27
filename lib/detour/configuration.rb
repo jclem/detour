@@ -29,7 +29,7 @@ class Detour::Configuration
   private
 
   def define_group_for_class(klass, group_name, &block)
-    @defined_groups[klass] ||= {}
-    @defined_groups[klass][group_name] = block
+    @defined_groups[klass] ||= []
+    @defined_groups[klass].push Detour::DefinedGroup.new(group_name, block)
   end
 end

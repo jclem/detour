@@ -14,8 +14,7 @@ class Detour::FlagForm
   def group_names
     @group_names ||= begin
       all_names = features.collect { |feature| feature.send("#{@flaggable_type}_group_flags").collect(&:group_name) }.uniq.flatten
-      defined_group_names = Detour.config.defined_groups.fetch(@flaggable_type.classify, {}).keys.map(&:to_s)
-      (all_names | defined_group_names).sort
+      (all_names | Detour::DefinedGroup.by_type(@flaggable_type).map(&:name)).sort
     end
   end
 

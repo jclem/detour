@@ -2,14 +2,18 @@ require "spec_helper"
 
 describe Detour::Configuration do
   describe ".define_group_for_class" do
-    let(:block) { Proc.new {} }
+    let(:block) { Proc.new { "foo!" } }
 
     before do
       subject.send :define_group_for_class, "User", "user_id_1", &block
     end
 
     it "defines a group for the given class" do
-      subject.defined_groups["User"].should eq({ "user_id_1" => block })
+      subject.defined_groups["User"][0].name.should eq "user_id_1"
+    end
+
+    it "assigns the test for the group" do
+      subject.defined_groups["User"][0].test(1).should eq "foo!"
     end
   end
 
