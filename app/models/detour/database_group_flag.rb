@@ -1,5 +1,5 @@
 class Detour::DatabaseGroupFlag < Detour::Flag
-  include Keepable
+  include Detour::Concerns::Keepable
 
   validates_presence_of   :group_id
   validates_presence_of   :flaggable_type
