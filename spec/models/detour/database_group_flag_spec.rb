@@ -9,4 +9,13 @@ describe Detour::DatabaseGroupFlag do
 
   it { should belong_to :group }
   it { should have_many(:memberships).through(:group) }
+
+  describe "#members" do
+    let(:flag) { create :database_group_flag }
+    let!(:membership) { create :membership, group: flag.group }
+
+    it "returns its membership members" do
+      flag.members.should eq [membership.member]
+    end
+  end
 end
