@@ -63,6 +63,7 @@ module Detour::Concerns
     # @return Whether or not the given instance has the feature rolled out to it
     #   via direct database group membership.
     def match_database_groups?(instance)
+      binding.pry
       database_group_flags.where(flaggable_type: instance.class).map(&:group).map(&:memberships).flatten.map(&:member).flatten.uniq.include? instance
     end
 
