@@ -3,6 +3,7 @@ require "fakefs/spec_helpers"
 
 describe Detour::Feature do
   it { should have_many(:flag_in_flags) }
+  it { should have_many(:database_group_flags) }
   it { should have_many(:group_flags) }
   it { should have_many(:percentage_flags) }
   it { should have_many(:opt_out_flags) }
