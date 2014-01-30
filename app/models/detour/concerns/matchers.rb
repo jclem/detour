@@ -84,7 +84,7 @@ module Detour::Concerns
 
       group_names = defined_group_flags.find_all_by_flaggable_type(klass).collect(&:group_name)
 
-      Detour::DefinedGroup.by_type(klass).collect { |group|
+      Detour::DefinedGroup.by_type(klass).collect { |name, group|
         group.test(instance) if group_names.include? group.name
       }.any?
     end

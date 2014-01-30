@@ -81,7 +81,7 @@ class Detour::FlagForm
   end
 
   def defined_groups
-    @defined_groups ||= Detour::DefinedGroup.by_type(@flaggable_type)
+    @defined_groups ||= Detour::DefinedGroup.by_type(@flaggable_type).values
   end
 
   def flaggable_collection

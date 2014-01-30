@@ -16,6 +16,6 @@ class Detour::DefinedGroup
   end
 
   def self.by_type(type)
-    Detour.config.defined_groups.fetch type.to_s, []
+    Detour.config.defined_groups.fetch(type.to_s, {}).with_indifferent_access
   end
 end

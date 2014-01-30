@@ -9,11 +9,11 @@ describe Detour::Configuration do
     end
 
     it "defines a group for the given class" do
-      subject.defined_groups["User"][0].name.should eq "user_id_1"
+      subject.defined_groups["User"].values[0].name.should eq "user_id_1"
     end
 
     it "assigns the test for the group" do
-      subject.defined_groups["User"][0].test(1).should eq "foo!"
+      subject.defined_groups["User"].values[0].test(1).should eq "foo!"
     end
   end
 

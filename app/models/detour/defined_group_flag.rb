@@ -9,7 +9,7 @@ class Detour::DefinedGroupFlag < Detour::Flag
   attr_accessible :group_name
 
   def group
-    Detour::DefinedGroup.by_type(flaggable_type).detect { |group| group.name == group_name }
+    Detour::DefinedGroup.by_type(flaggable_type)[group_name]
   end
 
   def group_type
