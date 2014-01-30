@@ -23,14 +23,14 @@ module Detour::ActsAsFlaggable
         update_only: true,
         reject_if: proc { |attrs| attrs[:percentage].blank? }
 
-      has_many :#{table_name}_group_flags,
-        class_name: "Detour::GroupFlag",
+      has_many :#{table_name}_defined_group_flags,
+        class_name: "Detour::DefinedGroupFlag",
         inverse_of: :feature,
         dependent: :destroy,
         conditions: { flaggable_type: "#{self}" }
 
-      attr_accessible :#{table_name}_group_flags_attributes
-      accepts_nested_attributes_for :#{table_name}_group_flags, allow_destroy: true
+      attr_accessible :#{table_name}_defined_group_flags_attributes
+      accepts_nested_attributes_for :#{table_name}_defined_group_flags, allow_destroy: true
 
       has_many :#{table_name}_database_group_flags,
         class_name: "Detour::DatabaseGroupFlag",

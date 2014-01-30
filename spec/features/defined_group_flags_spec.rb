@@ -15,7 +15,7 @@ end
 
 describe "creating defined group flags" do
   let!(:feature) { create :feature }
-  let(:checkbox) { "features[#{feature.name}][users_group_flags_attributes[admins]][to_keep]" }
+  let(:checkbox) { "features[#{feature.name}][users_defined_group_flags_attributes[admins]][to_keep]" }
 
   before do
     Detour.config.define_user_group :admins do |user|
@@ -27,7 +27,7 @@ describe "creating defined group flags" do
 
   it "creates the group flag" do
     click_button "Save Changes"
-    feature.reload.users_group_flags.first.group_name.should eq "admins"
+    feature.reload.users_defined_group_flags.first.group_name.should eq "admins"
   end
 
   context "when there are errors in other fields" do
@@ -41,8 +41,8 @@ end
 
 describe "removing defined group flags" do
   let(:feature)     { create :feature }
-  let!(:group_flag) { create :group_flag, feature: feature, group_name: "admins" }
-  let(:checkbox) { "features[#{feature.name}][users_group_flags_attributes[admins]][to_keep]" }
+  let!(:group_flag) { create :defined_group_flag, feature: feature, group_name: "admins" }
+  let(:checkbox) { "features[#{feature.name}][users_defined_group_flags_attributes[admins]][to_keep]" }
 
   before do
     Detour.config.define_user_group :admins do |user|
@@ -54,7 +54,7 @@ describe "removing defined group flags" do
 
   it "creates the group flag" do
     click_button "Save Changes"
-    feature.reload.users_group_flags.should be_empty
+    feature.reload.users_defined_group_flags.should be_empty
   end
 
   context "when there are errors in other fields" do

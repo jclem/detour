@@ -1,18 +1,21 @@
 require "spec_helper"
 
-describe Detour::DefinedGroup do
-  subject { Detour::DefinedGroup.new(:foo, ->{}) }
-  it { should respond_to :name }
-  it { should respond_to :test }
+describe Detour::Group do
+  it { should validate_presence_of   :name }
+  it { should validate_presence_of   :flaggable_type }
+  it { should validate_uniqueness_of(:name).scoped_to(:flaggable_type) }
+  it { should ensure_inclusion_of(:flaggable_type).in_array(Detour.config.flaggable_types) }
 
-  describe "#test" do
-    before do
-      @group = Detour::DefinedGroup.new :foo, ->(arg) { arg == 1 }
-    end
+  it { should accept_nested_attributes_for :memberships }
 
-    it "tests with the passed block" do
-      @group.test(1).should be_true
-      @group.test(2).should be_false
+  it { should have_many(:memberships).dependent(:destroy) }
+  it { should allow_mass_assignment_of :name }
+  it { should allow_mass_assignment_of :flaggable_type }
+
+  describe "#to_s" do
+    it "returns the group name" do
+      group = create :group
+      group.to_s.should eq group.name
     end
   end
 end

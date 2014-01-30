@@ -1,6 +1,6 @@
 # A group of flaggable records of a given class may be flagged into a feature
 # with this class.
-class Detour::GroupFlag < Detour::Flag
+class Detour::DefinedGroupFlag < Detour::Flag
   include Detour::Concerns::Keepable
 
   validates_presence_of   :group_name

@@ -80,7 +80,7 @@ module Detour::Concerns
       #   {Detour::Flag Flag} created.
       def add_group_to_feature(flaggable_type, group_name, feature_name)
         feature = find_by_name!(feature_name)
-        feature.group_flags.where(flaggable_type: flaggable_type, group_name: group_name).first_or_create!
+        feature.defined_group_flags.where(flaggable_type: flaggable_type, group_name: group_name).first_or_create!
       end
 
       # Remove a group from agiven feature. If the feature is not found, an
@@ -97,7 +97,7 @@ module Detour::Concerns
       #   group.
       def remove_group_from_feature(flaggable_type, group_name, feature_name)
         feature = find_by_name!(feature_name)
-        feature.group_flags.where(flaggable_type: flaggable_type, group_name: group_name).destroy_all
+        feature.defined_group_flags.where(flaggable_type: flaggable_type, group_name: group_name).destroy_all
       end
 
       # Add a percentage of records to the given feature. If the feature is not

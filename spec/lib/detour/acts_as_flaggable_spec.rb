@@ -14,9 +14,9 @@ describe Detour::ActsAsFlaggable do
   describe "#acts_as_flaggable" do
     describe "Detour::Feature associations" do
       subject { Detour::Feature.new }
-      it { should have_many(:users_group_flags).class_name("Detour::GroupFlag").dependent(:destroy) }
-      it { should allow_mass_assignment_of(:users_group_flags_attributes) }
-      it { should accept_nested_attributes_for(:users_group_flags) }
+      it { should have_many(:users_defined_group_flags).class_name("Detour::DefinedGroupFlag").dependent(:destroy) }
+      it { should allow_mass_assignment_of(:users_defined_group_flags_attributes) }
+      it { should accept_nested_attributes_for(:users_defined_group_flags) }
 
       it { should have_many(:users_database_group_flags).class_name("Detour::DatabaseGroupFlag").dependent(:destroy) }
       it { should allow_mass_assignment_of(:users_database_group_flags_attributes) }

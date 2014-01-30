@@ -4,7 +4,7 @@ require "fakefs/spec_helpers"
 describe Detour::Feature do
   it { should have_many(:flag_in_flags) }
   it { should have_many(:database_group_flags) }
-  it { should have_many(:group_flags) }
+  it { should have_many(:defined_group_flags) }
   it { should have_many(:percentage_flags) }
   it { should have_many(:opt_out_flags) }
   it { should have_many(:flags).dependent(:destroy) }
@@ -122,7 +122,7 @@ describe Detour::Feature do
     end
 
     it "creates a flag for the given group and feature" do
-      feature.group_flags.where(flaggable_type: "User", group_name: "bar").first.should_not be_nil
+      feature.defined_group_flags.where(flaggable_type: "User", group_name: "bar").first.should_not be_nil
     end
   end
 
@@ -137,7 +137,7 @@ describe Detour::Feature do
     end
 
     it "destroys flags for the given group and feature" do
-      feature.group_flags.where(flaggable_type: "User", group_name: "bar").first.should be_nil
+      feature.defined_group_flags.where(flaggable_type: "User", group_name: "bar").first.should be_nil
     end
   end
 
@@ -311,7 +311,7 @@ describe Detour::Feature do
     let(:user2)   { create :user }
     let(:widget)  { create :widget }
     let(:feature) { create :feature }
-    let!(:flag)   { create :group_flag, feature: feature, flaggable_type: user.class.to_s, group_name: "foo_users" }
+    let!(:flag)   { create :defined_group_flag, feature: feature, flaggable_type: user.class.to_s, group_name: "foo_users" }
 
     before do
       Detour.config.define_user_group "foo_users" do |user|

@@ -136,7 +136,7 @@ describe Detour::Flaggable do
               _user.name == user.name
             end
 
-            feature.group_flags.create(flaggable_type: "User", group_name: "name_foo")
+            feature.defined_group_flags.create(flaggable_type: "User", group_name: "name_foo")
           end
 
           it "returns true" do

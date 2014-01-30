@@ -10,7 +10,7 @@ class Detour::Feature < ActiveRecord::Base
   serialize :opt_out_counts, JSON
 
   has_many :flag_in_flags
-  has_many :group_flags
+  has_many :defined_group_flags
   has_many :database_group_flags
   has_many :percentage_flags
   has_many :opt_out_flags
