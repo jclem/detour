@@ -1,38 +1,25 @@
 class Detour::FlagForm
   def initialize(flaggable_type)
-    @flaggable_type = flaggable_type
+    @flaggable_type = flaggable_type.classify.constantize
   end
 
   def features
-    @features ||= Detour::Feature.includes("#{@flaggable_type}_percentage_flag", "#{@flaggable_type}_database_group_flags", "#{@flaggable_type}_defined_group_flags").with_lines
+    @features ||= Detour::Feature.includes("#{flaggable_collection}_percentage_flag", "#{flaggable_collection}_database_group_flags", "#{flaggable_collection}_defined_group_flags").with_lines
   end
 
   def errors?
     features.any? { |feature| feature.errors.any? }
   end
 
-  def database_groups
-    Detour::Group.where(flaggable_type: @flaggable_type.singularize.capitalize)
+  def groups
+    @groups ||= (database_groups + defined_groups).sort_by { |group| group.name.downcase }
   end
 
-  def group_names
-    @group_names ||= begin
-      all_names = features.collect { |feature| feature.send("#{@flaggable_type}_defined_group_flags").collect(&:group_name) }.uniq.flatten
-      (all_names | Detour::DefinedGroup.by_type(@flaggable_type).map(&:name)).sort
-    end
-  end
-
-  def defined_group_flags_for(feature)
-    group_names.map do |group_name|
-      flags = feature.send("#{@flaggable_type}_defined_group_flags")
-      flags.detect { |flag| flag.group_name == group_name } || flags.new(group_name: group_name)
-    end
-  end
-
-  def database_group_flags_for(feature)
-    database_groups.map do |group|
-      flags = feature.send("#{@flaggable_type}_database_group_flags")
-      flags.detect { |flag| flag.group.id == group.id } || (flags.new(group_id: group.id))
+  def group_flags_for(feature, types = %w[defined database])
+    Array.wrap(types).inject([]) do |flags, type|
+      flags.concat _group_flags_for(feature, type)
+    end.sort_by do |flag|
+      flag.group.name.downcase
     end
   end
 
@@ -43,8 +30,7 @@ class Detour::FlagForm
         next unless feature_params
 
         check_percentage_flag_for_deletion(feature, feature_params)
-        process_defined_group_flags(feature, feature_params)
-        set_database_group_flag_params(feature, feature_params)
+        process_group_flags(feature, feature_params)
 
         feature.assign_attributes feature_params
         feature.save if feature.changed_for_autosave?
@@ -60,14 +46,29 @@ class Detour::FlagForm
 
   private
 
+  def _group_flags_for(feature, type)
+    send("#{type}_groups").map do |group|
+      flags = feature.send("#{flaggable_collection}_#{type}_group_flags")
+      if flag = flags.detect { |flag| flag.group.id == group.id } 
+        next flag
+      else
+        if type == "database"
+          flags.new(group_id: group.id)
+        else
+          flags.new(group_name: group.name)
+        end
+      end
+    end
+  end
+
   def check_percentage_flag_for_deletion(feature, params)
-    key         = :"#{@flaggable_type}_percentage_flag_attributes"
-    flag        = feature.send("#{@flaggable_type}_percentage_flag")
+    key         = :"#{flaggable_collection}_percentage_flag_attributes"
+    flag        = feature.send("#{flaggable_collection}_percentage_flag")
     flag_params = params[key]
 
     if flag.present? && flag_params[:percentage].blank?
-      feature.send("#{@flaggable_type}_percentage_flag").mark_for_destruction
-      feature.send("#{@flaggable_type}_percentage_flag=", nil)
+      feature.send("#{flaggable_collection}_percentage_flag").mark_for_destruction
+      feature.send("#{flaggable_collection}_percentage_flag=", nil)
     end
 
     if flag.present? && flag_params[:percentage].to_i == flag.percentage
@@ -75,33 +76,26 @@ class Detour::FlagForm
     end
   end
 
-  def process_defined_group_flags(feature, params)
-    key          = :"#{@flaggable_type}_defined_group_flags_attributes"
-    flags_params = params[key] || {}
-    params.delete key
-
-    defined_group_flags_for(feature).each do |flag|
-      flag.keep_or_destroy(flags_params[flag.group_name])
-    end
+  def database_groups
+    @database_groups ||= Detour::Group.where(flaggable_type: @flaggable_type)
   end
 
-  def set_database_group_flag_params(feature, params)
-    key          = :"#{@flaggable_type}_database_group_flags_attributes"
-    flags_params = params[key] || {}
-    params.delete key
+  def defined_groups
+    @defined_groups ||= Detour::DefinedGroup.by_type(@flaggable_type)
+  end
 
-    database_groups.zip(database_group_flags_for(feature)).each do |group, flag|
-      flag_params = flags_params[group.name] || {}
-      to_keep     = flag_params["to_keep"] == "1"
-      flags_params.delete group.name
+  def flaggable_collection
+    @flaggable_type.table_name
+  end
 
-      if flag && to_keep
-        flag.to_keep = true
-      elsif flag && !to_keep
-        flag.mark_for_destruction
-      elsif !flag && to_keep
-        flag = feature.send("#{@flaggable_type}_database_group_flags").new group_id: group.id
-        flag.to_keep = true
+  def process_group_flags(feature, params)
+    %w[defined database].each do |type|
+      key          = :"#{flaggable_collection}_#{type}_group_flags_attributes"
+      flags_params = params[key] || {}
+      params.delete key
+
+      group_flags_for(feature, type).each do |flag|
+        flag.keep_or_destroy(flags_params[flag.group_name])
       end
     end
   end

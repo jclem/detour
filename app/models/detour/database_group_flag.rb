@@ -18,6 +18,10 @@ class Detour::DatabaseGroupFlag < Detour::Flag
     group.name
   end
 
+  def group_type
+    "database"
+  end
+
   private
 
   def flaggable_class

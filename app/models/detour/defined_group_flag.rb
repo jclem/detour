@@ -7,4 +7,12 @@ class Detour::DefinedGroupFlag < Detour::Flag
   validates_uniqueness_of :feature_id, scope: [:flaggable_type, :group_name]
 
   attr_accessible :group_name
+
+  def group
+    Detour::DefinedGroup.by_type(flaggable_type).detect { |group| group.name == group_name }
+  end
+
+  def group_type
+    "defined"
+  end
 end
