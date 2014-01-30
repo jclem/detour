@@ -6,6 +6,5 @@ class Detour::GroupFlag < Detour::Flag
   validates_presence_of   :group_name
   validates_uniqueness_of :feature_id, scope: [:flaggable_type, :group_name]
 
-  attr_writer     :to_keep
   attr_accessible :group_name
 end
