@@ -18,6 +18,10 @@ describe Detour::ActsAsFlaggable do
       it { should allow_mass_assignment_of(:users_group_flags_attributes) }
       it { should accept_nested_attributes_for(:users_group_flags) }
 
+      it { should have_many(:users_database_group_flags).class_name("Detour::DatabaseGroupFlag").dependent(:destroy) }
+      it { should allow_mass_assignment_of(:users_database_group_flags_attributes) }
+      it { should accept_nested_attributes_for(:users_database_group_flags)}
+
       it { should have_one(:users_percentage_flag).class_name("Detour::PercentageFlag").dependent(:destroy) }
       it { should allow_mass_assignment_of(:users_percentage_flag_attributes) }
       it { should accept_nested_attributes_for(:users_percentage_flag) }
