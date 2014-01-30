@@ -14,6 +14,10 @@ class Detour::DatabaseGroupFlag < Detour::Flag
     flaggable_class.joins(%Q{INNER JOIN "detour_memberships" ON "#{flaggable_type.downcase.pluralize}"."id" = "detour_memberships"."member_id"}).where(detour_memberships: { group_id: group.id })
   end
 
+  def group_name
+    group.name
+  end
+
   private
 
   def flaggable_class

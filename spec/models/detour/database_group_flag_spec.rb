@@ -18,4 +18,12 @@ describe Detour::DatabaseGroupFlag do
       flag.members.should eq [membership.member]
     end
   end
+
+  describe "#group_name" do
+    let(:flag) { create :database_group_flag }
+
+    it "returns the name of the group" do
+      flag.group_name.should eq flag.group.name
+    end
+  end
 end

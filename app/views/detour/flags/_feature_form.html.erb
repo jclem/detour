@@ -12,16 +12,16 @@
 
     <%= render partial: "detour/shared/spacer_cells", locals: { tag: "td" } %>
 
-    <% (@flag_form.database_groups + @flag_form.group_flags_for(feature)).sort_by { |g| g.respond_to?(:group_name) ? g.group_name.downcase : g.to_s.downcase }.each do |group_or_flag| %>
-      <% if group_or_flag.is_a? Detour::Group %>
-        <%= feature_form.fields_for "#{params[:flaggable_type]}_database_group_flags_attributes[#{group_or_flag.name}]", Detour::DatabaseGroupFlag.where(feature_id: feature.id, group_id: group_or_flag.id).first_or_initialize do |database_group_flag_form| %>
+    <% (@flag_form.database_group_flags_for(feature) + @flag_form.group_flags_for(feature)).sort_by(&:group_name).each do |group_flag| %>
+      <% if group_flag.is_a? Detour::DatabaseGroupFlag %>
+        <%= feature_form.fields_for "#{params[:flaggable_type]}_database_group_flags_attributes[#{group_flag.group_name}]", group_flag do |database_group_flag_form| %>
           <%= database_group_flag_form.hidden_field :id %>
-          <td><%= database_group_flag_form.check_box :to_keep, data: { toggle: "tooltip", placement: "top", original_title: "#{group_or_flag.name}" } %></td>
+          <td><%= database_group_flag_form.check_box :to_keep, data: { toggle: "tooltip", placement: "top", original_title: "#{group_flag.group_name}" } %></td>
         <% end %>
       <% else %>
-        <%= feature_form.fields_for "#{params[:flaggable_type]}_group_flags_attributes[#{group_or_flag.group_name}]", group_or_flag do |group_flag_form| %>
+        <%= feature_form.fields_for "#{params[:flaggable_type]}_group_flags_attributes[#{group_flag.group_name}]", group_flag do |group_flag_form| %>
           <%= group_flag_form.hidden_field :id %>
-          <td><%= group_flag_form.check_box :to_keep, data: { toggle: "tooltip", placement: "top", original_title: "#{group_or_flag.group_name}" } %></td>
+          <td><%= group_flag_form.check_box :to_keep, data: { toggle: "tooltip", placement: "top", original_title: "#{group_flag.group_name}" } %></td>
         <% end %>
       <% end %>
     <% end %>
