@@ -1,0 +1,41 @@
+<h1><%= @group %></h1>
+
+<% if @group.errors.any? %>
+  <ul>
+    <% @group.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= form_for @group do |form| %>
+  <div class="row">
+    <%= form.label :name, class: "control-label col-sm-1" %>
+
+    <div class="col-sm-3">
+      <%= form.text_field :name, class: "form-control" %>
+    </div>
+  </div>
+
+  <%= form.fields_for :memberships do |membership_form| %>
+    <%= render "membership_fields", f: membership_form %>
+  <% end %>
+
+  <%= link_to_add_fields "Add Member", form, :memberships %>
+
+
+  <hr>
+
+  <%= form.submit class: "btn btn-primary pull-left" %>
+<% end %>
+
+<%= button_to "Delete Group", group_path(@group), class: "btn btn-danger delete-group", method: :delete %>
+
+<%= modal title: "Delete Group", id: "delete-group" do %>
+  <p>Are you sure you want to delete <%= @group.name %>?</p>
+
+  <%= modal_footer do %>
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <%= link_to "Delete Group", group_path(@group), method: :delete, class: "btn btn-danger" %>
+  <% end %>
+<% end %>

@@ -1,0 +1,21 @@
+<% Detour.config.flaggable_types.each do |type| %>
+  <h1><%= type %> Groups</h1>
+
+  <%= content_tag :ul, class: "groups" do %>
+    <%= render @groups.select { |group| group.flaggable_type == type } %>
+  <% end %>
+<% end %>
+
+<%= content_tag :span, "Create a Group", class: "btn btn-default", data: { toggle: "modal", target: "#create-group" } %>
+
+<%= modal title: "Create a Group", id: "create-group", fade: true do %>
+  <%= form_for Detour::Group.new, remote: true do |form| %>
+    <%= form.text_field :name, class: "form-control", placeholder: "Group Name" %>
+    <%= form.select :flaggable_type, Detour.config.flaggable_types, class: "form-control" %>
+
+    <%= modal_footer do %>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <%= form.submit "Create Group", class: "btn btn-primary" %>
+    <% end %>
+  <% end %>
+<% end %>

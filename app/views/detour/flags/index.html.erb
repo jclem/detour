@@ -25,10 +25,14 @@
 
         <%= render partial: "detour/shared/spacer_cells", locals: { tag: "th" } %>
 
-        <% @flag_form.group_names.each do |group_name| %>
+        <% (@flag_form.database_groups + @flag_form.group_names).sort_by { |g| g.to_s.downcase }.each do |group| %>
           <th>
             <span class="group-header">
-              <%= group_name %>
+              <% if group.is_a? Detour::Group %>
+                <%= link_to group, group %>
+              <% else %>
+                <%= group %>
+              <% end %>
             </span>
           </th>
         <% end %>

@@ -4,11 +4,15 @@ class Detour::FlagForm
   end
 
   def features
-    @features ||= Detour::Feature.includes("#{@flaggable_type}_percentage_flag", "#{@flaggable_type}_group_flags").with_lines
+    @features ||= Detour::Feature.includes("#{@flaggable_type}_percentage_flag", "#{@flaggable_type}_database_group_flags", "#{@flaggable_type}_group_flags").with_lines
   end
 
   def errors?
     features.any? { |feature| feature.errors.any? }
+  end
+
+  def database_groups
+    Detour::Group.where(flaggable_type: @flaggable_type.singularize.capitalize)
   end
 
   def group_names
@@ -25,6 +29,13 @@ class Detour::FlagForm
     end
   end
 
+  def database_group_flags_for(feature)
+    database_groups.map do |group|
+      flags = feature.send("#{@flaggable_type}_database_group_flags")
+      flags.detect { |flag| flag.group.id == group.id } || (flags.new(group_id: group.id))
+    end
+  end
+
   def update_attributes(params)
     Detour::Feature.transaction do |transaction|
       features.map do |feature|
@@ -33,6 +44,7 @@ class Detour::FlagForm
 
         check_percentage_flag_for_deletion(feature, feature_params)
         set_group_flag_params(feature, feature_params)
+        set_database_group_flag_params(feature, feature_params)
 
         feature.assign_attributes feature_params
         feature.save if feature.changed_for_autosave?
@@ -79,6 +91,27 @@ class Detour::FlagForm
         flag.mark_for_destruction
       elsif !flag && to_keep
         flag = feature.send("#{@flaggable_type}_group_flags").new group_name: name
+        flag.to_keep = true
+      end
+    end
+  end
+
+  def set_database_group_flag_params(feature, params)
+    key          = :"#{@flaggable_type}_database_group_flags_attributes"
+    flags_params = params[key] || {}
+    params.delete key
+
+    database_groups.zip(database_group_flags_for(feature)).each do |group, flag|
+      flag_params = flags_params[group.name] || {}
+      to_keep     = flag_params["to_keep"] == "1"
+      flags_params.delete group.name
+
+      if flag && to_keep
+        flag.to_keep = true
+      elsif flag && !to_keep
+        flag.mark_for_destruction
+      elsif !flag && to_keep
+        flag = feature.send("#{@flaggable_type}_database_group_flags").new group_id: group.id
         flag.to_keep = true
       end
     end

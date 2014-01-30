@@ -13,7 +13,7 @@ describe "group rollouts" do
     end
 
     it "sets the feature on the user" do
-      feature.match_groups?(user).should be_true
+      feature.match_defined_groups?(user).should be_true
     end
   end
 end

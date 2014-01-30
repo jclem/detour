@@ -24,6 +24,8 @@ RSpec.configure do |config|
   config.order = "random"
   config.include FactoryGirl::Syntax::Methods
 
+  I18n.enforce_available_locales = false
+
   config.after :each do
     Rake::Task.tasks.each { |t| t.reenable }
   end

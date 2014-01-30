@@ -3,6 +3,7 @@ require "fakefs/spec_helpers"
 
 describe Detour::Feature do
   it { should have_many(:flag_in_flags) }
+  it { should have_many(:database_group_flags) }
   it { should have_many(:group_flags) }
   it { should have_many(:percentage_flags) }
   it { should have_many(:opt_out_flags) }
@@ -187,8 +188,13 @@ describe Detour::Feature do
       feature.match?(user)
     end
 
-    it "checks if the user is flagged as part of a group" do
-      feature.should_receive(:match_groups?).with(user)
+    it "checks if the user is flagged as part of a database group" do
+      feature.should_receive(:match_database_groups?).with(user)
+      feature.match?(user)
+    end
+
+    it "checks if the user is flagged as part of a defined group" do
+      feature.should_receive(:match_defined_groups?).with(user)
       feature.match?(user)
     end
   end
@@ -272,7 +278,35 @@ describe Detour::Feature do
     end
   end
 
-  describe "#match_groups?" do
+  describe "#match_database_group?" do
+    let(:user)        { create :user, name: "foo" }
+    let(:user2)       { create :user }
+    let(:widget)      { create :widget }
+    let(:feature)     { create :feature }
+    let(:group)       { create :group }
+    let!(:membership) { create :membership, group: group, member: user }
+    let!(:flag)       { create :database_group_flag, feature: feature, flaggable_type: user.class.to_s, group: group }
+
+    context "when the instance is in the group" do
+      it "returns true" do
+        feature.match_database_groups?(user).should be_true
+      end
+    end
+
+    context "when the instance is not in the group" do
+      it "returns false" do
+        feature.match_database_groups?(user2).should be_false
+      end
+    end
+
+    context "when the instance is not of the type of the group" do
+      it "returns false" do
+        feature.match_database_groups?(widget).should be_false
+      end
+    end
+  end
+
+  describe "#match_defined_groups?" do
     let(:user)    { create :user, name: "foo" }
     let(:user2)   { create :user }
     let(:widget)  { create :widget }
@@ -287,19 +321,19 @@ describe Detour::Feature do
 
     context "when the instance matches the block" do
       it "returns true" do
-        feature.match_groups?(user).should be_true
+        feature.match_defined_groups?(user).should be_true
       end
     end
 
     context "when the instance does not match the block" do
       it "returns false" do
-        feature.match_groups?(user2).should be_false
+        feature.match_defined_groups?(user2).should be_false
       end
     end
 
     context "when the instance is not of the type of the block" do
       it "returns false" do
-        feature.match_groups?(widget).should be_false
+        feature.match_defined_groups?(widget).should be_false
       end
     end
   end

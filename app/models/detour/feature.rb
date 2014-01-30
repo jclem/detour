@@ -11,6 +11,7 @@ class Detour::Feature < ActiveRecord::Base
 
   has_many :flag_in_flags
   has_many :group_flags
+  has_many :database_group_flags
   has_many :percentage_flags
   has_many :opt_out_flags
   has_many :flags, dependent: :destroy

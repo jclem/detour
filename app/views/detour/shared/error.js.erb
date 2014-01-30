@@ -1,0 +1,5 @@
+if ($(".modal-body:visible .panel-danger").length) {
+  $(".modal-body:visible .panel-danger").replaceWith("<%= j render partial: "detour/shared/errors", locals: { model: @model } %>");
+} else {
+  $(".modal-body:visible").prepend("<%= j render partial: "detour/shared/errors", locals: { model: @model } %>");
+}

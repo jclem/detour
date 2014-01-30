@@ -15,6 +15,7 @@ class SetupDetour < ActiveRecord::Migration
       t.integer :feature_id
       t.integer :flaggable_id
       t.string  :flaggable_type
+      t.integer :group_id
       t.string  :group_name
       t.integer :percentage
       t.timestamps
@@ -22,11 +23,31 @@ class SetupDetour < ActiveRecord::Migration
 
     add_index :detour_flags, :type
     add_index :detour_flags, :feature_id
+    add_index :detour_flags, :group_id
+    add_index :detour_flags,
+      [:type, :feature_id, :group_id]
     add_index :detour_flags,
       [:type, :feature_id, :flaggable_type, :flaggable_id],
       name: "flag_type_feature_flaggable_type_id"
     add_index :detour_flags,
       [:type, :feature_id, :flaggable_type],
     name: "flag_type_feature_flaggable_type"
+
+    create_table :detour_groups do |t|
+      t.string :name
+      t.string :flaggable_type
+      t.timestamps
+    end
+
+    create_table :detour_memberships do |t|
+      t.integer  :group_id
+      t.string   :member_type
+      t.integer  :member_id
+      t.timestamps
+    end
+
+    add_index :detour_memberships, [:group_id, :member_type, :member_id],
+      name: :detour_memberships_membership_index,
+      unique: true
   end
 end
