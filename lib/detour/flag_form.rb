@@ -22,10 +22,10 @@ class Detour::FlagForm
     end
   end
 
-  def group_flags_for(feature, initialize = true)
+  def group_flags_for(feature)
     group_names.map do |group_name|
       flags = feature.send("#{@flaggable_type}_group_flags")
-      flags.detect { |flag| flag.group_name == group_name } || (flags.new(group_name: group_name) if initialize)
+      flags.detect { |flag| flag.group_name == group_name } || flags.new(group_name: group_name)
     end
   end
 
@@ -43,7 +43,7 @@ class Detour::FlagForm
         next unless feature_params
 
         check_percentage_flag_for_deletion(feature, feature_params)
-        set_group_flag_params(feature, feature_params)
+        process_defined_group_flags(feature, feature_params)
         set_database_group_flag_params(feature, feature_params)
 
         feature.assign_attributes feature_params
@@ -75,24 +75,13 @@ class Detour::FlagForm
     end
   end
 
-  def set_group_flag_params(feature, params)
+  def process_defined_group_flags(feature, params)
     key          = :"#{@flaggable_type}_group_flags_attributes"
     flags_params = params[key] || {}
     params.delete key
 
-    group_names.zip(group_flags_for(feature, false)).each do |name, flag|
-      flag_params = flags_params[name] || {}
-      to_keep     = flag_params["to_keep"] == "1"
-      flags_params.delete name
-
-      if flag && to_keep
-        flag.to_keep = true
-      elsif flag && !to_keep
-        flag.mark_for_destruction
-      elsif !flag && to_keep
-        flag = feature.send("#{@flaggable_type}_group_flags").new group_name: name
-        flag.to_keep = true
-      end
+    group_flags_for(feature).each do |flag|
+      flag.keep_or_destroy(flags_params[flag.group_name])
     end
   end
 
