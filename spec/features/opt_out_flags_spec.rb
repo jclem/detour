@@ -59,7 +59,7 @@ describe "creating a opt-out", js: true do
     end
 
     it "displays error messages" do
-      page.should have_content "Opt out flags user \"\" could not be found"
+      page.should have_content "Users opt outs user \"\" could not be found"
     end
   end
 end

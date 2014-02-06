@@ -31,7 +31,7 @@ describe Detour::FlaggableFlagsController do
 
       let(:flag_params) do
         {
-          flag_in_flags_attributes: {
+          users_flag_ins_attributes: {
             "1" => { flaggable_type: "User", flaggable_key: user.id, _destroy: 0 }
           }
         }
@@ -49,7 +49,7 @@ describe Detour::FlaggableFlagsController do
     context "when unsuccessful" do
       let(:flag_params) do
         {
-          flag_in_flags_attributes: {
+          users_flag_ins_attributes: {
             "1" => { flaggable_type: "User", flaggable_key: nil, _destroy: 0 }
           }
         }

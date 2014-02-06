@@ -9,11 +9,11 @@
 <% end %>
 
 <%= form_for @feature, url: request.path do |form| %>
-  <%= form.fields_for "#{flag_type}_flags", @feature.send("#{flag_type}_flags").where(flaggable_type: flaggable_class) do |flaggable_flag_form| %>
+  <%= form.fields_for "#{flaggable_type}_#{flag_type.pluralize}" do |flaggable_flag_form| %>
     <%= render "flaggable_flag_fields", f: flaggable_flag_form %>
   <% end %>
 
-  <%= link_to_add_fields "Add #{flag_noun.capitalize}", form, "#{flag_type}_flags", :flaggable_flag_fields %>
+  <%= link_to_add_fields "Add #{flag_noun.capitalize}", form, "#{flaggable_type}_#{flag_type.pluralize}", :flaggable_flag_fields %>
 
   <hr>
 

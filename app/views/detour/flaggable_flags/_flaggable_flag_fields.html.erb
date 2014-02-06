@@ -2,7 +2,6 @@
 
 <div class="row">
   <%= f.label :flaggable_key, flaggable_type, class: "col-sm-1" %>
-  <%= f.hidden_field :flaggable_type, value: flaggable_type.classify %>
 
   <div class="col-sm-3">
     <% if f.object.persisted? %>

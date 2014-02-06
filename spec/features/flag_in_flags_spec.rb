@@ -59,7 +59,7 @@ describe "creating a flag-in", js: true do
     end
 
     it "displays error messages" do
-      page.should have_content "Flag in flags user \"\" could not be found"
+      page.should have_content "Users flag ins user \"\" could not be found"
     end
   end
 end
