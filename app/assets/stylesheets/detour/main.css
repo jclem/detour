@@ -4,6 +4,14 @@
   src: url('/assets/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/assets/glyphicons-halflings-regular.woff') format('woff'), url('/assets/glyphicons-halflings-regular.ttf') format('truetype'), url('/assets/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 
+.popover {
+  max-width: none;
+}
+
+.popover ul {
+  padding-left: 10px;
+}
+
 body {
   padding-bottom: 40px;
 }

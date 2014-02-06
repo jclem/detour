@@ -10,6 +10,15 @@
 
     <td><%= feature %></td>
 
+    <td>
+      <% if feature.lines.any? %>
+        <i class="feature-lines glyphicon glyphicon-ok" data-prefix="<%= github_prefix %>" data-lines="<%= feature.lines.join(",") %>"></i>
+        (<%= pluralize(feature.lines.count, "use") %>)
+      <% else %>
+        <i class="glyphicon glyphicon-ban-circle"></i>
+      <% end %>
+    </td>
+
     <%= render partial: "detour/shared/spacer_cells", locals: { tag: "td" } %>
 
     <% @flag_form.group_flags_for(feature).each do |flag| %>
