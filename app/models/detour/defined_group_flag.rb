@@ -9,10 +9,20 @@ class Detour::DefinedGroupFlag < Detour::Flag
   attr_accessible :group_name
 
   def group
-    Detour::DefinedGroup.by_type(flaggable_type)[group_name]
+    find_group || build_group
   end
 
   def group_type
     "defined"
+  end
+
+  private
+
+  def find_group
+    Detour::DefinedGroup.by_type(flaggable_type)[group_name]
+  end
+
+  def build_group
+    Detour::DefinedGroup.new(group_name, ->{})
   end
 end

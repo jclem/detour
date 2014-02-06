@@ -81,7 +81,15 @@ class Detour::FlagForm
   end
 
   def defined_groups
-    @defined_groups ||= Detour::DefinedGroup.by_type(@flaggable_type).values
+    @defined_groups ||= begin
+      (Detour::DefinedGroupFlag.where(flaggable_type: @flaggable_type).map { |flag|
+        if flag.group
+          flag.group
+        else
+          Detour::DefinedGroup.new(flag.group_name, ->{})
+        end
+      } + Detour::DefinedGroup.by_type(@flaggable_type).values).uniq(&:name)
+    end
   end
 
   def flaggable_collection
