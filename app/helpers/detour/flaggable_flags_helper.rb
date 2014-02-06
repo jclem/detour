@@ -15,11 +15,11 @@ module Detour::FlaggableFlagsHelper
     request.path.split("/")[2].underscore.singularize
   end
 
-  def flaggable_type
-    params[:flaggable_type]
-  end
-
   def flag_verb
     flag_type == "flag_in" ? "flagged in to" : "opted out of"
+  end
+
+  def flaggable_type
+    params[:flaggable_type]
   end
 end
