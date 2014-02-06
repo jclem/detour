@@ -12,6 +12,12 @@ describe Detour::Feature do
   it { should validate_uniqueness_of :name }
   it { should allow_mass_assignment_of :name }
 
+  it { should allow_value("foo").for(:name) }
+  it { should allow_value("foo_bar").for(:name) }
+  it { should allow_value("foo bar").for(:name) }
+  it { should allow_value("foo bar 9").for(:name) }
+  it { should_not allow_value("foo bar.").for(:name) }
+
   describe ".with_lines" do
     include FakeFS::SpecHelpers
 

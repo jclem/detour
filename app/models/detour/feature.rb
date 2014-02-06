@@ -18,6 +18,7 @@ class Detour::Feature < ActiveRecord::Base
 
   validates_presence_of   :name
   validates_uniqueness_of :name
+  validates_format_of     :name, with: /\A[\w ]+\Z/
 
   attr_accessible :name
 
