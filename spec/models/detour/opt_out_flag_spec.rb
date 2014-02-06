@@ -1,10 +1,7 @@
 require "spec_helper"
 
 describe Detour::OptOutFlag do
-  it { should be_a Detour::Flag }
-  it { should belong_to :flaggable }
-  it { should validate_presence_of :flaggable }
-  it { should allow_mass_assignment_of :flaggable }
+  it { should be_a Detour::FlaggableFlag }
 
   it "validates uniquness of feature_id on flaggable" do
     user  = create :user

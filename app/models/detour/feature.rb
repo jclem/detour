@@ -19,7 +19,9 @@ class Detour::Feature < ActiveRecord::Base
   validates_presence_of   :name
   validates_uniqueness_of :name
 
-  attr_accessible :name
+  accepts_nested_attributes_for :flag_in_flags, allow_destroy: true
+  accepts_nested_attributes_for :opt_out_flags, allow_destroy: true
+  attr_accessible :name, :flag_in_flags_attributes, :opt_out_flags_attributes
 
   # Returns an instance variable intended to hold an array of the lines of code
   # that this feature appears on.

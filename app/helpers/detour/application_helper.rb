@@ -1,9 +1,10 @@
 module Detour::ApplicationHelper
-  def link_to_add_fields(name, f, association)
+  def link_to_add_fields(name, f, association, template = nil)
     new_object = f.object.send(association).klass.new
+    template ||= "#{association.to_s.singularize}_fields"
     id = new_object.object_id
     fields = f.fields_for(association, new_object, child_index: id) do |builder|
-      render("#{association.to_s.singularize}_fields", f: builder)
+      render("#{template}", f: builder)
     end
 
     link_to name, "javascript:void(0)", class: "add-fields btn btn-default", data: { id: id, fields: fields.gsub("\n", "") }
