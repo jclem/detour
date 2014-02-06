@@ -1,34 +1,21 @@
 <h1><%= flaggable_type.capitalize %> <%= flag_verb %> <%= feature_name %></h1>
 
-<%= table do %>
-  <thead>
-    <tr>
-      <th></th>
-      <th><%= flaggable_class.detour_flaggable_find_by %></th>
-    </tr>
-  </thead>
-
-  <%= render partial: "flaggable_flag", collection: @flags, as: :flag %>
-<% end %>
-
-<%= content_tag :span, "Create #{flag_title.indefinitize}", class: "btn btn-default pull-left", data: { toggle: "modal", target: "#create-flaggable-flag" } %>
-
-<%= modal title: "Create #{flag_title.indefinitize}", id: "create-flaggable-flag", fade: true do %>
-  <%= form_tag request.path, remote: true do |form| %>
-    <%= text_field_tag :ids, "", class: "form-control" %>
-
-    <%= modal_footer do %>
-      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      <%= submit_tag "Create #{flag_title}", class: "btn btn-default btn-primary" %>
+<% if @feature.errors.any? %>
+  <ul>
+    <% @feature.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
     <% end %>
-  <% end %>
+  </ul>
 <% end %>
 
-<%= modal title: "Delete #{flag_title}", id: "delete-flag" do %>
-  <p>Are you sure you want to delete <%= feature_name %> <%= flag_type.dasherize %> for <%= flaggable_class %> <span class="flaggable-identifier"></span>?</p>
-
-  <%= modal_footer do %>
-    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-    <%= link_to "Delete #{flag_title}", "javascript:void(0)", method: :delete, class: "btn btn-danger" %>
+<%= form_for @feature, url: request.path do |form| %>
+  <%= form.fields_for "#{flaggable_type}_#{flag_type.pluralize}" do |flaggable_flag_form| %>
+    <%= render "flaggable_flag_fields", f: flaggable_flag_form %>
   <% end %>
+
+  <%= link_to_add_fields "Add #{flag_noun.capitalize}", form, "#{flaggable_type}_#{flag_type.pluralize}", :flaggable_flag_fields %>
+
+  <hr>
+
+  <%= form.submit "Update #{flag_noun.capitalize.pluralize}", class: "btn btn-primary pull-left" %>
 <% end %>

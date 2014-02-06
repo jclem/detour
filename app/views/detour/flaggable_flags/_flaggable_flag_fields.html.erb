@@ -1,0 +1,19 @@
+<hr>
+
+<div class="row">
+  <%= f.label :flaggable_key, flaggable_type, class: "col-sm-1" %>
+
+  <div class="col-sm-3">
+    <% if f.object.persisted? %>
+      <%= text_field_tag "flaggable_identifier", f.object.flaggable.send(f.object.flaggable.class.detour_flaggable_find_by), class: "form-control", disabled: "disabled" %>
+    <% else %>
+      <%= f.text_field :flaggable_key, class: "form-control" %>
+    <% end %>
+  </div>
+
+  <div class="col-sm-2 checkbox">
+    <%= f.label :_destroy do %>
+      <%= f.check_box "_destroy" %> Remove <%= flag_noun.capitalize %>
+    <% end %>
+  </div>
+</div>
