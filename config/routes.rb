@@ -5,13 +5,13 @@ Detour::Engine.routes.draw do
   resources :features, only: [:create, :destroy]
   resources :groups, only: [:index, :show, :create, :update, :destroy]
 
-  get    "/flag-ins/:feature_name/:flaggable_type"     => "flaggable_flags#index",   as: "flag_in_flags"
-  put    "/flag-ins/:feature_name/:flaggable_type"     => "flaggable_flags#update"
-  delete "/flag-ins/:feature_name/:flaggable_type/:id" => "flaggable_flags#destroy", as: "flag_in_flag"
-
-  get    "/opt-outs/:feature_name/:flaggable_type"     => "flaggable_flags#index",   as: "opt_out_flags"
-  put    "/opt-outs/:feature_name/:flaggable_type"     => "flaggable_flags#update"
-  delete "/opt-outs/:feature_name/:flaggable_type/:id" => "flaggable_flags#destroy", as: "opt_out_flag"
+  %w[flag-ins opt-outs].each do |flag_type|
+    scope "/#{flag_type}/:feature_name" do
+      get    ":flaggable_type"     => "flaggable_flags#index",   as: "#{flag_type.underscore.singularize}_flags"
+      put    ":flaggable_type"     => "flaggable_flags#update"
+      delete ":flaggable_type/:id" => "flaggable_flags#destroy", as: "#{flag_type.underscore.singularize}_flag"
+    end
+  end
 
   root to: "application#index"
 end
