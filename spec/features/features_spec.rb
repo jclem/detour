@@ -4,6 +4,17 @@ describe "listing features for a type" do
   let!(:feature) { create :feature }
 
   before do
+    ENV["DETOUR_GITHUB_REPO"]   = "jclem/detour"
+    ENV["DETOUR_GITHUB_BRANCH"] = "foo"
+  end
+
+  after do
+    ENV["DETOUR_GITHUB_REPO"]   = nil
+    ENV["DETOUR_GITHUB_BRANCH"] = nil
+  end
+
+
+  before do
     Detour.config.grep_dirs = %w[spec/dummy/app/**/*.{rb,erb}]
     visit "/detour/flags/users"
   end
@@ -14,6 +25,39 @@ describe "listing features for a type" do
 
   it "lists features found in the codebase" do
     page.should have_content "show_widget_table"
+  end
+
+  describe "feature check line numbers" do
+    let!(:feature) { create :feature, name: "not-used" }
+
+    context "when the feature has no lines" do
+      it "gets a ban circle" do
+        within "tr#feature_1" do
+          page.should have_selector "i.glyphicon-ban-circle"
+        end
+      end
+    end
+
+    context "when the feature has liens" do
+      it "gets a check mark" do
+        within "tr#new_feature" do
+          page.should have_selector "i.glyphicon-ok"
+        end
+      end
+
+      it "displays its count" do
+        within "tr#new_feature" do
+          page.should have_content "(1 use)"
+        end
+      end
+
+      describe "clicking the check mark", js: true do
+        it "links to the line on GitHub" do
+          page.find("i.glyphicon-ok").click
+          page.should have_link "spec/dummy/app/views/application/index.html.erb#L1", href: "https://github.com/jclem/detour/blob/foo/spec/dummy/app/views/application/index.html.erb#L1"
+        end
+      end
+    end
   end
 end
 
