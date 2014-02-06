@@ -18,7 +18,7 @@ class Detour::Feature < ActiveRecord::Base
 
   validates_presence_of   :name
   validates_uniqueness_of :name
-  validates_format_of     :name, with: /\A[\w ]+\Z/
+  validates_format_of     :name, with: /\A[\w-]+\Z/
 
   attr_accessible :name
 
@@ -71,7 +71,7 @@ class Detour::Feature < ActiveRecord::Base
 
       File.open path do |file|
         file.each_line.with_index(1) do |line, i|
-          line.scan(/\.has_feature\?\s*\(*:(\w+)/).each do |match, _|
+          line.scan(/\.has_feature\?\s*\(?[:"]([\w-]+)/).each do |match, _|
             (hash[match] ||= new(name: match)).lines << "#{path}#L#{i}"
           end
         end
