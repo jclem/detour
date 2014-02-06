@@ -83,11 +83,7 @@ class Detour::FlagForm
   def defined_groups
     @defined_groups ||= begin
       (Detour::DefinedGroupFlag.where(flaggable_type: @flaggable_type).map { |flag|
-        if flag.group
-          flag.group
-        else
-          Detour::DefinedGroup.new(flag.group_name, ->{})
-        end
+        flag.group
       } + Detour::DefinedGroup.by_type(@flaggable_type).values).uniq(&:name)
     end
   end
