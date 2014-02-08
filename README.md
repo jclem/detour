@@ -1,6 +1,7 @@
 # Detour
 
-Rollouts for `ActiveRecord` models. It is a spiritual fork of [ArRollout](https://github.com/markpundsack/ar_rollout).
+Rollouts for `ActiveRecord` models. It is a spiritual fork of
+[ArRollout](https://github.com/markpundsack/ar_rollout).
 
 | development status | master status | Code Climate |
 | ------------------ | ------------- | ------------ |
@@ -44,7 +45,8 @@ Run the Detour migrations:
 
 `Detour` works by determining whether or not a specific record
 should have features accessible to it based on individual flags, flags for a
-percentage of records, or flags for a programmable group of records.
+percentage of records, flags for a database-backed group of records, or flags
+for a code-defined group of records.
 
 ### Configuration
 
