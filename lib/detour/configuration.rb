@@ -15,7 +15,9 @@ class Detour::Configuration
   # a single match group.
   #
   # @example
-  #   Detour.config.feature_search_regex = /\.rollout? :(\w+)/
+  #   Detour.config.feature_search_regex = /\.rollout\? :(\w+)/
+  #
+  # @param [Regexp] regex A regex to use to search for feature checks with.
   def feature_search_regex=(regex)
     if regex.is_a? Regexp
       @feature_search_regex = regex
