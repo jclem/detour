@@ -72,6 +72,37 @@ Rails.application.routes.draw do
 end
 ```
 
+### Restricting the admin interface
+
+If you'd like your Detour admin interface only accessible to admins, for example,
+you can add a `before_filter` to `Detour::ApplicationController` in the Detour
+initializer:
+
+```ruby
+# config/initializers/detour.rb
+
+Detour::ApplicationController.class_eval do
+  include CurrentUser
+
+  before_filter :admin_required!
+
+  private
+
+  def admin_required!
+    if current_user && current_user.admin?
+      true
+    else
+      # redirect somewhere for non-admins
+    end
+  end
+end
+```
+
+Since `Detour::ApplicationController` isn't a subclass of my `ApplicationController`,
+I've included a `CurrentUser` module that I built in this app that adds a
+`current_user` method to any controller that it's included in. Now, only admins
+will have access to the Detour admin interface.
+
 ### Marking a model as flaggable
 
 In addition to listing classes that are flaggable in your initializer, add
