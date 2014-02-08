@@ -12,7 +12,7 @@ module Detour::FlaggableFlagsHelper
   end
 
   def flag_type
-    request.path.split("/")[2].underscore.singularize
+    params[:flag_type].underscore
   end
 
   def flag_verb
