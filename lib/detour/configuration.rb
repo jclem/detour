@@ -1,7 +1,6 @@
 class Detour::Configuration
   attr_reader   :defined_groups
   attr_reader   :feature_search_regex
-  attr_accessor :default_flaggable_class_name
   attr_accessor :flaggable_types
   attr_accessor :feature_search_dirs
 

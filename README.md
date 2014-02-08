@@ -61,11 +61,6 @@ Detour.configure do |config|
   # checking for flags in your code. Provide it an
   # array of glob strings:
   config.feature_search_dirs = %w[app/**/*.{rb,erb}]
-
-  # Provide a default class to manage rollouts for, if
-  # desired. This means you can omit the class name from
-  # rake tasks:
-  config.default_flaggable_class_name = "User"
 end
 ```
 
