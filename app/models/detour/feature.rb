@@ -55,17 +55,17 @@ class Detour::Feature < ActiveRecord::Base
   end
 
   # Return an array of both every feature in the database as well as every
-  # feature that is checked for in `@grep_dirs`. Features that are checked
+  # feature that is checked for in `@feature_search_dirs`. Features that are checked
   # for but not persisted will be returned as unpersisted instances of this
   # class. Each instance returned will have its `@lines` set to an array
-  # containing every line in `@grep_dirs` where it is checked for.
+  # containing every line in `@feature_search_dirs` where it is checked for.
   #
   # @return [Array<Detour::Feature>] Every persisted and
   #   checked-for feature.
   def self.with_lines
     hash = all.each_with_object({}) { |feature, hash| hash[feature.name] = feature }
 
-    Dir[*Detour.config.grep_dirs].each do |path|
+    Dir[*Detour.config.feature_search_dirs].each do |path|
       next unless File.file? path
 
       File.open path do |file|

@@ -3,12 +3,12 @@ class Detour::Configuration
   attr_reader   :feature_search_regex
   attr_accessor :default_flaggable_class_name
   attr_accessor :flaggable_types
-  attr_accessor :grep_dirs
+  attr_accessor :feature_search_dirs
 
   def initialize
-    @defined_groups       = {}
-    @flaggable_types      = []
-    @grep_dirs            = []
+    @defined_groups      = {}
+    @flaggable_types     = []
+    @feature_search_dirs = []
   end
 
   # Defines the regular expression used to search for features. It must include

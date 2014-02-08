@@ -7,7 +7,7 @@ describe Detour::FlagForm do
 
   describe "#features" do
     before do
-      Detour.config.grep_dirs = ["spec/dummy/app/**/*.{rb,erb}"]
+      Detour.config.feature_search_dirs = ["spec/dummy/app/**/*.{rb,erb}"]
     end
 
     it "returns every feature including lines" do

@@ -5,7 +5,7 @@ describe Detour::FlagsController do
 
   describe "GET #index" do
     before do
-      Detour.config.grep_dirs = ["spec/dummy/app/**/*.{rb,erb}"]
+      Detour.config.feature_search_dirs = ["spec/dummy/app/**/*.{rb,erb}"]
       get :index, flaggable_type: "users"
     end
 

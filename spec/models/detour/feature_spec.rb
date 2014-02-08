@@ -32,7 +32,7 @@ describe Detour::Feature do
     let(:feature) { create :feature, name: "foo" }
 
     before do
-      Detour.config.grep_dirs = ["/foo/**/*.rb"]
+      Detour.config.feature_search_dirs = ["/foo/**/*.rb"]
 
       FileUtils.mkdir("/foo")
 

@@ -60,7 +60,7 @@ Detour.configure do |config|
   # through in order to find places where you're
   # checking for flags in your code. Provide it an
   # array of glob strings:
-  config.grep_dirs = %w[app/**/*.{rb,erb}]
+  config.feature_search_dirs = %w[app/**/*.{rb,erb}]
 
   # Provide a default class to manage rollouts for, if
   # desired. This means you can omit the class name from
