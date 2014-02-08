@@ -2,7 +2,6 @@
 # via individual flags, percentages, or defined groups.
 class Detour::Feature < ActiveRecord::Base
   include Detour::Concerns::Matchers
-  include Detour::Concerns::FlagActions
 
   self.table_name = :detour_features
 
