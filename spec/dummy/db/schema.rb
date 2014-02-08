@@ -15,7 +15,6 @@ ActiveRecord::Schema.define(:version => 20131221052201) do
 
   create_table "detour_features", :force => true do |t|
     t.string   "name"
-    t.integer  "failure_count",  :default => 0
     t.text     "flag_in_counts", :default => "{}"
     t.text     "opt_out_counts", :default => "{}"
     t.datetime "created_at",                       :null => false

@@ -107,35 +107,12 @@ flagged into a specific feature. The `#has_feature?` method provided by
 
 ### Determining if a record is flagged into a feature
 
-`#has_feature?` has two methods of use. The first one, where it is passed a
-block, will increment a `failure_count` on the given feature if the block
-raises an exception (the exception is again raised after incrementing). This
-currently does not alter the behavior of the feature, but it services a metrics
-purpose:
-
-```ruby
-current_user.has_feature? :new_user_interface do
-  render_new_user_interface
-end
-```
-
-When not given a block, it simply returns a boolean, and does not watch for
-exceptions:
+Call the `#has_feature?` method on an instance of your class that implements
+`acts_as_flaggable`.
 
 ```ruby
 if current_user.has_feature? :new_user_interface
   render_new_user_interface
-end
-```
-
-Want to make use of both? `#has_feature?` returns a boolean even when passed
-a block:
-
-```ruby
-if current_user.has_feature? :new_user_interface do
-  render_new_user_interface
-end; else
-  render_old_user_interface
 end
 ```
 

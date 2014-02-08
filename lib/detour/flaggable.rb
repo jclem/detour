@@ -12,17 +12,7 @@ module Detour::Flaggable
   # Returns whether or not the object has access to the given feature. If given
   # a block, it will call the block if the user has access to the feature.
   #
-  # If an exception is raised in the block, it will increment the
-  # `failure_count` of the feature and raise the exception.
-  #
   # @example
-  #   # Exceptions will be tracked in the `failure_count` of :new_user_interface.
-  #   user.has_feature?(:new_user_interface) do
-  #     # ...
-  #   end
-  #
-  # @example
-  #   # Exceptions will *not* be tracked in the `failure_count` of :new_user_interface.
   #   if user.has_feature?(:new_user_interface)
   #     # ...
   #   end
@@ -45,15 +35,6 @@ module Detour::Flaggable
 
       if match
         detour_features << feature.name.to_s
-      end
-    end
-
-    if match && block_given?
-      begin
-        yield
-      rescue => e
-        feature.increment! :failure_count
-        raise e
       end
     end
 

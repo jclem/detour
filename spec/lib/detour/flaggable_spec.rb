@@ -38,59 +38,6 @@ describe Detour::Flaggable do
       user.has_feature?(feature.name)
     end
 
-    context "when given a block" do
-      context "and the user is flagged in" do
-        before do
-          feature.flag_in_flags.create(flaggable: user)
-        end
-
-        it "calls the block" do
-          foo = "foo"
-          user.has_feature?(feature.name) { foo = "bar" }
-          foo.should eq "bar"
-        end
-
-        it "returns the match" do
-          foo = "foo"
-
-          if user.has_feature? :not_feature do
-          end; else
-            foo = "bar"
-          end
-
-          foo.should eq "bar"
-        end
-
-        context "when the block raises an exception" do
-          it "increments the failure_count of the feature" do
-            begin
-              user.has_feature? feature.name do
-                raise "This is an exception"
-              end
-            rescue
-              feature.reload.failure_count.should eq 1
-            end
-          end
-
-          it "raises the exception" do
-            expect do
-              user.has_feature? feature.name do
-                raise "This is an exception"
-              end
-            end.to raise_error "This is an exception"
-          end
-        end
-      end
-
-      context "and the user is not flagged in" do
-        it "does not call the block" do
-          foo = "foo"
-          user.has_feature?(feature.name) { foo = "bar" }
-          foo.should eq "foo"
-        end
-      end
-    end
-
     context "when the user is not flagged in" do
       it "returns false" do
         user.has_feature?(feature.name).should be_false
