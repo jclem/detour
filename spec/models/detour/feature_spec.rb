@@ -46,6 +46,9 @@ describe Detour::Feature do
 
           current_user.has_feature?(:foo) do
           end
+
+          current_user.rollout?(:foo) do
+          end
         EOF
       end
 
@@ -56,6 +59,21 @@ describe Detour::Feature do
           current_user.has_feature? :bar do
           end
         EOF
+      end
+    end
+
+    context "when there is a custom feature search regex" do
+      before do
+        Detour.config.feature_search_regex = /rollout\?\(:(\w+)\)/
+      end
+
+      after do
+        Detour.config.instance_variable_set "@feature_search_regex", nil
+      end
+
+      it "uses the custom feature search regex" do
+        persisted_feature = Detour::Feature.with_lines.detect { |f| f.name == feature.name }
+        persisted_feature.lines.should eq %w[/foo/bar.rb#L10]
       end
     end
 

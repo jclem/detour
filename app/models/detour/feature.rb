@@ -70,7 +70,7 @@ class Detour::Feature < ActiveRecord::Base
 
       File.open path do |file|
         file.each_line.with_index(1) do |line, i|
-          line.scan(/\.has_feature\?\s*\(?[:"]([\w-]+)/).each do |match, _|
+          line.scan(feature_search_regex).each do |match, _|
             (hash[match] ||= new(name: match)).lines << "#{path}#L#{i}"
           end
         end
@@ -79,4 +79,9 @@ class Detour::Feature < ActiveRecord::Base
 
     hash.values.sort_by(&:name)
   end
+
+  def self.feature_search_regex
+    Detour.config.feature_search_regex || /\.has_feature\?\s*\(?[:"]([\w-]+)/
+  end
+  private_class_method :feature_search_regex
 end

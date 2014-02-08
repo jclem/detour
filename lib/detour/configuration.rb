@@ -1,13 +1,27 @@
 class Detour::Configuration
   attr_reader   :defined_groups
+  attr_reader   :feature_search_regex
   attr_accessor :default_flaggable_class_name
   attr_accessor :flaggable_types
   attr_accessor :grep_dirs
 
   def initialize
-    @defined_groups  = {}
-    @flaggable_types = []
-    @grep_dirs       = []
+    @defined_groups       = {}
+    @flaggable_types      = []
+    @grep_dirs            = []
+  end
+
+  # Defines the regular expression used to search for features. It must include
+  # a single match group.
+  #
+  # @example
+  #   Detour.config.feature_search_regex = /\.rollout? :(\w+)/
+  def feature_search_regex=(regex)
+    if regex.is_a? Regexp
+      @feature_search_regex = regex
+    else
+      raise "Feature search regex must be an instance of Regexp"
+    end
   end
 
   # Allows for methods of the form `define_user_group` that call the private
