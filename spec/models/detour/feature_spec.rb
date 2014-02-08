@@ -70,116 +70,6 @@ describe Detour::Feature do
     end
   end
 
-  describe ".add_record_to_feature" do
-    let(:user)    { create :user }
-    let(:feature) { create :feature }
-
-    before do
-      Detour::Feature.add_record_to_feature user, feature.name
-    end
-
-    it "creates a flag for the given instance and feature" do
-      user.features.should include feature
-    end
-  end
-
-  describe ".remove_record_from_feature" do
-    let(:user)    { create :user }
-    let(:feature) { create :feature }
-
-    before do
-      Detour::Feature.add_record_to_feature user, feature.name
-      Detour::Feature.remove_record_from_feature user, feature.name
-    end
-
-    it "creates a flag for the given instance and feature" do
-      user.features.should_not include feature
-    end
-  end
-
-  describe ".opt_record_out_of_feature" do
-    let(:user)    { create :user }
-    let(:feature) { create :feature }
-
-    before do
-      Detour::Feature.add_percentage_to_feature user.class.to_s, 100, feature.name
-      Detour::Feature.opt_record_out_of_feature user, feature.name
-    end
-
-    it "opts the record out of the feature" do
-      user.has_feature?(feature.name).should be_false
-    end
-  end
-
-  describe ".un_opt_record_out_of_feature" do
-    let(:user)    { create :user }
-    let(:feature) { create :feature }
-
-    before do
-      Detour::Feature.add_percentage_to_feature user.class.to_s, 100, feature.name
-      Detour::Feature.opt_record_out_of_feature user, feature.name
-      Detour::Feature.un_opt_record_out_of_feature user, feature.name
-    end
-
-    it "opts the record out of the feature" do
-      user.has_feature?(feature.name).should be_true
-    end
-  end
-
-  describe ".add_group_to_feature" do
-    let(:feature) { create :feature }
-
-    before do
-      Detour.config.define_user_group :bar do
-      end
-      Detour::Feature.add_group_to_feature "User", :bar, feature.name
-    end
-
-    it "creates a flag for the given group and feature" do
-      feature.defined_group_flags.where(flaggable_type: "User", group_name: "bar").first.should_not be_nil
-    end
-  end
-
-  describe ".remove_group_from_feature" do
-    let(:feature) { create :feature }
-
-    before do
-      Detour.config.define_user_group :bar do
-      end
-      Detour::Feature.add_group_to_feature "User", :bar, feature.name
-      Detour::Feature.remove_group_from_feature "User", :bar, feature.name
-    end
-
-    it "destroys flags for the given group and feature" do
-      feature.defined_group_flags.where(flaggable_type: "User", group_name: "bar").first.should be_nil
-    end
-  end
-
-  describe ".add_percentage_to_feature" do
-    let(:feature) { create :feature }
-
-    before do
-      Detour::Feature.add_percentage_to_feature "User", 50, feature.name
-    end
-
-    it "creates a flag for the given percentage and feature" do
-      feature.percentage_flags.where(flaggable_type: "User", percentage: 50).first.should_not be_nil
-    end
-  end
-
-  describe ".remove_percentage_from_feature" do
-    let(:feature) { create :feature }
-
-    before do
-      Detour::Feature.add_percentage_to_feature "User", 50, feature.name
-      Detour::Feature.remove_percentage_from_feature "User", feature.name
-    end
-
-    it "creates a flag for the given percentage and feature" do
-      feature.percentage_flags.where(flaggable_type: "User").first.should be_nil
-    end
-  end
-
   describe "#to_s" do
     let(:feature) { create :feature }
 
@@ -256,7 +146,7 @@ describe Detour::Feature do
     let(:feature) { create :feature }
 
     before do
-      Detour::Feature.add_record_to_feature user, feature.name
+      create(:flag_in_flag, flaggable: user, feature: feature)
     end
 
     context "when the feature exists for the instance" do
