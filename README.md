@@ -18,6 +18,7 @@ Rollouts for `ActiveRecord` models. It is a spiritual fork of
 - [Installation](#installation)
 - [Usage](#usage)
   - [Configuration](#configuration)
+  - [Restricting the admin interface](#restricting-the-admin-interface)
   - [Marking a model as flaggable](#marking-a-model-as-flaggable)
   - [Determining if a record is flagged into a feature](#determining-if-a-record-is-flagged-into-a-feature)
   - [Defining programmatic groups](#defining-programmatic-groups)
