@@ -14,6 +14,11 @@ describe Detour::DatabaseGroupFlag do
     let(:flag) { create :database_group_flag }
     let!(:membership) { create :membership, group: flag.group }
 
+    it "uses the flaggable class's table name for its SQL find" do
+      User.should_receive(:table_name)
+      flag.members
+    end
+
     it "returns its membership members" do
       flag.members.should eq [membership.member]
     end

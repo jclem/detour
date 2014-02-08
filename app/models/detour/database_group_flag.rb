@@ -11,7 +11,7 @@ class Detour::DatabaseGroupFlag < Detour::Flag
   has_many   :memberships, through: :group
 
   def members
-    flaggable_class.joins(%Q{INNER JOIN "detour_memberships" ON "#{flaggable_type.downcase.pluralize}"."id" = "detour_memberships"."member_id"}).where(detour_memberships: { group_id: group.id })
+    flaggable_class.joins(%Q{INNER JOIN "detour_memberships" ON "#{flaggable_class.table_name}"."id" = "detour_memberships"."member_id"}).where(detour_memberships: { group_id: group.id })
   end
 
   def group_name
