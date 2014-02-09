@@ -97,31 +97,6 @@ describe Detour::Feature do
     end
   end
 
-  describe "#match?" do
-    let(:user)    { create :user }
-    let(:feature) { create :feature }
-
-    it "checks if the user is flagged individually" do
-      feature.should_receive(:match_id?).with(user)
-      feature.match?(user)
-    end
-
-    it "checks if the user is flagged as part of a percentage" do
-      feature.should_receive(:match_percentage?).with(user)
-      feature.match?(user)
-    end
-
-    it "checks if the user is flagged as part of a database group" do
-      feature.should_receive(:match_database_groups?).with(user)
-      feature.match?(user)
-    end
-
-    it "checks if the user is flagged as part of a defined group" do
-      feature.should_receive(:match_defined_groups?).with(user)
-      feature.match?(user)
-    end
-  end
-
   describe "#flag_in_count_for" do
     context "when a value does not exist" do
       let(:feature) { create :feature }
@@ -154,29 +129,6 @@ describe Detour::Feature do
 
       it "returns the value" do
         feature.opt_out_count_for("users").should eq 10
-      end
-    end
-  end
-
-
-  describe "#match_id?" do
-    let(:user)    { create :user }
-    let(:user2)   { create :user }
-    let(:feature) { create :feature }
-
-    before do
-      create(:flag_in_flag, flaggable: user, feature: feature)
-    end
-
-    context "when the feature exists for the instance" do
-      it "returns true" do
-        feature.match_id?(user).should be_true
-      end
-    end
-
-    context "when the feature does not exist for the instance" do
-      it "returns false" do
-        feature.match_id?(user2).should be_false
       end
     end
   end

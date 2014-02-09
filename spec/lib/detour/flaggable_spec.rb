@@ -25,6 +25,12 @@ describe Detour::Flaggable do
     it "finds every feature for a record" do
       subject.features.sort.should eq [feature1, feature2, feature3, feature5].sort
     end
+
+    it "is memoized" do
+      subject.features
+      Detour::Feature.stub(:joins) { raise "I was called" }
+      subject.features
+    end
   end
 
   describe "#flaggable_find!" do
@@ -50,17 +56,6 @@ describe Detour::Flaggable do
   describe "#has_feature?" do
     let(:user)    { create :user }
     let(:feature) { create :feature }
-
-    it "memoizes found features" do
-      Detour::Feature.stub(:find_by_name) { feature }
-      feature.flag_in_flags.create(flaggable: user)
-
-      feature.should_receive(:match?).with(user).and_return(true)
-      user.has_feature?(feature.name)
-
-      feature.should_not_receive(:match?).with(user)
-      user.has_feature?(feature.name)
-    end
 
     context "when the user is not flagged in" do
       it "returns false" do
