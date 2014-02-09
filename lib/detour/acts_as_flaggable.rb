@@ -83,7 +83,6 @@ module Detour::ActsAsFlaggable
         @detour_flaggable_find_by
       end
 
-      extend  Detour::Flaggable::ClassMethods
       include Detour::Flaggable
     end
   end
