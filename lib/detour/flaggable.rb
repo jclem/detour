@@ -8,7 +8,24 @@ module Detour::Flaggable
   #
   # @return [Array] An array of {Detour::Feature}s.
   def features
-    Detour::Feature.all.select { |feature| has_feature?(feature.name) }
+    @features ||= begin
+      @features = []
+
+      opt_out_ids = opt_out_flags.map(&:feature_id)
+      table_name = self.class.table_name
+
+      database_group_features = Detour::Feature.joins(:"#{table_name}_database_group_flags" => :memberships).where("detour_memberships" => { member_id: self.id }).where("'detour_features'.id NOT IN (?)", opt_out_ids)
+      @features.concat database_group_features
+
+      defined_group_features = Detour::Feature.joins(:"#{table_name}_defined_group_flags").where("'detour_features'.id NOT IN (?)", @features.map(&:id)).where("'detour_features'.id NOT IN (?)", opt_out_ids)
+      @features.concat defined_group_features.select { |feature| feature.match_defined_groups?(self) }
+
+      percentage_group_features = Detour::Feature.joins(:"#{table_name}_percentage_flag").where("'detour_features'.id NOT IN (?)", @features.map(&:id)).where("'detour_features'.id NOT IN (?)", opt_out_ids)
+      @features.concat percentage_group_features.select { |feature| feature.match_percentage?(self) }
+
+      flag_in_features = Detour::Feature.joins(:"#{table_name}_flag_ins").where("'detour_features'.id NOT IN (?)", @features.map(&:id)).where("'detour_features'.id NOT IN (?)", opt_out_ids)
+      @features.concat flag_in_features
+    end
   end
 
   # Returns whether or not the object has access to the given feature. If given
