@@ -24,6 +24,10 @@ describe "showing a group" do
     visit "/detour/groups/#{group.to_param}"
   end
 
+  it "shows the group name" do
+    page.should have_content "User Group: #{group.name}"
+  end
+
   it "lists every membership" do
     page.find("input[name=member_identifier]").value.should eq user.email
   end
