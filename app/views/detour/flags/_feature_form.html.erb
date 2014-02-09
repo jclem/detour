@@ -33,14 +33,22 @@
     <% end %>
 
     <td class="flag-in-count">
-      <%= link_to flaggable_flags_path(flag_type: "flag-ins", feature_name: feature.name, flaggable_type: params[:flaggable_type]) do %>
-        <%= feature.flag_in_count_for(params[:flaggable_type]) %>
+      <% if feature.persisted? %>
+        <%= link_to flaggable_flags_path(flag_type: "flag-ins", feature_name: feature.name, flaggable_type: params[:flaggable_type]) do %>
+          <%= feature.flag_in_count_for(params[:flaggable_type]) %>
+        <% end %>
+      <% else %>
+        0
       <% end %>
     </td>
 
     <td class="opt-out-count">
-      <%= link_to flaggable_flags_path(flag_type: "opt-outs", feature_name: feature.name, flaggable_type: params[:flaggable_type]) do %>
-        <%= feature.opt_out_count_for(params[:flaggable_type]) %>
+      <% if feature.persisted? %>
+        <%= link_to flaggable_flags_path(flag_type: "opt-outs", feature_name: feature.name, flaggable_type: params[:flaggable_type]) do %>
+          <%= feature.opt_out_count_for(params[:flaggable_type]) %>
+        <% end %>
+      <% else %>
+        0
       <% end %>
     </td>
   <% end %>
