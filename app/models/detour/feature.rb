@@ -1,8 +1,6 @@
 # Represents an individual feature that may be rolled out to a set of records
 # via individual flags, percentages, or defined groups.
 class Detour::Feature < ActiveRecord::Base
-  include Detour::Concerns::Matchers
-
   self.table_name = :detour_features
 
   serialize :flag_in_counts, JSON

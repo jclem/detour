@@ -11,6 +11,17 @@ class Detour::Flag < ActiveRecord::Base
 
   attr_accessible :flaggable_type
 
+  scope :without_opt_outs, ->(record) {
+    where(flaggable_type: record.class.to_s).where <<-SQL
+      feature_id NOT IN (
+        SELECT feature_id FROM detour_flags
+          WHERE detour_flags.type = 'Detour::OptOutFlag'
+          AND   detour_flags.flaggable_type = '#{record.class.to_s}'
+          AND   detour_flags.flaggable_id   = '#{record.id}'
+      )
+    SQL
+  }
+
   private
 
   def flag_type

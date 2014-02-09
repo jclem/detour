@@ -9,22 +9,18 @@ module Detour::Flaggable
   # @return [Array] An array of {Detour::Feature}s.
   def features
     @features ||= begin
-      @features = []
+      features = unfiltered_features
+      defined_group_flags = Detour::DefinedGroupFlag.without_opt_outs(self).where("feature_id IN (?)", features.map(&:id) << -1) # Prevents NOT IN (NULL)
 
-      opt_out_ids = opt_out_flags.map(&:feature_id) + [-1] # prevents "NOT IN (NULL)"
-      table_name = self.class.table_name
+      defined_group_flags.each do |defined_group_flag|
+        defined_group = Detour::DefinedGroup.by_type(self.class)[defined_group_flag.group_name]
 
-      database_group_features = Detour::Feature.joins(:"#{table_name}_database_group_flags" => :memberships).where("detour_memberships" => { member_id: self.id }).where("'detour_features'.id NOT IN (?)", opt_out_ids)
-      @features.concat database_group_features
+        unless defined_group && defined_group.test(self)
+          feeatures.delete defined_group_flag.feature
+        end
+      end
 
-      defined_group_features = Detour::Feature.joins(:"#{table_name}_defined_group_flags").where("'detour_features'.id NOT IN (?)", opt_out_ids)
-      @features.concat defined_group_features.select { |feature| feature.match_defined_groups?(self) }
-
-      percentage_group_features = Detour::Feature.joins(:"#{table_name}_percentage_flag").where("'detour_features'.id NOT IN (?)", opt_out_ids)
-      @features.concat percentage_group_features.select { |feature| feature.match_percentage?(self) }
-
-      flag_in_features = Detour::Feature.joins(:"#{table_name}_flag_ins").where("'detour_features'.id NOT IN (?)", opt_out_ids)
-      @features.concat flag_in_features
+      features
     end
   end
 
@@ -46,6 +42,50 @@ module Detour::Flaggable
 
   def detour_features
     @detour_features ||= []
+  end
+
+  private
+
+  def unfiltered_features
+    Detour::Feature.where(%Q{
+      detour_features.id IN (
+        -- Get features the record has been individually flagged in to
+        SELECT feature_id FROM detour_flags
+          WHERE detour_flags.type = 'Detour::FlagInFlag'
+          AND   detour_flags.flaggable_type = '#{self.class.to_s}'
+          AND   detour_flags.flaggable_id   = '#{id}'
+      ) OR detour_features.id IN (
+        -- Get features the record has been flagged into via group membership
+        SELECT feature_id FROM detour_flags
+          INNER JOIN detour_groups
+            ON detour_groups.id = detour_flags.group_id
+          INNER JOIN detour_memberships
+            ON detour_memberships.group_id = detour_groups.id
+            AND detour_memberships.member_id = '#{id}'
+          WHERE detour_flags.type = 'Detour::DatabaseGroupFlag'
+          AND   detour_flags.flaggable_type = '#{self.class}'
+      ) OR detour_features.id IN (
+        -- Get features the record has been flagged into via defined membership
+        -- We'll test them later
+        SELECT feature_id FROM detour_flags
+          WHERE detour_flags.type = 'Detour::DefinedGroupFlag'
+          AND   detour_flags.flaggable_type = '#{self.class}'
+      ) OR detour_features.id IN (
+        -- Get features the record has been flagged into via percentage
+        SELECT feature_id FROM detour_flags
+          WHERE detour_flags.type = 'Detour::PercentageFlag'
+          AND   detour_flags.flaggable_type = '#{self.class}'
+          AND   '#{id}' % 10 < detour_flags.percentage / 10
+      )
+    }).where(%Q{
+      -- Exclude features the record has been opted out of.
+      detour_features.id NOT IN (
+        SELECT feature_id FROM detour_flags
+          WHERE detour_flags.type = 'Detour::OptOutFlag'
+          AND   detour_flags.flaggable_type = '#{self.class}'
+          AND   detour_flags.flaggable_id   = '#{id}'
+      )
+    })
   end
 
   included do
