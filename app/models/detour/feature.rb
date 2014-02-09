@@ -8,12 +8,12 @@ class Detour::Feature < ActiveRecord::Base
   serialize :flag_in_counts, JSON
   serialize :opt_out_counts, JSON
 
-  has_many :flag_in_flags
-  has_many :defined_group_flags
-  has_many :database_group_flags
-  has_many :percentage_flags
-  has_many :opt_out_flags
-  has_many :flags, dependent: :destroy
+  has_many :flag_in_flags,        dependent: :destroy
+  has_many :defined_group_flags,  dependent: :destroy
+  has_many :database_group_flags, dependent: :destroy
+  has_many :percentage_flags,     dependent: :destroy
+  has_many :opt_out_flags,        dependent: :destroy
+  has_many :flags,                dependent: :destroy
 
   validates_presence_of   :name
   validates_uniqueness_of :name

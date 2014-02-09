@@ -2,11 +2,11 @@ require "spec_helper"
 require "fakefs/spec_helpers"
 
 describe Detour::Feature do
-  it { should have_many(:flag_in_flags) }
-  it { should have_many(:database_group_flags) }
-  it { should have_many(:defined_group_flags) }
-  it { should have_many(:percentage_flags) }
-  it { should have_many(:opt_out_flags) }
+  it { should have_many(:flag_in_flags).dependent(:destroy) }
+  it { should have_many(:database_group_flags).dependent(:destroy) }
+  it { should have_many(:defined_group_flags).dependent(:destroy) }
+  it { should have_many(:percentage_flags).dependent(:destroy) }
+  it { should have_many(:opt_out_flags).dependent(:destroy) }
   it { should have_many(:flags).dependent(:destroy) }
   it { should validate_presence_of :name }
   it { should validate_uniqueness_of :name }
