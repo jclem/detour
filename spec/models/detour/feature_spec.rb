@@ -16,6 +16,7 @@ describe Detour::Feature do
   it { should allow_value("foo_bar").for(:name) }
   it { should allow_value("foo-bar").for(:name) }
   it { should_not allow_value("foo-bar.").for(:name) }
+  it { should_not allow_value("foo bar").for(:name) }
 
   describe "name format validation" do
     let(:feature) { build :feature, name: "foo bar." }
