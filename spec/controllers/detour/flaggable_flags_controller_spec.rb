@@ -6,6 +6,30 @@ describe Detour::FlaggableFlagsController do
   describe "GET #index" do
     let(:flag) { create :flag_in_flag }
 
+    context "when the flag type is invalid" do
+      def do_get
+        get :index, flag_type: "foo", feature_name: flag.feature.name, flaggable_type: "users"
+      end
+
+      it "returns a 404" do
+        expect { do_get }.to raise_error ActionController::RoutingError
+      end
+    end
+
+    context "when the feature does not exist" do
+      before do
+        get :index, flag_type: "flag-ins", feature_name: "foo", flaggable_type: "users"
+      end
+
+      it "persists the feature" do
+        Detour::Feature.where(name: "foo").should_not be_nil
+      end
+
+      it "is a 200" do
+        response.status.should eq 200
+      end
+    end
+
     context "when the flag type is valid" do
       before do
         get :index, flag_type: "flag-ins", feature_name: flag.feature.name, flaggable_type: "users"
@@ -23,6 +47,17 @@ describe Detour::FlaggableFlagsController do
 
   describe "PUT #update" do
     let(:flag) { create :flag_in_flag }
+
+    context "when the flag type is invalid" do
+      def do_put
+        put :update, flag_type: "foo", feature_name: flag.feature.name, flaggable_type: "users", feature: {}
+      end
+
+      it "returns a 404" do
+        expect { do_put }.to raise_error ActionController::RoutingError
+      end
+    end
+
 
     context "when the flag type is valid" do
       before do

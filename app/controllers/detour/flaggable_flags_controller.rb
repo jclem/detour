@@ -7,7 +7,7 @@ class Detour::FlaggableFlagsController < Detour::ApplicationController
   before_filter :ensure_flag_type_exists
 
   def index
-    @feature = Detour::Feature.find_by_name!(params[:feature_name])
+    @feature = Detour::Feature.where(name: params[:feature_name]).first_or_create!
   end
 
   def update
