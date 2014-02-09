@@ -19,7 +19,7 @@
 
           <ul class="dropdown-menu">
             <% Detour.config.flaggable_types.each do |type| %>
-              <li><%= link_to "#{type} Flags", flags_path(type.tableize) %></li>
+              <li><%= link_to "#{type} Flags", flags_path(type.constantize.table_name) %></li>
             <% end %>
           </ul>
         </li>
