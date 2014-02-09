@@ -1,5 +1,6 @@
 FactoryGirl.define do
+
   factory :feature, class: "Detour::Feature" do
-    name "foo_feature"
+    sequence(:name) { |n| "#{n}_feature" }
   end
 end

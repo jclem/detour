@@ -71,10 +71,6 @@ module Detour::ActsAsFlaggable
         as: :flaggable,
         class_name: "Detour::OptOutFlag"
 
-      has_many :features,
-        through: :flag_in_flags,
-        class_name: "Detour::Feature"
-
       if options[:find_by]
         @detour_flaggable_find_by = options[:find_by]
       end

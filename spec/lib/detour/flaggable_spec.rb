@@ -1,7 +1,31 @@
 require "spec_helper"
 
 describe Detour::Flaggable do
-  subject { User.new }
+  subject { create :user }
+
+  describe "#features" do
+    let(:feature1)      { create :feature }
+    let(:feature2)      { create :feature }
+    let(:feature3)      { create :feature }
+    let(:feature4)      { create :feature }
+    let(:feature5)      { create :feature }
+    let(:membership)    { create :membership, member: subject }
+    let(:defined_group) { Detour::DefinedGroup.new "foo", ->(user){true} }
+
+    before do
+      Detour.config.defined_groups["User"] = { foo: defined_group }
+      create :flag_in_flag, flaggable: subject, feature: feature1
+      create :percentage_flag, flaggable_type: "User", feature: feature2
+      create :database_group_flag, flaggable_type: "User", feature: feature3, group: membership.group
+      create :database_group_flag, flaggable_type: "User", feature: feature4, group: membership.group
+      create :opt_out_flag, flaggable: subject, feature: feature4
+      create :defined_group_flag, flaggable_type: "User", feature: feature5, group_name: "foo"
+    end
+
+    it "finds every feature for a record" do
+      subject.features.sort.should eq [feature1, feature2, feature3, feature5].sort
+    end
+  end
 
   describe "#flaggable_find!" do
     context "when a non-default find_by is not specified" do

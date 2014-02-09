@@ -1,6 +1,16 @@
 module Detour::Flaggable
   extend ActiveSupport::Concern
 
+  # Returns an array of all features rolled out to the given record.
+  #
+  # @example
+  #   user.features
+  #
+  # @return [Array] An array of {Detour::Feature}s.
+  def features
+    Detour::Feature.all.select { |feature| has_feature?(feature.name) }
+  end
+
   # Returns whether or not the object has access to the given feature. If given
   # a block, it will call the block if the user has access to the feature.
   #
