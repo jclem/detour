@@ -1,69 +1,15 @@
 require "spec_helper"
 
-describe "counting flag-in flags" do
+describe "counting flaggable flags" do
   let!(:flag) { create :flag_in_flag }
 
-  context "when the feature is persisted" do
-    before do
-      visit "/detour/flags/users"
-    end
-
-    it "displays the flag-in count" do
-      within "tr#feature_#{flag.feature.id} td.flag-in-count" do
-        page.should have_link "1", href: "/detour/flag-ins/#{flag.feature.name}/users"
-      end
-    end
+  before do
+    visit "/detour/flags/users"
   end
 
-  context "when the feature is not persisted" do
-    before do
-      flag.feature.destroy
-      Detour::Feature.stub(:with_lines) { [flag.feature] }
-      visit "/detour/flags/users"
-    end
-
-    it "does not display a link" do
-      page.should_not have_link "1", href: "/detour/opt-outs/#{flag.feature.name}/users"
-    end
-
-    it "displays a non-link 0" do
-      within "tr#feature_#{flag.feature.id} td.flag-in-count" do
-        page.should have_text "0"
-      end
-    end
-  end
-end
-
-describe "counting opt-out flags" do
-  let!(:flag) { create :opt_out_flag }
-
-  context "when the feature is persisted" do
-    before do
-      visit "/detour/flags/users"
-    end
-
-    it "displays the opt-out count" do
-      within "tr#feature_#{flag.feature.id} td.opt-out-count" do
-        page.should have_link "1", href: "/detour/opt-outs/#{flag.feature.name}/users"
-      end
-    end
-  end
-
-  context "when the feature is not persisted" do
-    before do
-      flag.feature.destroy
-      Detour::Feature.stub(:with_lines) { [flag.feature] }
-      visit "/detour/flags/users"
-    end
-
-    it "does not display a link" do
-      page.should_not have_link "1", href: "/detour/opt-outs/#{flag.feature.name}/users"
-    end
-
-    it "displays a non-link 0" do
-      within "tr#feature_#{flag.feature.id} td.opt-out-count" do
-        page.should have_text "0"
-      end
+  it "displays the defined groups" do
+    within "tr#feature_#{flag.feature.id} td.flag-in-count" do
+      page.should have_content 1
     end
   end
 end
