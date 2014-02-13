@@ -2,6 +2,7 @@ class Detour::Group < ActiveRecord::Base
   validates :name,           presence: true, uniqueness: { scope: :flaggable_type }
   validates :flaggable_type, presence: true, inclusion: { in: Detour.config.flaggable_types }
   has_many :memberships, dependent: :destroy
+  has_many :database_group_flags, dependent: :destroy
 
   accepts_nested_attributes_for :memberships, allow_destroy: true
 

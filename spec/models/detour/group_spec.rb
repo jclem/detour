@@ -9,6 +9,7 @@ describe Detour::Group do
   it { should accept_nested_attributes_for :memberships }
 
   it { should have_many(:memberships).dependent(:destroy) }
+  it { should have_many(:database_group_flags).dependent(:destroy) }
   it { should allow_mass_assignment_of :name }
   it { should allow_mass_assignment_of :flaggable_type }
 
