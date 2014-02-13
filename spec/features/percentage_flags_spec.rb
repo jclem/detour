@@ -42,7 +42,7 @@ describe "creating a percentage flag" do
     end
 
     it "displays error messages" do
-      page.should have_content "#{feature.name}: Users percentage flag percentage is not a number"
+      page.should have_content "#{feature.name}: Percentage is not a number"
     end
   end
 end

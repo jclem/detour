@@ -17,6 +17,7 @@ module Detour::ActsAsFlaggable
         dependent:  :destroy,
         conditions: { flaggable_type: "#{self}" }
 
+      set_human_attribute_name(:"#{table_name}_percentage_flag.percentage", "Percentage")
       attr_accessible :#{table_name}_percentage_flag_attributes
 
       accepts_nested_attributes_for :#{table_name}_percentage_flag,

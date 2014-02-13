@@ -3,6 +3,8 @@
 class Detour::Feature < ActiveRecord::Base
   self.table_name = :detour_features
 
+  @human_attribute_names = {}
+
   serialize :flag_in_counts, JSON
   serialize :opt_out_counts, JSON
 
@@ -82,4 +84,16 @@ class Detour::Feature < ActiveRecord::Base
     Detour.config.feature_search_regex || /\.has_feature\?\s*\(?[:"]([\w-]+)/
   end
   private_class_method :feature_search_regex
+
+  class << self
+    alias :original_human_attribute_name :human_attribute_name
+  end
+
+  def self.human_attribute_name(*args)
+    @human_attribute_names[args[0]] || original_human_attribute_name(*args)
+  end
+
+  def self.set_human_attribute_name(key, name)
+    @human_attribute_names[key] = name
+  end
 end
