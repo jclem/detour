@@ -16,7 +16,7 @@ module Detour::Flaggable
         defined_group = Detour::DefinedGroup.by_type(self.class)[defined_group_flag.group_name]
 
         unless defined_group && defined_group.test(self)
-          feeatures.delete defined_group_flag.feature
+          features.delete defined_group_flag.feature
         end
       end
 

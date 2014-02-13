@@ -4,13 +4,14 @@ describe Detour::Flaggable do
   subject { create :user }
 
   describe "#features" do
-    let(:feature1)      { create :feature }
-    let(:feature2)      { create :feature }
-    let(:feature3)      { create :feature }
-    let(:feature4)      { create :feature }
-    let(:feature5)      { create :feature }
-    let(:membership)    { create :membership, member: subject }
-    let(:defined_group) { Detour::DefinedGroup.new "foo", ->(user){true} }
+    let(:feature1)       { create :feature }
+    let(:feature2)       { create :feature }
+    let(:feature3)       { create :feature }
+    let(:feature4)       { create :feature }
+    let(:feature5)       { create :feature }
+    let(:membership)     { create :membership, member: subject }
+    let(:defined_group)  { Detour::DefinedGroup.new "foo",  ->(user){true} }
+    let(:defined_group2) { Detour::DefinedGroup.new "foo2", ->(user){false} }
 
     before do
       Detour.config.defined_groups["User"] = { foo: defined_group }
@@ -20,6 +21,7 @@ describe Detour::Flaggable do
       create :database_group_flag, flaggable_type: "User", feature: feature4, group: membership.group
       create :opt_out_flag, flaggable: subject, feature: feature4
       create :defined_group_flag, flaggable_type: "User", feature: feature5, group_name: "foo"
+      create :defined_group_flag, flaggable_type: "User", feature: feature5, group_name: "foo2"
     end
 
     it "finds every feature for a record" do
