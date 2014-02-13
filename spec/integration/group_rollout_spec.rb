@@ -13,7 +13,7 @@ describe "group rollouts" do
     end
 
     it "sets the feature on the user" do
-      user.features.should include feature
+      user.detour_features.should include feature
     end
   end
 end

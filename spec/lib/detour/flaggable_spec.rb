@@ -3,7 +3,7 @@ require "spec_helper"
 describe Detour::Flaggable do
   subject { create :user }
 
-  describe "#features" do
+  describe "#detour_features" do
     let(:feature1)       { create :feature }
     let(:feature2)       { create :feature }
     let(:feature3)       { create :feature }
@@ -25,13 +25,13 @@ describe Detour::Flaggable do
     end
 
     it "finds every feature for a record" do
-      subject.features.sort.should eq [feature1, feature2, feature3, feature5].sort
+      subject.detour_features.sort.should eq [feature1, feature2, feature3, feature5].sort
     end
 
     it "is memoized" do
-      subject.features
+      subject.detour_features
       Detour::Feature.stub(:joins) { raise "I was called" }
-      subject.features
+      subject.detour_features
     end
   end
 

@@ -7,7 +7,7 @@ describe "percentage rollouts" do
 
   describe "creating a percentage rollout" do
     it "makes the feature available to the given percentage of instances" do
-      users.select { |user| user.features.include?(feature) }.length.should eq users.length / 5
+      users.select { |user| user.detour_features.include?(feature) }.length.should eq users.length / 5
     end
   end
 end

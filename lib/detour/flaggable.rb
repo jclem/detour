@@ -4,11 +4,11 @@ module Detour::Flaggable
   # Returns an array of all features rolled out to the given record.
   #
   # @example
-  #   user.features
+  #   user.detour_features
   #
   # @return [Array] An array of {Detour::Feature}s.
-  def features
-    @features ||= begin
+  def detour_features
+    @detour_features ||= begin
       features = unfiltered_features
       defined_group_flags = Detour::DefinedGroupFlag.without_opt_outs(self).where("feature_id IN (?)", features.map(&:id) << -1) # Prevents NOT IN (NULL)
 
@@ -37,11 +37,7 @@ module Detour::Flaggable
   # @param [Proc] &block A block to be called if the user is flagged in to the
   #   feature.
   def has_feature?(feature_name, &block)
-    features.map(&:name).include? feature_name.to_s
-  end
-
-  def detour_features
-    @detour_features ||= []
+    detour_features.map(&:name).include? feature_name.to_s
   end
 
   private
