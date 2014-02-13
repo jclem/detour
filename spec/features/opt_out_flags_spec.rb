@@ -22,6 +22,12 @@ describe "listing opt_out_flags" do
     visit "/detour/opt-outs/#{flag.feature.name}/users"
   end
 
+  it "displays the correct header" do
+    within "h1" do
+      page.should have_content "Users opted out of #{flag.feature.name}"
+    end
+  end
+
   it "displays the opted-out model's find-by" do
     page.find("input[type='text'][disabled]").value.should eq flag.flaggable.email
   end

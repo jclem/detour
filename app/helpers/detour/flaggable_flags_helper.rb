@@ -12,7 +12,7 @@ module Detour::FlaggableFlagsHelper
   end
 
   def flag_type
-    params[:flag_type].underscore
+    params[:flag_type].underscore.singularize
   end
 
   def flag_verb

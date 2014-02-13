@@ -22,6 +22,12 @@ describe "listing flag_in_flags" do
     visit "/detour/flag-ins/#{flag.feature.name}/users"
   end
 
+  it "displays the correct header" do
+    within "h1" do
+      page.should have_content "Users flagged in to #{flag.feature.name}"
+    end
+  end
+
   it "displays the flagged-in model's find-by" do
     page.find("input[type='text'][disabled]").value.should eq flag.flaggable.email
   end
