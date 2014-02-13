@@ -62,6 +62,12 @@ describe "creating a group", js: true do
       click_button "Create Group"
     end
 
+    it "displays a correct error header" do
+      within ".modal .panel-heading" do
+        page.should have_content "Whoops! There were some errors saving your group:"
+      end
+    end
+
     it "displays error messages" do
       page.should have_content "Name can't be blank"
     end

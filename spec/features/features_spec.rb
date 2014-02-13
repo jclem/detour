@@ -89,6 +89,12 @@ describe "creating a new feature", js: true do
       click_button "Create Feature"
     end
 
+    it "displays a correct error header" do
+      within ".modal .panel-heading" do
+        page.should have_content "Whoops! There were some errors saving your feature:"
+      end
+    end
+
     it "displays error messages" do
       page.should have_content "Name can't be blank"
     end
