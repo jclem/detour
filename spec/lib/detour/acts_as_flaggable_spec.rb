@@ -5,6 +5,31 @@ describe Detour::ActsAsFlaggable do
 
   it { should have_many :flag_in_flags }
   it { should have_many :opt_out_flags }
+  it { should have_many(:memberships).class_name("Detour::Membership") }
+  it { should have_many(:groups).through(:memberships).class_name("Detour::Group") }
+  it { should have_many(:database_group_flags).through(:groups).class_name("Detour::DatabaseGroupFlag") }
+
+  describe "#defined_group_flags" do
+    it "returns the defined group flags for the class" do
+      Detour::DefinedGroupFlag.should_receive(:where).with(flaggable_type: "User")
+      subject.defined_group_flags
+    end
+  end
+
+  describe "#percentage_flags" do
+    it "returns the percentage flags for the class" do
+      Detour::PercentageFlag.should_receive(:where).with(flaggable_type: "User").and_call_original
+      subject.percentage_flags
+    end
+
+    it "returns the percentage flags with the correct formula" do
+      subject.save!
+      where_double = double(where: true)
+      Detour::PercentageFlag.stub(:where) { where_double }
+      where_double.should_receive(:where).with("? % 10 < detour_flags.percentage / 10", subject.id)
+      subject.percentage_flags
+    end
+  end
 
   it "includes Detour::Flaggable" do
     subject.class.ancestors.should include Detour::Flaggable

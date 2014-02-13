@@ -67,12 +67,34 @@ module Detour::ActsAsFlaggable
         as: :flaggable,
         class_name: "Detour::FlagInFlag"
 
+      has_many :memberships,
+        as: :member,
+        class_name: "Detour::Membership"
+
+      has_many :groups,
+        through: :memberships,
+        class_name: "Detour::Group"
+
+      has_many :database_group_flags,
+        through: :groups,
+        class_name: "Detour::DatabaseGroupFlag"
+
       has_many :opt_out_flags,
         as: :flaggable,
         class_name: "Detour::OptOutFlag"
 
       if options[:find_by]
         @detour_flaggable_find_by = options[:find_by]
+      end
+
+      def defined_group_flags
+        @defined_group_flags ||= Detour::DefinedGroupFlag.where(flaggable_type: self.class.to_s)
+      end
+
+      def percentage_flags
+        @percentage_flags ||= Detour::PercentageFlag
+          .where(flaggable_type: self.class.to_s)
+          .where("? % 10 < detour_flags.percentage / 10", id)
       end
 
       def self.detour_flaggable_find_by
