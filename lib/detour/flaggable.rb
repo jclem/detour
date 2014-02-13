@@ -47,45 +47,14 @@ module Detour::Flaggable
   private
 
   def unfiltered_features
-    Detour::Feature.where(%Q{
-      detour_features.id IN (
-        -- Get features the record has been individually flagged in to
-        SELECT feature_id FROM detour_flags
-          WHERE detour_flags.type = 'Detour::FlagInFlag'
-          AND   detour_flags.flaggable_type = '#{self.class.to_s}'
-          AND   detour_flags.flaggable_id   = '#{id}'
-      ) OR detour_features.id IN (
-        -- Get features the record has been flagged into via group membership
-        SELECT feature_id FROM detour_flags
-          INNER JOIN detour_groups
-            ON detour_groups.id = detour_flags.group_id
-          INNER JOIN detour_memberships
-            ON detour_memberships.group_id = detour_groups.id
-            AND detour_memberships.member_id = '#{id}'
-          WHERE detour_flags.type = 'Detour::DatabaseGroupFlag'
-          AND   detour_flags.flaggable_type = '#{self.class}'
-      ) OR detour_features.id IN (
-        -- Get features the record has been flagged into via defined membership
-        -- We'll test them later
-        SELECT feature_id FROM detour_flags
-          WHERE detour_flags.type = 'Detour::DefinedGroupFlag'
-          AND   detour_flags.flaggable_type = '#{self.class}'
-      ) OR detour_features.id IN (
-        -- Get features the record has been flagged into via percentage
-        SELECT feature_id FROM detour_flags
-          WHERE detour_flags.type = 'Detour::PercentageFlag'
-          AND   detour_flags.flaggable_type = '#{self.class}'
-          AND   '#{id}' % 10 < detour_flags.percentage / 10
-      )
-    }).where(%Q{
-      -- Exclude features the record has been opted out of.
-      detour_features.id NOT IN (
-        SELECT feature_id FROM detour_flags
-          WHERE detour_flags.type = 'Detour::OptOutFlag'
-          AND   detour_flags.flaggable_type = '#{self.class}'
-          AND   detour_flags.flaggable_id   = '#{id}'
-      )
-    })
+    table = Detour::Feature.arel_table
+    query = table[:id].in(flag_in_flags.select(:feature_id).arel)
+      .or(table[:id].in(database_group_flags.select(:feature_id).arel))
+      .or(table[:id].in(defined_group_flags.select(:feature_id).arel))
+      .or(table[:id].in(percentage_flags.select(:feature_id).arel))
+      .and(table[:id].not_in(opt_out_flags.select(:feature_id).arel))
+
+    Detour::Feature.where(query)
   end
 
   included do
