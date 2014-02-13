@@ -1,11 +1,17 @@
 <h1><%= flaggable_type.classify.pluralize %> <%= flag_verb %> <%= feature_name %></h1>
 
 <% if @feature.errors.any? %>
-  <ul>
-    <% @feature.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
-    <% end %>
-  </ul>
+  <div class="panel panel-danger">
+    <div class="panel-heading">Whoops! There were some errors saving your <%= flag_noun.pluralize %>:</div>
+
+    <div class="panel-body">
+      <ul>
+        <% @feature.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
 <% end %>
 
 <%= form_for @feature, url: request.path do |form| %>

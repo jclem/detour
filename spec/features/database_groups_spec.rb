@@ -141,8 +141,14 @@ describe "adding a member to a group", js: true do
       click_button "Update Group"
     end
 
+    it "displays a correct error header" do
+      within ".panel-danger .panel-heading" do
+        page.should have_content "Whoops! There were some errors saving your group:"
+      end
+    end
+
     it "displays error messages" do
-      page.should have_content "Memberships user \"\" could not be found"
+      page.should have_content "User \"\" could not be found"
     end
   end
 end

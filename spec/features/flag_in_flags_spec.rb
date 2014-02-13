@@ -64,8 +64,14 @@ describe "creating a flag-in", js: true do
       click_button "Update Flag-in"
     end
 
+    it "displays a correct error header" do
+      within ".panel-danger .panel-heading" do
+        page.should have_content "Whoops! There were some errors saving your flag-ins:"
+      end
+    end
+
     it "displays error messages" do
-      page.should have_content "Users flag ins user \"\" could not be found"
+      page.should have_content "User \"\" could not be found"
     end
   end
 end

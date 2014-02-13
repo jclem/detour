@@ -1,4 +1,6 @@
 class Detour::Group < ActiveRecord::Base
+  include Detour::Concerns::CustomHumanAttributes
+
   validates :name,           presence: true, uniqueness: { scope: :flaggable_type }
   validates :flaggable_type, presence: true, inclusion: { in: Detour.config.flaggable_types }
   has_many :memberships, dependent: :destroy

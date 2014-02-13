@@ -48,6 +48,7 @@ module Detour::ActsAsFlaggable
         dependent:  :destroy,
         conditions: { flaggable_type: "#{self}" }
 
+      set_human_attribute_name(:"#{table_name}_flag_ins.#{self.model_name}", "#{self.model_name}")
       attr_accessible :#{table_name}_flag_ins_attributes
       accepts_nested_attributes_for :#{table_name}_flag_ins, allow_destroy: true
 
@@ -57,8 +58,13 @@ module Detour::ActsAsFlaggable
         dependent:  :destroy,
         conditions: { flaggable_type: "#{self}" }
 
+      set_human_attribute_name(:"#{table_name}_opt_outs.#{self.model_name}", "#{self.model_name}")
       attr_accessible :#{table_name}_opt_outs_attributes
       accepts_nested_attributes_for :#{table_name}_opt_outs, allow_destroy: true
+    EOF
+
+    Detour::Group.class_eval <<-EOF
+      set_human_attribute_name(:"memberships.#{self.model_name}", "#{self.model_name}")
     EOF
 
     class_eval do

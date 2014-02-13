@@ -64,8 +64,14 @@ describe "creating a opt-out", js: true do
       click_button "Update Opt-outs"
     end
 
+    it "displays a correct error header" do
+      within ".panel-danger .panel-heading" do
+        page.should have_content "Whoops! There were some errors saving your opt-outs:"
+      end
+    end
+
     it "displays error messages" do
-      page.should have_content "Users opt outs user \"\" could not be found"
+      page.should have_content "User \"\" could not be found"
     end
   end
 end

@@ -1,11 +1,17 @@
 <h1><%= @group.flaggable_class %> Group: <%= @group %></h1>
 
 <% if @group.errors.any? %>
-  <ul>
-    <% @group.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
-    <% end %>
-  </ul>
+  <div class="panel panel-danger">
+    <div class="panel-heading">Whoops! There were some errors saving your group:</div>
+
+    <div class="panel-body">
+      <ul>
+        <% @group.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
 <% end %>
 
 <%= form_for @group do |form| %>
