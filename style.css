@@ -1,0 +1,42 @@
+body {
+  color: #333;
+  font-family: Arial, sans-serif;
+  max-width: 640px;
+  margin: 0 auto 40px auto;
+  width: 90%;
+}
+
+h1 {
+  letter-spacing: -1px;
+}
+
+hr {
+  border: 0;
+  border-top: 2px solid #ccc;
+  margin: 40px 0;
+}
+
+hr.subsection {
+  border-top: 1px dashed #ccc;
+  margin: 20px 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+p, code pre {
+  line-height: 1.4285;
+}
+
+code, code pre {
+  font-size: 14px;
+}
+
+pre {
+  overflow-x: auto;
+}
+
+p code {
+  padding: 2px;
+}

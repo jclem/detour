@@ -1,0 +1,257 @@
+<!doctype html>
+
+<html>
+<head>
+  <title>Detour</title>
+  <link rel='stylesheet' href='style.css'>
+  <link rel='stylesheet' href='syntax.css'>
+  <script src='rainbow.min.js'></script>
+</head>
+
+<body>
+  <h1>Detour</h1>
+  <p>Feature flags for Rails apps</p>
+
+  <nav>
+    <ul>
+      <li><a href='/'>Home</a></li>
+      <li><a href='/#requirements'>Requirements</a></li>
+      <li><a href='/#installation'>Installation</a></li>
+      <li><a href='/#configuration'>Configuration</a></li>
+      <li><a href='/#usage'>Usage</a></li>
+    </ul>
+  </nav>
+
+  <hr>
+
+  <h2 id='about'>About</h2>
+
+  <p>Detour helps you manage feature flags in your Rails app, allowing you to
+  test out new features via incremental rollouts to subsets of records, rather
+  than exposing your entire userbase to beta features.</p>
+
+  <hr>
+
+  <h2 id='requirements'>Requirements</h2>
+
+  <p>Detour currently requires:</p>
+
+  <ul>
+    <li>Ruby >= 1.9.3</li>
+    <li>Rails 3.2 (support for Rails 4 coming)</li>
+  </ul>
+
+  <hr>
+
+  <h2 id='installation'>Installation</h2>
+
+  <p>Add it to your Gemfile:</p>
+
+  <pre><code data-language='ruby'>gem 'detour'</code></pre>
+
+  <p>Bundle:</p>
+
+  <pre><code data-language='bash'>$ bundle install</code></pre>
+
+  <p>Run the initializer:</p>
+
+  <pre><code data-language='bash'>$ rails generate detour</code></pre>
+
+  <p>Run the Detour migrations:</p>
+
+  <pre><code data-language='bash'>$ rake db:migrate</code></pre>
+
+  <hr>
+
+  <h2 id='configuration'>Configuration</h2>
+
+  <p>The Detour initializer creates an initializer at
+  <code>config/initializers/detour.rb</code>.</p>
+
+  <hr class='subsection'>
+
+  <h3>Mount Detour in your app</h3>
+
+  <p>Detour is a <code>Rails::Engine</code>, and needs to be mounted at a point
+  of your choosing in your <code>config/routes.rb</code>:</p>
+
+  <pre><code data-language='ruby'>Rails.application.routes.draw do
+  mount Detour::Engine => "/admin/detour"
+end</code></pre>
+
+  <hr class='subsection'>
+
+  <h3>Make your models flaggable</h3>
+
+  <p>Each model that you'd like to be able to be flagged into and out of
+  features needs to call <code>acts_as_flaggable</code>:</p>
+
+  <pre><code data-language='ruby'>class User < ActiveRecord::Base
+  acts_as_flaggable
+end</code></pre>
+
+  <pre><code data-language='ruby'>class Widget < ActiveRecord::Base
+  acts_as_flaggable
+end</code></pre>
+
+  <p>When flagging in users, for example, in the Detour admin interface, you
+  probably won't know their ID values. You can tell Detour that you'd like to
+  find users by email, instead (or any other attribute):</p>
+
+  <pre><code data-language='ruby'>class User < ActiveRecord::Base
+  acts_as_flaggable find_by: :email
+end</code></pre>
+
+  <pre><code data-language='ruby'>class User < ActiveRecord::Base
+  acts_as_flaggable find_by: :name
+end</code></pre>
+
+  <hr class='subsection'>
+
+  <h3>Define flaggable types</h3>
+
+  <p>Detour needs a list of all classes that will potentially be flagged into
+  features. This list can be set with the <code>flaggable_types</code> setting,
+  and needs to match the list of classes that call
+  <code>acts_as_flaggable</code>.</p>
+
+  <pre><code data-language='ruby'>Detour.configure do |config|
+  # The `User` and `Widget` models will be able to be flagged into features.
+  config.flaggable_types = %w[User Widget]
+end</code></pre>
+
+  <hr class='subsection'>
+
+  <h3>Define search directories</h3>
+
+  <p>Detour's admin interface can tell you exactly where you're checking for
+  each feature in your code, but it needs to be told what directories to search
+  through:</p>
+
+  <pre><code data-language='ruby'>Detour.configure do |config|
+  # Detour will search for `.rb` and `.erb` files anywhere in your `app`
+  # directory for feature checks.
+  config.feature_search_dirs = %w[app/**/*.{rb,erb}]
+end</code></pre>
+
+  <hr class='subsection'>
+
+  <h3>Define a feature check regex</h3>
+
+  <p>In order for the Detour admin interface to tell you where you're checking
+  for specific features, Detour by default looks for things that look like
+  <code>.has_feature?(:feature_name)</code> and
+  <code>.has_feature?("feature_name")</code>. However, you may have aliased
+  this method, or wrapped it in something else. You can change Detour's search
+  regular expression:</p>
+
+  <pre><code data-language='ruby'>Detour.configure do |config|
+  # Detour will look for feature checks that look more like `rollout?(:feature)`
+  config.feature_search_regex = /rollout\?\s*\(?[:"]([\w-]+)/
+end</code></pre>
+
+  <hr class='subsection'>
+
+  <h3>Define groups</h3>
+
+  <p>Detour can roll out features to records in groups. These groups can either
+  be defined in the database, which you manage in the Detour admin interface,
+  or they can be defined in code, in Detour's initializer. The blocks that you
+  use to define your groups will get a record passed in to them, that you can
+  check for specific traits. If the block returns a truthy value, the record
+  will be considered part of the group.</p>
+
+  <pre><code data-language='ruby'>Detour.configure do |config|
+  # Define a group for your admins
+  config.define_users_group :admins do |user|
+    user.admin?
+  end
+
+  # Define a group for your super users
+  config.define_users_group :super_users do |user|
+    user.super_user?
+  end
+
+  # Define a group for your premium widgets
+  config.define_widgets_group :premiums do |widget|
+    widget.is_premium?
+  end
+end</code></pre>
+
+  <hr class='subsection'>
+
+  <h3>Restrict the admin interface</h3>
+
+  <p>You probably don't want any user to have access to your Detour admin
+  interface, which is open to all by defaut. The easier way to restrict access
+  is to <code>class_eval</code> Detour's main controller in the Detour
+  initializer. <code>Detour::ApplicationController</code> probably won't have
+  methods like <code>current_user</code> available to it, so it's easiest to
+  include them via a module, as below:</p>
+
+  <pre><code data-language='ruby'>Detour::ApplicationController.class_eval do
+  include CurrentUser
+
+  before_filter :admin_required!
+
+  private
+
+  def admin_required!
+    if current_user && current_user.admin?
+      true
+    else
+      # Redirect a non-admin user somewhere else
+    end
+  end
+end</code></pre>
+
+  <hr>
+
+  <h2 id='usage'>Usage</h2>
+
+  <p>The usage examples all assume that Detour is mounted on the
+  <code>/detour</code> path, and they assume a <code>User</code> class that more
+  or less looks like the following:</p>
+
+  <pre><code data-language='ruby'>class User &lt; ActiveRecord::Base
+  acts_as_flaggable find_by: :email
+end</code></pre>
+
+  <p>In these examples, we'll be logged in as the user with email
+  "user@example.com", and we'll be viewing the following page:</p>
+
+  <pre><code data-language='html'><% if current_user.has_feature?(:foo_feature) %>
+  <h1>User has "foo_feature"!</h1>
+<% end %></code></pre>
+
+  <hr class='subsection'>
+
+  <h3>Flagging in a single user</h3>
+
+  <img src='http://f.cl.ly/items/3i431s0v2A3k0c2t2k43/flag-in.mov.gif'>
+
+  <hr class='subsection'>
+
+  <h3>Flagging in a defined group</h3>
+
+  <img src='http://cl.ly/image/2C3G2t212G0r/defined-group.mov.gif'>
+
+  <hr class='subsection'>
+
+  <h3>Flagging in a managed group</h3>
+
+  <img src='http://cl.ly/image/1q3U2J2F2439/managed-groups.mov.gif'>
+
+  <hr class='subsection'>
+
+  <h3>Flagging in a percentage of users</h3>
+
+  <img src='http://cl.ly/image/2n2b412Y3x3q/percentage.mov.gif'>
+
+  <hr class='subsection'>
+
+  <h3>Opting out a user</h3>
+
+  <img src='http://cl.ly/image/003E2B1D320v/opt-out.mov.gif'>
+</body>
+</html>
