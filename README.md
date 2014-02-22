@@ -15,75 +15,178 @@ Rollouts for `ActiveRecord` models. It is a spiritual fork of
 
 ## Contents
 
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Configuration](#configuration)
-  - [Restricting the admin interface](#restricting-the-admin-interface)
-  - [Marking a model as flaggable](#marking-a-model-as-flaggable)
-  - [Determining if a record is flagged into a feature](#determining-if-a-record-is-flagged-into-a-feature)
-  - [Defining programmatic groups](#defining-programmatic-groups)
-- [Contributing](#contributing)
+  * [About](#about)
+  * [Requirements](#requirements)
+  * [Installation](#installation)
+  * [Configuration](#configuration)
+  * [Usage](#usage)
+
+* * *
+
+## About
+
+Detour helps you manage feature flags in your Rails app, allowing you to test
+out new features via incremental rollouts to subsets of records, rather than
+exposing your entire userbase to beta features.
+
+## Requirements
+
+Detour currently requires:
+
+  * Ruby >= 1.9.3
+  * Rails 3.2 (support for Rails 4 coming)
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add it to your Gemfile:
 
-    gem 'detour'
+```ruby
+gem 'detour'
+```
 
-And then execute:
+Bundle:
 
-    $ bundle
+```shell    
+$ bundle install
+```
 
-In your rails app:
+Run the initializer:
 
-    $ bundle exec rails generate detour
+```shell
+$ rails generate detour
+```
 
 Run the Detour migrations:
 
-    $ bundle exec rake db:migrate
+```shell
+$ rake db:migrate
+```
 
-## Usage
+## Configuration
 
-`Detour` works by determining whether or not a specific record
-should have features accessible to it based on individual flags, flags for a
-percentage of records, flags for a database-backed group of records, or flags
-for a code-defined group of records.
+The Detour initializer creates an initializer at
+`config/initializers/detour.rb`.
 
-### Configuration
+### Mount Detour in your app
 
-Edit `config/initializers/detour.rb`:
+Detour is a `Rails::Engine`, and needs to be mounted at a point of your
+choosing in your `config/routes.rb`:
+
+```ruby
+Rails.application.routes.draw do
+  mount Detour::Engine => "/admin/detour"
+end
+```
+
+### Make your models flaggable
+
+Each model that you'd like to be able to be flagged into and out of features
+needs to call `acts_as_flaggable`:
+
+```ruby    
+class User < ActiveRecord::Base
+  acts_as_flaggable
+end
+
+class Widget < ActiveRecord::Base
+  acts_as_flaggable
+end
+```
+
+When flagging in users, for example, in the Detour admin interface, you
+probably won't know their ID values. You can tell Detour that you'd like to
+find users by email, instead (or any other attribute):
+
+```ruby 
+class User < ActiveRecord::Base
+  acts_as_flaggable find_by: :email
+end
+
+class User < ActiveRecord::Base
+  acts_as_flaggable find_by: :name
+end
+```
+
+### Define flaggable types
+
+Detour needs a list of all classes that will potentially be flagged into
+features. This list can be set with the `flaggable_types` setting, and needs
+to match the list of classes that call `acts_as_flaggable`.
 
 ```ruby
 Detour.configure do |config|
-  # Detour needs to know at boot which models will
-  # have flags defined for them:
+  # The `User` and `Widget` models will be able to be flagged into features.
   config.flaggable_types = %w[User Widget]
+end
+```
 
-  # Detour needs to know what directories to search
-  # through in order to find places where you're
-  # checking for flags in your code. Provide it an
-  # array of glob strings:
+### Define search directories
+
+Detour's admin interface can tell you exactly where you're checking for each
+feature in your code, but it needs to be told what directories to search
+through:
+
+```ruby
+Detour.configure do |config|
+  # Detour will search for `.rb` and `.erb` files anywhere in your `app`
+  # directory for feature checks.
   config.feature_search_dirs = %w[app/**/*.{rb,erb}]
 end
 ```
 
-Mount the app in `config/routes.rb`:
+### Define a feature check regex
 
-```ruby
-Rails.application.routes.draw do
-  mount Detour::Engine => "/detour"
+In order for the Detour admin interface to tell you where you're checking for
+specific features, Detour by default looks for things that look like
+`.has_feature?(:feature_name)` and `.has_feature?("feature_name")`. However,
+you may have aliased this method, or wrapped it in something else. You can
+change Detour's search regular expression:
+
+```ruby 
+Detour.configure do |config|
+  # Detour will look for feature checks that look more like `rollout?(:feature)`
+  config.feature_search_regex = /rollout\?\s*\(?[:"]([\w-]+)/
 end
 ```
 
-### Restricting the admin interface
+### Define groups
 
-If you'd like your Detour admin interface only accessible to admins, for example,
-you can add a `before_filter` to `Detour::ApplicationController` in the Detour
-initializer:
+Detour can roll out features to records in groups. These groups can either be
+defined in the database, which you manage in the Detour admin interface, or
+they can be defined in code, in Detour's initializer. The blocks that you use
+to define your groups will get a record passed in to them, that you can check
+for specific traits. If the block returns a truthy value, the record will be
+considered part of the group.
+
+```ruby    
+Detour.configure do |config|
+  # Define a group for your admins
+  config.define_users_group :admins do |user|
+    user.admin?
+  end
+
+  # Define a group for your super users
+  config.define_users_group :super_users do |user|
+    user.super_user?
+  end
+
+  # Define a group for your premium widgets
+  config.define_widgets_group :premiums do |widget|
+    widget.is_premium?
+  end
+end
+```
+
+### Restrict the admin interface
+
+You probably don't want any user to have access to your Detour admin
+interface, which is open to all by defaut. The easier way to restrict access
+is to `class_eval` Detour's main controller in the Detour initializer.
+`Detour::ApplicationController` probably won't have methods like
+`current_user` available to it, so it's easiest to include them via a module,
+as below:
 
 ```ruby
-# config/initializers/detour.rb
-
 Detour::ApplicationController.class_eval do
   include CurrentUser
 
@@ -95,77 +198,51 @@ Detour::ApplicationController.class_eval do
     if current_user && current_user.admin?
       true
     else
-      # redirect somewhere for non-admins
+      # Redirect a non-admin user somewhere else
     end
   end
 end
 ```
 
-Since `Detour::ApplicationController` isn't a subclass of my `ApplicationController`,
-I've included a `CurrentUser` module that I built in this app that adds a
-`current_user` method to any controller that it's included in. Now, only admins
-will have access to the Detour admin interface.
+## Usage
 
-### Marking a model as flaggable
+The usage examples all assume that Detour is mounted on the `/detour` path,
+and they assume a `User` class that more or less looks like the following:
 
-In addition to listing classes that are flaggable in your initializer, add
-`acts_as_flaggable` to the class definitions themselves:
-
-```ruby
-class User < ActiveRecord::Base
-  acts_as_flaggable
-end
-```
-
-Or, in order to user emails rather than IDs to identify records in rake tasks:
-
-```ruby
+```ruby    
 class User < ActiveRecord::Base
   acts_as_flaggable find_by: :email
 end
 ```
 
-This module adds `has_many` associations to `User` for `flaggable_flags` (where
-the user has been individually flagged into a feature), `opt_out_flags` (where
-the user has been opted out of a feature), and `features` (the features that
-the user has been individually flagged into, regardless of opt outs).
+In these examples, we'll be logged in as the user with email
+"user@example.com", and we'll be viewing the following page:
 
-However, these methods aren't enough to determine whether or not the user is
-flagged into a specific feature. The `#has_feature?` method provided by
-`Detour::Flaggable` should be used for this.
-
-### Determining if a record is flagged into a feature
-
-Call the `#has_feature?` method on an instance of your class that implements
-`acts_as_flaggable`.
-
-```ruby
-if current_user.has_feature? :new_user_interface
-  render_new_user_interface
-end
+```erb 
+<% if current_user.has_feature?(:foo_feature) %>
+ <h1>User has "foo_feature"!</h1>
+<% end %>
 ```
 
-### Defining programmatic groups
+### Flagging in a single user
 
-A specific group of records matching a given block can be flagged into a
-feature. In order to define these groups, use
-`Detour.configure`:
+![](http://f.cl.ly/items/3i431s0v2A3k0c2t2k43/flag-in.mov.gif)
 
-```ruby
-Detour.configure do |config|
-  # Any User that returns truthy for `user.admin?` will be included in this
-  # group: `admins`.
-  config.define_user_group :admins do |user|
-    user.admin?
-  end
+### Flagging in a defined group
 
-  # Any FizzBuzz that returns truthy for `fizz_buzz.bar?` will be included in
-  # this group: `is_bar`.
-  config.define_fizz_buzz_group :is_bar do |fizz_buzz|
-    fizz_buzz.bar?
-  end
-end
-```
+![](http://cl.ly/image/2C3G2t212G0r/defined-group.mov.gif)
+
+### Flagging in a managed group
+
+![](http://cl.ly/image/1q3U2J2F2439/managed-groups.mov.gif)
+
+### Flagging in a percentage of users
+
+![](http://cl.ly/image/2n2b412Y3x3q/percentage.mov.gif)
+
+### Opting out a user
+
+![](http://cl.ly/image/003E2B1D320v/opt-out.mov.gif)
 
 ## Contributing
 
